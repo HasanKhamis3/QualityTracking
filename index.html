@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام متابعة جودة التعليم والتعلم</title>
+    <title>نظام متابعة جودة التعليم والتعلم - إدارة المستخدمين</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --primary: #2c5aa0;
@@ -193,10 +192,6 @@
             background-color: #e9ecef;
         }
 
-        .table-center td {
-            text-align: center;
-        }
-
         /* Form Styles */
         .form-group {
             margin-bottom: 1rem;
@@ -306,44 +301,6 @@
             font-weight: 700;
         }
 
-        /* Dashboard */
-        .stats-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background-color: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            padding: 1.5rem;
-            text-align: center;
-            transition: transform 0.3s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .stat-card i {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            color: var(--primary);
-        }
-
-        .stat-card h3 {
-            font-size: 1.8rem;
-            margin-bottom: 0.5rem;
-            color: var(--dark);
-        }
-
-        .stat-card p {
-            color: var(--gray);
-            font-weight: 600;
-        }
-
         /* User Management */
         .user-list {
             margin-top: 1.5rem;
@@ -381,7 +338,7 @@
 
         .permissions-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 10px;
             margin-top: 10px;
         }
@@ -486,7 +443,7 @@
             background-color: white;
             border-radius: var(--border-radius);
             width: 90%;
-            max-width: 600px;
+            max-width: 800px;
             max-height: 90vh;
             overflow-y: auto;
             padding: 1.5rem;
@@ -516,28 +473,6 @@
             color: var(--gray);
         }
 
-        /* Chart Container */
-        .chart-container {
-            margin-top: 2rem;
-            height: 400px;
-            position: relative;
-            background: white;
-            padding: 20px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-        }
-
-        /* Month Selector */
-        .month-selector {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 1.5rem;
-            padding: 10px 15px;
-            background-color: #f8f9fa;
-            border-radius: var(--border-radius);
-        }
-
         /* Department Permissions */
         .department-permissions {
             margin-top: 1rem;
@@ -557,6 +492,22 @@
             font-weight: 600;
         }
 
+        .sub-departments {
+            margin-right: 20px;
+            margin-top: 10px;
+        }
+
+        .sub-department-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 10px;
+            margin-bottom: 5px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            border: 1px solid #e9ecef;
+        }
+
         /* User Subsection */
         .user-subsection {
             display: block;
@@ -573,10 +524,6 @@
                 flex-wrap: wrap;
             }
             
-            .stats-cards {
-                grid-template-columns: 1fr;
-            }
-            
             .user-card {
                 flex-direction: column;
                 align-items: flex-start;
@@ -590,10 +537,6 @@
             
             .permissions-grid {
                 grid-template-columns: 1fr;
-            }
-            
-            .chart-container {
-                height: 300px;
             }
         }
     </style>
@@ -656,231 +599,17 @@
                     <div class="section-header">
                         <h2 class="section-title">لوحة التحكم</h2>
                     </div>
-                    
                     <div class="stats-cards">
                         <div class="stat-card">
+                            <i class="fas fa-users"></i>
+                            <h3 id="totalUsers">0</h3>
+                            <p>إجمالي المستخدمين</p>
+                        </div>
+                        <div class="stat-card">
                             <i class="fas fa-chalkboard-teacher"></i>
-                            <h3 id="totalVisits">0</h3>
-                            <p>إجمالي الزيارات الصفية</p>
+                            <h3 id="totalTeachers">0</h3>
+                            <p>إجمالي المدرسين</p>
                         </div>
-                        <div class="stat-card">
-                            <i class="fas fa-user-check"></i>
-                            <h3 id="distinguishedTeachers">0</h3>
-                            <p>المعلمين المتميزين</p>
-                        </div>
-                        <div class="stat-card">
-                            <i class="fas fa-user-clock"></i>
-                            <h3 id="teachersNeedCare">0</h3>
-                            <p>المعلمين الأولى بالرعاية</p>
-                        </div>
-                        <div class="stat-card">
-                            <i class="fas fa-chart-line"></i>
-                            <h3 id="performanceRate">0%</h3>
-                            <p>معدل الأداء المتميز</p>
-                        </div>
-                    </div>
-                    
-                    <div class="section-header">
-                        <h2 class="section-title">آخر الزيارات</h2>
-                    </div>
-                    
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>اسم المعلم</th>
-                                <th>القسم</th>
-                                <th>تاريخ الزيارة</th>
-                                <th>التقييم</th>
-                                <th>الزائر</th>
-                            </tr>
-                        </thead>
-                        <tbody id="recentVisitsTable">
-                            <!-- سيتم ملؤها بالبيانات -->
-                        </tbody>
-                    </table>
-                </section>
-
-                <!-- Middle Leadership Section -->
-                <section id="middleLeadership" class="section">
-                    <div class="section-header">
-                        <h2 class="section-title">متابعة تسليم القيادة الوسطى</h2>
-                    </div>
-                    
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>القسم</th>
-                                <th>عدد استمارات الزيارات الصفية</th>
-                                <th>محضر اجتماع المعلم الأول أو المنسق</th>
-                                <th>الخطة الأسبوعية للمعلم الأول أو المنسق</th>
-                                <th>أسباب عدم التسليم</th>
-                            </tr>
-                        </thead>
-                        <tbody id="middleLeadershipTable">
-                            <!-- سيتم ملؤها بالبيانات -->
-                        </tbody>
-                    </table>
-                    
-                    <div class="btn-group">
-                        <button class="btn" id="saveMiddleLeadership">حفظ البيانات</button>
-                    </div>
-                </section>
-
-                <!-- Visits Section -->
-                <section id="visits" class="section">
-                    <div class="section-header">
-                        <h2 class="section-title">الزيارات الصفية</h2>
-                        <button class="btn" id="addVisitBtn">إضافة زيارة</button>
-                    </div>
-                    
-                    <div class="sub-sections" id="visitsSubSections">
-                        <button class="sub-section-btn active" data-department="اللغة العربية">اللغة العربية</button>
-                        <button class="sub-section-btn" data-department="رياضيات وعلوم">رياضيات وعلوم</button>
-                        <button class="sub-section-btn" data-department="اللغة الإنجليزية">اللغة الإنجليزية</button>
-                        <button class="sub-section-btn" data-department="تربية اسلامية">تربية اسلامية</button>
-                        <button class="sub-section-btn" data-department="المواد الاجتماعية">المواد الاجتماعية</button>
-                        <button class="sub-section-btn" data-department="نظام فصل">نظام فصل</button>
-                        <button class="sub-section-btn" data-department="المواد الإثرائية">المواد الإثرائية</button>
-                        <button class="sub-section-btn" data-department="التربية الرياضية">التربية الرياضية</button>
-                    </div>
-                    
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>م</th>
-                                <th>اسم المعلم</th>
-                                <th>القسم</th>
-                                <th>تاريخ الزيارة</th>
-                                <th>الحصة</th>
-                                <th>الصف</th>
-                                <th>تقييم الزيارة</th>
-                                <th>اسم الزائر</th>
-                                <th>الملاحظات</th>
-                                <th>الإجراءات</th>
-                            </tr>
-                        </thead>
-                        <tbody id="visitsTable">
-                            <!-- سيتم ملؤها بالبيانات -->
-                        </tbody>
-                    </table>
-                </section>
-
-                <!-- Performance Section -->
-                <section id="performance" class="section">
-                    <div class="section-header">
-                        <h2 class="section-title">تقييم الأداء الصفي</h2>
-                    </div>
-                    
-                    <div class="month-selector">
-                        <label for="performanceMonth">اختر الشهر:</label>
-                        <select id="performanceMonth">
-                            <option value="يناير">يناير</option>
-                            <option value="فبراير">فبراير</option>
-                            <option value="مارس">مارس</option>
-                            <option value="أبريل">أبريل</option>
-                            <option value="مايو">مايو</option>
-                            <option value="يونيو">يونيو</option>
-                            <option value="يوليو">يوليو</option>
-                            <option value="أغسطس">أغسطس</option>
-                            <option value="سبتمبر">سبتمبر</option>
-                            <option value="أكتوبر">أكتوبر</option>
-                            <option value="نوفمبر">نوفمبر</option>
-                            <option value="ديسمبر">ديسمبر</option>
-                        </select>
-                    </div>
-                    
-                    <table class="table-center">
-                        <thead>
-                            <tr>
-                                <th>م</th>
-                                <th>الأقسام الأكاديمية</th>
-                                <th>مجموع عدد الزيارات للقسم</th>
-                                <th>يفوق التوقعات بكثير</th>
-                                <th>يفوق التوقعات</th>
-                                <th>يفي بالتوقعات</th>
-                                <th>يفي بالتوقعات جزئياً</th>
-                            </tr>
-                        </thead>
-                        <tbody id="performanceTable">
-                            <!-- سيتم ملؤها بالبيانات -->
-                        </tbody>
-                    </table>
-                    
-                    <div class="chart-container">
-                        <canvas id="performanceChart"></canvas>
-                    </div>
-                    
-                    <div class="btn-group">
-                        <button class="btn btn-secondary" id="savePerformance">حفظ البيانات</button>
-                    </div>
-                </section>
-
-                <!-- Teachers Section -->
-                <section id="teachers" class="section">
-                    <div class="section-header">
-                        <h2 class="section-title">المعلمين المتميزين والأولى بالرعاية</h2>
-                    </div>
-                    
-                    <h3>المعلمين المتميزين</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>الرقم</th>
-                                <th>اسم المعلم</th>
-                                <th>التقدير</th>
-                                <th>المبررات</th>
-                                <th>القسم الأكاديمي</th>
-                            </tr>
-                        </thead>
-                        <tbody id="distinguishedTeachersTable">
-                            <!-- سيتم ملؤها بالبيانات -->
-                        </tbody>
-                    </table>
-                    
-                    <h3>المعلمين الأولى بالرعاية</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>الرقم</th>
-                                <th>اسم المعلم</th>
-                                <th>التقدير</th>
-                                <th>المبررات</th>
-                                <th>القسم الأكاديمي</th>
-                            </tr>
-                        </thead>
-                        <tbody id="teachersNeedCareTable">
-                            <!-- سيتم ملؤها بالبيانات -->
-                        </tbody>
-                    </table>
-                    
-                    <div class="btn-group">
-                        <button class="btn" id="addDistinguishedTeacher">إضافة معلم متميز</button>
-                        <button class="btn" id="addTeacherNeedCare">إضافة معلم يحتاج رعاية</button>
-                        <button class="btn btn-secondary" id="saveTeachers">حفظ البيانات</button>
-                    </div>
-                </section>
-
-                <!-- Reports Section -->
-                <section id="reports" class="section">
-                    <div class="section-header">
-                        <h2 class="section-title">التقرير النوعي</h2>
-                    </div>
-                    
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>الأقسام الأكاديمية</th>
-                                <th>جوانب القوة</th>
-                                <th>جوانب بحاجة إلى تطوير</th>
-                            </tr>
-                        </thead>
-                        <tbody id="reportsTable">
-                            <!-- سيتم ملؤها بالبيانات -->
-                        </tbody>
-                    </table>
-                    
-                    <div class="btn-group">
-                        <button class="btn btn-secondary" id="saveReports">حفظ البيانات</button>
                     </div>
                 </section>
 
@@ -929,70 +658,6 @@
         </main>
     </div>
 
-    <!-- Modal for Adding/Editing Visit -->
-    <div id="visitModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="visitModalTitle">إضافة زيارة صفية</h3>
-                <button class="close-modal">&times;</button>
-            </div>
-            <form id="visitForm">
-                <input type="hidden" id="visitId">
-                <div class="form-group">
-                    <label for="teacherName">اسم المعلم</label>
-                    <input type="text" id="teacherName" required>
-                </div>
-                <div class="form-group">
-                    <label for="department">القسم</label>
-                    <select id="department" required>
-                        <option value="اللغة العربية">اللغة العربية</option>
-                        <option value="رياضيات وعلوم">رياضيات وعلوم</option>
-                        <option value="اللغة الإنجليزية">اللغة الإنجليزية</option>
-                        <option value="تربية اسلامية">تربية اسلامية</option>
-                        <option value="المواد الاجتماعية">المواد الاجتماعية</option>
-                        <option value="نظام فصل">نظام فصل</option>
-                        <option value="المواد الإثرائية">المواد الإثرائية</option>
-                        <option value="التربية الرياضية">التربية الرياضية</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="visitDate">تاريخ الزيارة</label>
-                    <input type="date" id="visitDate" required>
-                </div>
-                <div class="form-group">
-                    <label for="classPeriod">الحصة</label>
-                    <input type="text" id="classPeriod" required>
-                </div>
-                <div class="form-group">
-                    <label for="classGrade">الصف</label>
-                    <input type="text" id="classGrade" required>
-                </div>
-                <div class="form-group">
-                    <label for="evaluation">تقييم الزيارة</label>
-                    <select id="evaluation" required>
-                        <option value="ممتاز">ممتاز</option>
-                        <option value="جيد جداً">جيد جداً</option>
-                        <option value="جيد">جيد</option>
-                        <option value="مقبول">مقبول</option>
-                        <option value="ضعيف">ضعيف</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="visitorName">اسم الزائر</label>
-                    <input type="text" id="visitorName" required>
-                </div>
-                <div class="form-group">
-                    <label for="notes">الملاحظات</label>
-                    <textarea id="notes" rows="3"></textarea>
-                </div>
-                <div class="btn-group">
-                    <button type="submit" class="btn">حفظ</button>
-                    <button type="button" class="btn btn-secondary" id="cancelVisit">إلغاء</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <!-- Modal for Adding/Editing User -->
     <div id="userModal" class="modal">
         <div class="modal-content">
@@ -1027,6 +692,23 @@
                     <button type="button" class="btn btn-secondary" id="cancelUser">إلغاء</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Modal for Managing User Permissions -->
+    <div id="permissionsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="permissionsModalTitle">إدارة صلاحيات المستخدم</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div id="permissionsContent">
+                <!-- سيتم ملؤها بالبيانات -->
+            </div>
+            <div class="btn-group">
+                <button class="btn" id="savePermissions">حفظ الصلاحيات</button>
+                <button type="button" class="btn btn-secondary" id="cancelPermissions">إلغاء</button>
+            </div>
         </div>
     </div>
 
@@ -1065,6 +747,36 @@
     </div>
 
     <script>
+        // هيكل الأقسام الرئيسية والفرعية في الموقع
+        const siteStructure = {
+            'الزيارات الصفية': {
+                'اللغة العربية': ['الصف الأول', 'الصف الثاني', 'الصف الثالث', 'الصف الرابع', 'الصف الخامس', 'الصف السادس'],
+                'رياضيات وعلوم': ['الرياضيات', 'العلوم'],
+                'اللغة الإنجليزية': ['المبتدئين', 'المتوسطين', 'المتقدمين'],
+                'تربية اسلامية': ['العقيدة', 'الحديث', 'الفقه', 'السيرة'],
+                'المواد الاجتماعية': ['التاريخ', 'الجغرافيا', 'التربية الوطنية'],
+                'نظام فصل': ['الفصل الأول', 'الفصل الثاني', 'الفصل الثالث'],
+                'المواد الإثرائية': ['الأنشطة', 'المشاريع', 'الورش'],
+                'التربية الرياضية': ['الألعاب الجماعية', 'الألعاب الفردية', 'اللياقة البدنية']
+            },
+            'متابعة القيادة الوسطى': {
+                'التقارير الشهرية': ['تقرير الزيارات', 'تقرير الاجتماعات', 'تقرير الخطط'],
+                'المتابعة اليومية': ['الحضور والانصراف', 'تنفيذ الخطط', 'التقييمات']
+            },
+            'تقييم الأداء': {
+                'التقييمات الشهرية': ['تقييم المعلمين', 'تقييم الطلاب', 'تقييم المناهج'],
+                'التقارير الإحصائية': ['إحصائيات الزيارات', 'إحصائيات التقييمات', 'مؤشرات الأداء']
+            },
+            'المعلمين المتميزين': {
+                'التكريم الشهري': ['المعلم المتميز', 'المبادرات', 'الإنجازات'],
+                'سجل التميز': ['سجل الإنجازات', 'سجل الشهادات', 'سجل الدورات']
+            },
+            'التقارير النوعية': {
+                'التقارير الفصلية': ['تقرير الأداء', 'تقرير التحصيل', 'تقرير المتابعة'],
+                'التقارير السنوية': ['التقرير السنوي الشامل', 'تقرير التطوير', 'تقرير الإنجازات']
+            }
+        };
+
         // بيانات التطبيق
         const appData = {
             currentUser: null,
@@ -1076,119 +788,36 @@
                     name: 'مدير النظام', 
                     role: 'admin', 
                     avatar: 'م',
+                    permissions: getAllPermissions() // جميع الصلاحيات
+                },
+                { 
+                    id: 2, 
+                    username: 'supervisor1', 
+                    password: 'super123', 
+                    name: 'محمد أحمد', 
+                    role: 'supervisor', 
+                    avatar: 'م',
                     permissions: {
-                        // الصلاحيات الأساسية
-                        dashboard: true,
-                        middleLeadership: true,
-                        visits: true,
-                        performance: true,
-                        teachers: true,
-                        reports: true,
-                        users: true,
-                        // صلاحيات الأقسام
-                        departments: {
-                            'اللغة العربية': true,
-                            'رياضيات وعلوم': true,
-                            'اللغة الإنجليزية': true,
-                            'تربية اسلامية': true,
-                            'المواد الاجتماعية': true,
-                            'نظام فصل': true,
-                            'المواد الإثرائية': true,
-                            'التربية الرياضية': true
+                        'الزيارات الصفية': {
+                            'اللغة العربية': ['الصف الأول', 'الصف الثاني', 'الصف الثالث'],
+                            'رياضيات وعلوم': ['الرياضيات', 'العلوم'],
+                            'اللغة الإنجليزية': ['المبتدئين', 'المتوسطين']
                         },
-                        // صلاحيات الأقسام الفرعية
-                        subDepartments: {
-                            'اللغة العربية': {
-                                'الصف الأول': true,
-                                'الصف الثاني': true,
-                                'الصف الثالث': true
-                            },
-                            'رياضيات وعلوم': {
-                                'الرياضيات': true,
-                                'العلوم': true
-                            },
-                            'اللغة الإنجليزية': {
-                                'المبتدئين': true,
-                                'المتوسطين': true,
-                                'المتقدمين': true
-                            }
+                        'متابعة القيادة الوسطى': {
+                            'التقارير الشهرية': ['تقرير الزيارات', 'تقرير الاجتماعات']
                         }
                     }
                 },
                 { 
-                    id: 2, 
+                    id: 3, 
                     username: 'teacher1', 
                     password: 'teacher123', 
                     name: 'أحمد محمد', 
                     role: 'teacher', 
                     avatar: 'أ',
                     permissions: {
-                        dashboard: true,
-                        middleLeadership: false,
-                        visits: true,
-                        performance: false,
-                        teachers: false,
-                        reports: false,
-                        users: false,
-                        departments: {
-                            'اللغة العربية': true,
-                            'رياضيات وعلوم': false,
-                            'اللغة الإنجليزية': false,
-                            'تربية اسلامية': false,
-                            'المواد الاجتماعية': false,
-                            'نظام فصل': false,
-                            'المواد الإثرائية': false,
-                            'التربية الرياضية': false
-                        },
-                        subDepartments: {
-                            'اللغة العربية': {
-                                'الصف الأول': true,
-                                'الصف الثاني': false,
-                                'الصف الثالث': true
-                            }
-                        }
-                    }
-                },
-                { 
-                    id: 3, 
-                    username: 'supervisor', 
-                    password: 'super123', 
-                    name: 'محمد علي', 
-                    role: 'supervisor', 
-                    avatar: 'م',
-                    permissions: {
-                        dashboard: true,
-                        middleLeadership: true,
-                        visits: true,
-                        performance: true,
-                        teachers: true,
-                        reports: true,
-                        users: false,
-                        departments: {
-                            'اللغة العربية': true,
-                            'رياضيات وعلوم': true,
-                            'اللغة الإنجليزية': true,
-                            'تربية اسلامية': false,
-                            'المواد الاجتماعية': false,
-                            'نظام فصل': false,
-                            'المواد الإثرائية': false,
-                            'التربية الرياضية': false
-                        },
-                        subDepartments: {
-                            'اللغة العربية': {
-                                'الصف الأول': true,
-                                'الصف الثاني': true,
-                                'الصف الثالث': true
-                            },
-                            'رياضيات وعلوم': {
-                                'الرياضيات': true,
-                                'العلوم': true
-                            },
-                            'اللغة الإنجليزية': {
-                                'المبتدئين': true,
-                                'المتوسطين': true,
-                                'المتقدمين': false
-                            }
+                        'الزيارات الصفية': {
+                            'اللغة العربية': ['الصف الأول', 'الصف الثاني']
                         }
                     }
                 }
@@ -1200,53 +829,20 @@
                 { id: 4, name: 'سارة عبدالله', department: 'تربية اسلامية' },
                 { id: 5, name: 'علي حسن', department: 'المواد الاجتماعية' },
                 { id: 6, name: 'نورة أحمد', department: 'نظام فصل' }
-            ],
-            middleLeadership: [
-                { department: 'معلم أول / منسق اللغة العربية', visits: 5, meeting: 'نعم', plan: 'نعم', reasons: '' },
-                { department: 'معلم أول/منسق رياضيات وعلوم', visits: 4, meeting: 'نعم', plan: 'نعم', reasons: '' },
-                { department: 'معلم اول/منسق اللغة الإنجليزية', visits: 6, meeting: 'نعم', plan: 'نعم', reasons: '' },
-                { department: 'معلم أول/منسق تربية اسلامية', visits: 3, meeting: 'نعم', plan: 'نعم', reasons: '' },
-                { department: 'معلم اول/منسق المواد الاجتماعية', visits: 4, meeting: 'نعم', plan: 'نعم', reasons: '' },
-                { department: 'معلم أول/منسق نظام فصل', visits: 2, meeting: 'نعم', plan: 'نعم', reasons: '' },
-                { department: 'منسق المواد الإثرائية', visits: 3, meeting: 'نعم', plan: 'نعم', reasons: '' },
-                { department: 'منسق التربية الرياضية', visits: 5, meeting: 'نعم', plan: 'نعم', reasons: '' }
-            ],
-            visits: [
-                { id: 1, teacher: 'أحمد محمد', department: 'اللغة العربية', date: '2025-10-05', period: 'الأولى', grade: 'الصف السادس', evaluation: 'ممتاز', visitor: 'مدير المدرسة', notes: 'أداء متميز في إدارة الصف' },
-                { id: 2, teacher: 'فاطمة علي', department: 'رياضيات وعلوم', date: '2025-10-07', period: 'الثانية', grade: 'الصف الخامس', evaluation: 'جيد جداً', visitor: 'المدير المساعد', notes: 'استخدام جيد للوسائل التعليمية' },
-                { id: 3, teacher: 'خالد إبراهيم', department: 'اللغة العربية', date: '2025-10-10', period: 'الثالثة', grade: 'الصف الرابع', evaluation: 'ممتاز', visitor: 'معلم أول/منسق اللغة العربية', notes: 'تفاعل الطلاب كان ممتازاً' },
-                { id: 4, teacher: 'سارة عبدالله', department: 'اللغة الإنجليزية', date: '2025-10-12', period: 'الرابعة', grade: 'الصف السابع', evaluation: 'جيد', visitor: 'معلم اول/منسق اللغة الإنجليزية', notes: 'بحاجة إلى تحسين في إدارة الوقت' }
-            ],
-            performance: [
-                { department: 'قسم الرياضيات', total: 15, excellent: 5, veryGood: 7, good: 3, fair: 0 },
-                { department: 'قسم العلوم', total: 12, excellent: 4, veryGood: 6, good: 2, fair: 0 },
-                { department: 'قسم اللغة العربية', total: 18, excellent: 7, veryGood: 8, good: 3, fair: 0 },
-                { department: 'قسم اللغة الانجليزية', total: 14, excellent: 5, veryGood: 6, good: 3, fair: 0 },
-                { department: 'قسم التربية الاسلامية', total: 10, excellent: 3, veryGood: 5, good: 2, fair: 0 },
-                { department: 'قسم المواد الاجتماعية', total: 8, excellent: 2, veryGood: 4, good: 2, fair: 0 },
-                { department: 'قسم المواد الاثرائية', total: 6, excellent: 2, veryGood: 3, good: 1, fair: 0 },
-                { department: 'قسم التربية الرياضية', total: 9, excellent: 3, veryGood: 4, good: 2, fair: 0 },
-                { department: 'قسم نظام فصل', total: 5, excellent: 2, veryGood: 2, good: 1, fair: 0 }
-            ],
-            distinguishedTeachers: [
-                { id: 1, name: 'أحمد محمد', evaluation: 'متميز', reasons: 'إبداع في طرق التدريس - تفاعل الطلاب', department: 'الرياضيات' },
-                { id: 2, name: 'فاطمة علي', evaluation: 'متميز', reasons: 'استخدام التقنية في التعليم - تنوع الأنشطة', department: 'العلوم' }
-            ],
-            teachersNeedCare: [
-                { id: 1, name: 'خالد إبراهيم', evaluation: 'بحاجة إلى تحسين', reasons: 'ضعف في إدارة الصف - قلة تفاعل الطلاب', department: 'اللغة العربية' },
-                { id: 2, name: 'سارة عبدالله', evaluation: 'بحاجة إلى تطوير', reasons: 'عدم استخدام استراتيجيات متنوعة - ضعف في التخطيط', department: 'اللغة الإنجليزية' }
-            ],
-            reports: [
-                { department: 'الرياضيات والعلوم', strengths: 'استخدام استراتيجيات متنوعة - تفاعل الطلاب', improvements: 'تحسين التقييم التكويني' },
-                { department: 'اللغة العربية', strengths: 'التمكن من المادة العلمية - استخدام اللغة الفصحى', improvements: 'تنويع الأنشطة الصفية' },
-                { department: 'اللغة الانجليزية', strengths: 'استخدام الوسائل التعليمية - مهارات التواصل', improvements: 'تحسين إدارة الوقت في الحصة' },
-                { department: 'التربية الإسلامية', strengths: 'الربط بالقيم - استخدام القصص الهادفة', improvements: 'تنويع أساليب التقويم' },
-                { department: 'المواد الاجتماعية', strengths: 'الربط بالواقع - استخدام الخرائط والوسائل', improvements: 'زيادة تفعيل التعلم النشط' },
-                { department: 'المواد الاثرائية', strengths: 'تنمية المهارات - الاهتمام بالمواهب', improvements: 'تحسين التخطيط للأنشطة' },
-                { department: 'التربية الرياضية', strengths: 'تنمية الروح الرياضية - الاهتمام بالصحة', improvements: 'تنويع الألعاب والأنشطة' },
-                { department: 'نظام الفصل', strengths: 'التفريد في التعليم - المتابعة الفردية', improvements: 'تحسين التنويع في الاستراتيجيات' }
             ]
         };
+
+        // دالة للحصول على جميع الصلاحيات
+        function getAllPermissions() {
+            const permissions = {};
+            for (const mainSection in siteStructure) {
+                permissions[mainSection] = {};
+                for (const subSection in siteStructure[mainSection]) {
+                    permissions[mainSection][subSection] = [...siteStructure[mainSection][subSection]];
+                }
+            }
+            return permissions;
+        }
 
         // تهيئة التطبيق
         document.addEventListener('DOMContentLoaded', function() {
@@ -1354,11 +950,6 @@
             if (sectionId === 'users') {
                 renderUserList();
             }
-            
-            // إذا كان قسم تقييم الأداء، عرض الرسم البياني
-            if (sectionId === 'performance') {
-                renderPerformanceChart();
-            }
         }
 
         // معالج تسجيل الدخول
@@ -1418,25 +1009,6 @@
 
         // إعداد الأزرار والإجراءات
         function setupButtons() {
-            // أزرار القيادة الوسطى
-            document.getElementById('saveMiddleLeadership').addEventListener('click', saveMiddleLeadership);
-            
-            // أزرار الزيارات
-            document.getElementById('addVisitBtn').addEventListener('click', showAddVisitModal);
-            document.getElementById('cancelVisit').addEventListener('click', closeVisitModal);
-            document.querySelector('#visitModal .close-modal').addEventListener('click', closeVisitModal);
-            document.getElementById('visitForm').addEventListener('submit', saveVisit);
-            
-            // أزرار الأقسام الفرعية للزيارات
-            document.querySelectorAll('#visitsSubSections .sub-section-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('#visitsSubSections .sub-section-btn').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    const department = this.getAttribute('data-department');
-                    renderVisitsByDepartment(department);
-                });
-            });
-            
             // أزرار الأقسام الفرعية لإدارة المستخدمين
             document.querySelectorAll('#users .sub-section-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
@@ -1456,21 +1028,16 @@
                 });
             });
             
-            // أزرار التقييم
-            document.getElementById('savePerformance').addEventListener('click', savePerformance);
-            document.getElementById('performanceMonth').addEventListener('change', renderPerformanceChart);
-            
-            // أزرار المعلمين
-            document.getElementById('saveTeachers').addEventListener('click', saveTeachers);
-            
-            // أزرار التقارير
-            document.getElementById('saveReports').addEventListener('click', saveReports);
-            
             // أزرار إدارة المستخدمين
             document.getElementById('addUserBtn').addEventListener('click', showAddUserModal);
             document.getElementById('cancelUser').addEventListener('click', closeUserModal);
             document.querySelector('#userModal .close-modal').addEventListener('click', closeUserModal);
             document.getElementById('userForm').addEventListener('submit', saveUser);
+            
+            // أزرار الصلاحيات
+            document.getElementById('savePermissions').addEventListener('click', savePermissions);
+            document.getElementById('cancelPermissions').addEventListener('click', closePermissionsModal);
+            document.querySelector('#permissionsModal .close-modal').addEventListener('click', closePermissionsModal);
             
             // أزرار المدرسين
             document.getElementById('addTeacherBtn').addEventListener('click', showAddTeacherModal);
@@ -1482,351 +1049,12 @@
         // عرض البيانات
         function renderData() {
             renderDashboard();
-            renderMiddleLeadership();
-            renderVisits();
-            renderPerformance();
-            renderTeachers();
-            renderReports();
         }
 
         // عرض لوحة التحكم
         function renderDashboard() {
-            // حساب الإحصائيات
-            const totalVisits = appData.visits.length;
-            const distinguishedTeachers = appData.distinguishedTeachers.length;
-            const teachersNeedCare = appData.teachersNeedCare.length;
-            const performanceRate = Math.round((distinguishedTeachers / (distinguishedTeachers + teachersNeedCare)) * 100) || 0;
-            
-            // تحديث الإحصائيات
-            document.getElementById('totalVisits').textContent = totalVisits;
-            document.getElementById('distinguishedTeachers').textContent = distinguishedTeachers;
-            document.getElementById('teachersNeedCare').textContent = teachersNeedCare;
-            document.getElementById('performanceRate').textContent = `${performanceRate}%`;
-            
-            // عرض آخر الزيارات
-            const recentVisitsTable = document.getElementById('recentVisitsTable');
-            recentVisitsTable.innerHTML = '';
-            
-            appData.visits.slice(0, 5).forEach(visit => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${visit.teacher}</td>
-                    <td>${visit.department}</td>
-                    <td>${visit.date}</td>
-                    <td>${visit.evaluation}</td>
-                    <td>${visit.visitor}</td>
-                `;
-                recentVisitsTable.appendChild(row);
-            });
-        }
-
-        // عرض بيانات القيادة الوسطى
-        function renderMiddleLeadership() {
-            const table = document.getElementById('middleLeadershipTable');
-            table.innerHTML = '';
-            
-            appData.middleLeadership.forEach(item => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${item.department}</td>
-                    <td>${item.visits}</td>
-                    <td>${item.meeting}</td>
-                    <td>${item.plan}</td>
-                    <td>${item.reasons}</td>
-                `;
-                table.appendChild(row);
-            });
-        }
-
-        // عرض بيانات الزيارات
-        function renderVisits() {
-            // عرض الزيارات للقسم النشط افتراضياً (اللغة العربية)
-            renderVisitsByDepartment('اللغة العربية');
-        }
-
-        // عرض الزيارات حسب القسم
-        function renderVisitsByDepartment(department) {
-            const table = document.getElementById('visitsTable');
-            table.innerHTML = '';
-            
-            const filteredVisits = appData.visits.filter(visit => visit.department === department);
-            
-            filteredVisits.forEach((visit, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${visit.teacher}</td>
-                    <td>${visit.department}</td>
-                    <td>${visit.date}</td>
-                    <td>${visit.period}</td>
-                    <td>${visit.grade}</td>
-                    <td>${visit.evaluation}</td>
-                    <td>${visit.visitor}</td>
-                    <td>${visit.notes}</td>
-                    <td>
-                        <button class="btn btn-sm btn-warning view-visit" data-id="${visit.id}">معاينة</button>
-                        <button class="btn btn-sm btn-secondary edit-visit" data-id="${visit.id}">تعديل</button>
-                        <button class="btn btn-sm btn-danger delete-visit" data-id="${visit.id}">حذف</button>
-                    </td>
-                `;
-                table.appendChild(row);
-            });
-            
-            // إضافة معالجي الأحداث للأزرار
-            document.querySelectorAll('.view-visit').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const visitId = parseInt(this.getAttribute('data-id'));
-                    viewVisit(visitId);
-                });
-            });
-            
-            document.querySelectorAll('.edit-visit').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const visitId = parseInt(this.getAttribute('data-id'));
-                    editVisit(visitId);
-                });
-            });
-            
-            document.querySelectorAll('.delete-visit').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const visitId = parseInt(this.getAttribute('data-id'));
-                    deleteVisit(visitId);
-                });
-            });
-        }
-
-        // عرض بيانات التقييم
-        function renderPerformance() {
-            const table = document.getElementById('performanceTable');
-            table.innerHTML = '';
-            
-            appData.performance.forEach((item, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${item.department}</td>
-                    <td>${item.total}</td>
-                    <td>${item.excellent}</td>
-                    <td>${item.veryGood}</td>
-                    <td>${item.good}</td>
-                    <td>${item.fair}</td>
-                `;
-                table.appendChild(row);
-            });
-            
-            // عرض الرسم البياني
-            renderPerformanceChart();
-        }
-
-        // عرض الرسم البياني لتقييم الأداء
-        function renderPerformanceChart() {
-            const ctx = document.getElementById('performanceChart').getContext('2d');
-            
-            // إذا كان هناك رسم بياني موجود، قم بتدميره أولاً
-            if (window.performanceChartInstance) {
-                window.performanceChartInstance.destroy();
-            }
-            
-            const departments = appData.performance.map(item => item.department);
-            const excellentData = appData.performance.map(item => item.excellent);
-            const veryGoodData = appData.performance.map(item => item.veryGood);
-            const goodData = appData.performance.map(item => item.good);
-            const fairData = appData.performance.map(item => item.fair);
-            
-            // ألوان أكثر جمالية
-            const colors = {
-                excellent: 'rgba(40, 167, 69, 0.8)',
-                veryGood: 'rgba(23, 162, 184, 0.8)',
-                good: 'rgba(255, 193, 7, 0.8)',
-                fair: 'rgba(220, 53, 69, 0.8)'
-            };
-            
-            window.performanceChartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: departments,
-                    datasets: [
-                        {
-                            label: 'يفوق التوقعات بكثير',
-                            data: excellentData,
-                            backgroundColor: colors.excellent,
-                            borderColor: colors.excellent.replace('0.8', '1'),
-                            borderWidth: 2,
-                            borderRadius: 5,
-                            borderSkipped: false,
-                        },
-                        {
-                            label: 'يفوق التوقعات',
-                            data: veryGoodData,
-                            backgroundColor: colors.veryGood,
-                            borderColor: colors.veryGood.replace('0.8', '1'),
-                            borderWidth: 2,
-                            borderRadius: 5,
-                            borderSkipped: false,
-                        },
-                        {
-                            label: 'يفي بالتوقعات',
-                            data: goodData,
-                            backgroundColor: colors.good,
-                            borderColor: colors.good.replace('0.8', '1'),
-                            borderWidth: 2,
-                            borderRadius: 5,
-                            borderSkipped: false,
-                        },
-                        {
-                            label: 'يفي بالتوقعات جزئياً',
-                            data: fairData,
-                            backgroundColor: colors.fair,
-                            borderColor: colors.fair.replace('0.8', '1'),
-                            borderWidth: 2,
-                            borderRadius: 5,
-                            borderSkipped: false,
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                            rtl: true,
-                            labels: {
-                                usePointStyle: true,
-                                padding: 20,
-                                font: {
-                                    size: 14,
-                                    family: 'Cairo'
-                                }
-                            }
-                        },
-                        title: {
-                            display: true,
-                            text: 'توزيع تقييمات الأداء الصفي حسب الأقسام',
-                            font: {
-                                size: 18,
-                                family: 'Cairo',
-                                weight: 'bold'
-                            },
-                            padding: 20
-                        },
-                        tooltip: {
-                            backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                            titleFont: {
-                                family: 'Cairo'
-                            },
-                            bodyFont: {
-                                family: 'Cairo'
-                            },
-                            padding: 10,
-                            cornerRadius: 5
-                        }
-                    },
-                    scales: {
-                        x: {
-                            display: true,
-                            title: {
-                                display: true,
-                                text: 'الأقسام الأكاديمية',
-                                font: {
-                                    size: 14,
-                                    family: 'Cairo',
-                                    weight: 'bold'
-                                }
-                            },
-                            ticks: {
-                                font: {
-                                    family: 'Cairo'
-                                }
-                            },
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.1)'
-                            }
-                        },
-                        y: {
-                            display: true,
-                            title: {
-                                display: true,
-                                text: 'عدد الزيارات',
-                                font: {
-                                    size: 14,
-                                    family: 'Cairo',
-                                    weight: 'bold'
-                                }
-                            },
-                            beginAtZero: true,
-                            ticks: {
-                                font: {
-                                    family: 'Cairo'
-                                },
-                                stepSize: 1
-                            },
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.1)'
-                            }
-                        }
-                    },
-                    animation: {
-                        duration: 1000,
-                        easing: 'easeOutQuart'
-                    },
-                    interaction: {
-                        mode: 'index',
-                        intersect: false
-                    }
-                }
-            });
-        }
-
-        // عرض بيانات المعلمين
-        function renderTeachers() {
-            // المعلمين المتميزين
-            const distinguishedTable = document.getElementById('distinguishedTeachersTable');
-            distinguishedTable.innerHTML = '';
-            
-            appData.distinguishedTeachers.forEach((teacher, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${teacher.name}</td>
-                    <td>${teacher.evaluation}</td>
-                    <td>${teacher.reasons}</td>
-                    <td>${teacher.department}</td>
-                `;
-                distinguishedTable.appendChild(row);
-            });
-            
-            // المعلمين الأولى بالرعاية
-            const needCareTable = document.getElementById('teachersNeedCareTable');
-            needCareTable.innerHTML = '';
-            
-            appData.teachersNeedCare.forEach((teacher, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${teacher.name}</td>
-                    <td>${teacher.evaluation}</td>
-                    <td>${teacher.reasons}</td>
-                    <td>${teacher.department}</td>
-                `;
-                needCareTable.appendChild(row);
-            });
-        }
-
-        // عرض بيانات التقارير
-        function renderReports() {
-            const table = document.getElementById('reportsTable');
-            table.innerHTML = '';
-            
-            appData.reports.forEach(item => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${item.department}</td>
-                    <td>${item.strengths}</td>
-                    <td>${item.improvements}</td>
-                `;
-                table.appendChild(row);
-            });
+            document.getElementById('totalUsers').textContent = appData.users.length;
+            document.getElementById('totalTeachers').textContent = appData.teachersList.length;
         }
 
         // عرض قائمة المستخدمين
@@ -1851,87 +1079,12 @@
                         </div>
                     </div>
                     <div class="user-actions">
+                        <button class="btn btn-secondary manage-permissions" data-id="${user.id}">إدارة الصلاحيات</button>
                         <button class="btn btn-secondary edit-user" data-id="${user.id}">تعديل</button>
                         ${user.id !== appData.currentUser.id ? `<button class="btn btn-danger delete-user" data-id="${user.id}">حذف</button>` : ''}
                     </div>
                 `;
                 userList.appendChild(userCard);
-                
-                // قسم الصلاحيات الأساسية
-                const basicPermissionsSection = document.createElement('div');
-                basicPermissionsSection.className = 'permissions-section';
-                basicPermissionsSection.innerHTML = `
-                    <h4>الصلاحيات الأساسية:</h4>
-                    <div class="permissions-grid" id="basic-permissions-${user.id}">
-                        ${Object.keys(user.permissions).filter(p => !['departments', 'subDepartments'].includes(p)).map(permission => `
-                            <div class="permission-item">
-                                <span>${getPermissionName(permission)}</span>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" ${user.permissions[permission] ? 'checked' : ''} data-user="${user.id}" data-permission="${permission}">
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-                userList.appendChild(basicPermissionsSection);
-                
-                // قسم صلاحيات الأقسام
-                const departmentPermissionsSection = document.createElement('div');
-                departmentPermissionsSection.className = 'department-permissions';
-                departmentPermissionsSection.innerHTML = `
-                    <h4>صلاحيات الأقسام:</h4>
-                    ${Object.keys(user.permissions.departments || {}).map(department => `
-                        <div class="department-section">
-                            <div class="department-title">${department}</div>
-                            <div class="permissions-grid">
-                                <div class="permission-item">
-                                    <span>الوصول للقسم</span>
-                                    <label class="toggle-switch">
-                                        <input type="checkbox" ${user.permissions.departments[department] ? 'checked' : ''} data-user="${user.id}" data-type="department" data-department="${department}">
-                                        <span class="toggle-slider"></span>
-                                    </label>
-                                </div>
-                                ${user.permissions.subDepartments && user.permissions.subDepartments[department] ? 
-                                    Object.keys(user.permissions.subDepartments[department]).map(subDept => `
-                                        <div class="permission-item">
-                                            <span>${subDept}</span>
-                                            <label class="toggle-switch">
-                                                <input type="checkbox" ${user.permissions.subDepartments[department][subDept] ? 'checked' : ''} data-user="${user.id}" data-type="subdepartment" data-department="${department}" data-subdepartment="${subDept}">
-                                                <span class="toggle-slider"></span>
-                                            </label>
-                                        </div>
-                                    `).join('') : ''
-                                }
-                            </div>
-                        </div>
-                    `).join('')}
-                `;
-                userList.appendChild(departmentPermissionsSection);
-                
-                // إضافة معالجي الأحداث لمفاتيح التبديل
-                document.querySelectorAll(`#basic-permissions-${user.id} input[type="checkbox"]`).forEach(checkbox => {
-                    checkbox.addEventListener('change', function() {
-                        const userId = parseInt(this.getAttribute('data-user'));
-                        const permission = this.getAttribute('data-permission');
-                        updateUserPermission(userId, permission, this.checked);
-                    });
-                });
-                
-                document.querySelectorAll(`.department-permissions input[type="checkbox"]`).forEach(checkbox => {
-                    checkbox.addEventListener('change', function() {
-                        const userId = parseInt(this.getAttribute('data-user'));
-                        const type = this.getAttribute('data-type');
-                        const department = this.getAttribute('data-department');
-                        const subdepartment = this.getAttribute('data-subdepartment');
-                        
-                        if (type === 'department') {
-                            updateUserDepartmentPermission(userId, department, this.checked);
-                        } else if (type === 'subdepartment') {
-                            updateUserSubDepartmentPermission(userId, department, subdepartment, this.checked);
-                        }
-                    });
-                });
             });
             
             // إضافة معالجي الأحداث للأزرار
@@ -1946,6 +1099,13 @@
                 btn.addEventListener('click', function() {
                     const userId = parseInt(this.getAttribute('data-id'));
                     deleteUser(userId);
+                });
+            });
+            
+            document.querySelectorAll('.manage-permissions').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const userId = parseInt(this.getAttribute('data-id'));
+                    managePermissions(userId);
                 });
             });
         }
@@ -2000,184 +1160,165 @@
             return roles[role] || role;
         }
 
-        // الحصول على اسم الصلاحية
-        function getPermissionName(permission) {
-            const permissions = {
-                'dashboard': 'لوحة التحكم',
-                'middleLeadership': 'متابعة القيادة الوسطى',
-                'visits': 'الزيارات الصفية',
-                'performance': 'تقييم الأداء',
-                'teachers': 'المعلمين المتميزين',
-                'reports': 'التقارير النوعية',
-                'users': 'إدارة المستخدمين'
-            };
-            return permissions[permission] || permission;
-        }
-
-        // تحديث صلاحية المستخدم الأساسية
-        function updateUserPermission(userId, permission, value) {
+        // إدارة صلاحيات المستخدم
+        function managePermissions(userId) {
             const user = appData.users.find(u => u.id === userId);
-            if (user) {
-                user.permissions[permission] = value;
-                saveDataToStorage();
+            if (!user) return;
+            
+            document.getElementById('permissionsModalTitle').textContent = `إدارة صلاحيات المستخدم: ${user.name}`;
+            
+            let permissionsHTML = `
+                <div class="permissions-section">
+                    <h4>الأقسام الرئيسية والفرعية:</h4>
+                    <p>اختر الأقسام التي يمكن للمستخدم رؤيتها في الموقع</p>
+                    <div class="permissions-grid">
+            `;
+            
+            for (const mainSection in siteStructure) {
+                const hasMainAccess = user.permissions[mainSection] !== undefined;
+                
+                permissionsHTML += `
+                    <div class="permission-item">
+                        <span><strong>${mainSection}</strong></span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" ${hasMainAccess ? 'checked' : ''} data-main="${mainSection}">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                `;
+                
+                if (hasMainAccess) {
+                    for (const subSection in siteStructure[mainSection]) {
+                        const hasSubAccess = user.permissions[mainSection][subSection] !== undefined;
+                        
+                        permissionsHTML += `
+                            <div class="sub-department-item">
+                                <span style="margin-right: 20px;">↳ ${subSection}</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" ${hasSubAccess ? 'checked' : ''} data-main="${mainSection}" data-sub="${subSection}">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        `;
+                        
+                        if (hasSubAccess) {
+                            siteStructure[mainSection][subSection].forEach(item => {
+                                const hasItemAccess = user.permissions[mainSection][subSection].includes(item);
+                                
+                                permissionsHTML += `
+                                    <div class="sub-department-item">
+                                        <span style="margin-right: 40px;">↳ ↳ ${item}</span>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" ${hasItemAccess ? 'checked' : ''} data-main="${mainSection}" data-sub="${subSection}" data-item="${item}">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                `;
+                            });
+                        }
+                    }
+                }
             }
+            
+            permissionsHTML += `
+                    </div>
+                </div>
+                <input type="hidden" id="permissionsUserId" value="${user.id}">
+            `;
+            
+            document.getElementById('permissionsContent').innerHTML = permissionsHTML;
+            
+            // إضافة معالجي الأحداث لمفاتيح التبديل
+            document.querySelectorAll('#permissionsContent input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const mainSection = this.getAttribute('data-main');
+                    const subSection = this.getAttribute('data-sub');
+                    const item = this.getAttribute('data-item');
+                    
+                    if (!subSection && !item) {
+                        // قسم رئيسي
+                        if (this.checked) {
+                            // تفعيل جميع الأقسام الفرعية
+                            document.querySelectorAll(`input[data-main="${mainSection}"]`).forEach(cb => {
+                                cb.checked = true;
+                            });
+                        } else {
+                            // إلغاء جميع الأقسام الفرعية
+                            document.querySelectorAll(`input[data-main="${mainSection}"]`).forEach(cb => {
+                                cb.checked = false;
+                            });
+                        }
+                    } else if (subSection && !item) {
+                        // قسم فرعي
+                        if (this.checked) {
+                            // تفعيل جميع العناصر
+                            document.querySelectorAll(`input[data-main="${mainSection}"][data-sub="${subSection}"]`).forEach(cb => {
+                                cb.checked = true;
+                            });
+                        }
+                    }
+                });
+            });
+            
+            document.getElementById('permissionsModal').style.display = 'flex';
         }
 
-        // تحديث صلاحية قسم للمستخدم
-        function updateUserDepartmentPermission(userId, department, value) {
+        // حفظ الصلاحيات
+        function savePermissions() {
+            const userId = parseInt(document.getElementById('permissionsUserId').value);
             const user = appData.users.find(u => u.id === userId);
-            if (user) {
-                if (!user.permissions.departments) {
-                    user.permissions.departments = {};
-                }
-                user.permissions.departments[department] = value;
-                saveDataToStorage();
-            }
-        }
-
-        // تحديث صلاحية قسم فرعي للمستخدم
-        function updateUserSubDepartmentPermission(userId, department, subdepartment, value) {
-            const user = appData.users.find(u => u.id === userId);
-            if (user) {
-                if (!user.permissions.subDepartments) {
-                    user.permissions.subDepartments = {};
-                }
-                if (!user.permissions.subDepartments[department]) {
-                    user.permissions.subDepartments[department] = {};
-                }
-                user.permissions.subDepartments[department][subdepartment] = value;
-                saveDataToStorage();
-            }
-        }
-
-        // عرض نموذج إضافة زيارة
-        function showAddVisitModal() {
-            document.getElementById('visitModalTitle').textContent = 'إضافة زيارة صفية';
-            document.getElementById('visitForm').reset();
-            document.getElementById('visitId').value = '';
-            document.getElementById('visitorName').value = appData.currentUser.name;
+            if (!user) return;
             
-            // تعيين القسم بناءً على القسم النشط
-            const activeDepartment = document.querySelector('#visitsSubSections .sub-section-btn.active').getAttribute('data-department');
-            document.getElementById('department').value = activeDepartment;
+            // إعادة تهيئة صلاحيات المستخدم
+            user.permissions = {};
             
-            document.getElementById('visitModal').style.display = 'flex';
-        }
-
-        // إغلاق نافذة الزيارة
-        function closeVisitModal() {
-            document.getElementById('visitModal').style.display = 'none';
-        }
-
-        // حفظ زيارة
-        function saveVisit(e) {
-            e.preventDefault();
-            
-            const visitId = document.getElementById('visitId').value;
-            const teacherName = document.getElementById('teacherName').value;
-            const department = document.getElementById('department').value;
-            const visitDate = document.getElementById('visitDate').value;
-            const classPeriod = document.getElementById('classPeriod').value;
-            const classGrade = document.getElementById('classGrade').value;
-            const evaluation = document.getElementById('evaluation').value;
-            const visitorName = document.getElementById('visitorName').value;
-            const notes = document.getElementById('notes').value;
-            
-            if (visitId) {
-                // تعديل زيارة موجودة
-                const visitIndex = appData.visits.findIndex(v => v.id === parseInt(visitId));
-                if (visitIndex !== -1) {
-                    appData.visits[visitIndex] = {
-                        id: parseInt(visitId),
-                        teacher: teacherName,
-                        department,
-                        date: visitDate,
-                        period: classPeriod,
-                        grade: classGrade,
-                        evaluation,
-                        visitor: visitorName,
-                        notes
-                    };
+            // جمع الصلاحيات المحددة
+            document.querySelectorAll('#permissionsContent input[type="checkbox"]:checked').forEach(checkbox => {
+                const mainSection = checkbox.getAttribute('data-main');
+                const subSection = checkbox.getAttribute('data-sub');
+                const item = checkbox.getAttribute('data-item');
+                
+                if (!subSection && !item) {
+                    // قسم رئيسي
+                    if (!user.permissions[mainSection]) {
+                        user.permissions[mainSection] = {};
+                    }
+                    // إضافة جميع الأقسام الفرعية والعناصر
+                    for (const sub in siteStructure[mainSection]) {
+                        user.permissions[mainSection][sub] = [...siteStructure[mainSection][sub]];
+                    }
+                } else if (subSection && !item) {
+                    // قسم فرعي
+                    if (!user.permissions[mainSection]) {
+                        user.permissions[mainSection] = {};
+                    }
+                    if (!user.permissions[mainSection][subSection]) {
+                        user.permissions[mainSection][subSection] = [];
+                    }
+                    // إضافة جميع العناصر
+                    user.permissions[mainSection][subSection] = [...siteStructure[mainSection][subSection]];
+                } else if (subSection && item) {
+                    // عنصر فردي
+                    if (!user.permissions[mainSection]) {
+                        user.permissions[mainSection] = {};
+                    }
+                    if (!user.permissions[mainSection][subSection]) {
+                        user.permissions[mainSection][subSection] = [];
+                    }
+                    if (!user.permissions[mainSection][subSection].includes(item)) {
+                        user.permissions[mainSection][subSection].push(item);
+                    }
                 }
-            } else {
-                // إضافة زيارة جديدة
-                const newVisit = {
-                    id: Math.max(...appData.visits.map(v => v.id), 0) + 1,
-                    teacher: teacherName,
-                    department,
-                    date: visitDate,
-                    period: classPeriod,
-                    grade: classGrade,
-                    evaluation,
-                    visitor: visitorName,
-                    notes
-                };
-                appData.visits.push(newVisit);
-            }
+            });
             
             saveDataToStorage();
-            closeVisitModal();
-            
-            // إعادة عرض الزيارات للقسم النشط
-            const activeDepartment = document.querySelector('#visitsSubSections .sub-section-btn.active').getAttribute('data-department');
-            renderVisitsByDepartment(activeDepartment);
-            
-            // تحديث لوحة التحكم
-            renderDashboard();
-            
-            alert('تم حفظ الزيارة بنجاح');
+            closePermissionsModal();
+            alert('تم حفظ الصلاحيات بنجاح');
         }
 
-        // معاينة زيارة
-        function viewVisit(visitId) {
-            const visit = appData.visits.find(v => v.id === visitId);
-            if (!visit) return;
-            
-            alert(`معاينة الزيارة:
-المعلم: ${visit.teacher}
-القسم: ${visit.department}
-التاريخ: ${visit.date}
-الحصة: ${visit.period}
-الصف: ${visit.grade}
-التقييم: ${visit.evaluation}
-الزائر: ${visit.visitor}
-الملاحظات: ${visit.notes}`);
-        }
-
-        // تعديل زيارة
-        function editVisit(visitId) {
-            const visit = appData.visits.find(v => v.id === visitId);
-            if (!visit) return;
-            
-            document.getElementById('visitModalTitle').textContent = 'تعديل زيارة صفية';
-            document.getElementById('visitId').value = visit.id;
-            document.getElementById('teacherName').value = visit.teacher;
-            document.getElementById('department').value = visit.department;
-            document.getElementById('visitDate').value = visit.date;
-            document.getElementById('classPeriod').value = visit.period;
-            document.getElementById('classGrade').value = visit.grade;
-            document.getElementById('evaluation').value = visit.evaluation;
-            document.getElementById('visitorName').value = visit.visitor;
-            document.getElementById('notes').value = visit.notes;
-            
-            document.getElementById('visitModal').style.display = 'flex';
-        }
-
-        // حذف زيارة
-        function deleteVisit(visitId) {
-            if (confirm('هل أنت متأكد من حذف هذه الزيارة؟')) {
-                appData.visits = appData.visits.filter(v => v.id !== visitId);
-                saveDataToStorage();
-                
-                // إعادة عرض الزيارات للقسم النشط
-                const activeDepartment = document.querySelector('#visitsSubSections .sub-section-btn.active').getAttribute('data-department');
-                renderVisitsByDepartment(activeDepartment);
-                
-                // تحديث لوحة التحكم
-                renderDashboard();
-                
-                alert('تم حذف الزيارة بنجاح');
-            }
+        // إغلاق نافذة الصلاحيات
+        function closePermissionsModal() {
+            document.getElementById('permissionsModal').style.display = 'none';
         }
 
         // عرض نموذج إضافة مستخدم
@@ -2233,41 +1374,10 @@
                 }
                 
                 // إنشاء صلاحيات افتراضية بناءً على الدور
-                const defaultPermissions = {
-                    dashboard: true,
-                    middleLeadership: role === 'admin' || role === 'supervisor',
-                    visits: true,
-                    performance: role === 'admin' || role === 'supervisor',
-                    teachers: role === 'admin' || role === 'supervisor',
-                    reports: role === 'admin' || role === 'supervisor',
-                    users: role === 'admin',
-                    departments: {
-                        'اللغة العربية': role === 'admin' || role === 'supervisor',
-                        'رياضيات وعلوم': role === 'admin' || role === 'supervisor',
-                        'اللغة الإنجليزية': role === 'admin' || role === 'supervisor',
-                        'تربية اسلامية': role === 'admin' || role === 'supervisor',
-                        'المواد الاجتماعية': role === 'admin' || role === 'supervisor',
-                        'نظام فصل': role === 'admin' || role === 'supervisor',
-                        'المواد الإثرائية': role === 'admin' || role === 'supervisor',
-                        'التربية الرياضية': role === 'admin' || role === 'supervisor'
-                    },
-                    subDepartments: {
-                        'اللغة العربية': {
-                            'الصف الأول': role === 'admin' || role === 'supervisor',
-                            'الصف الثاني': role === 'admin' || role === 'supervisor',
-                            'الصف الثالث': role === 'admin' || role === 'supervisor'
-                        },
-                        'رياضيات وعلوم': {
-                            'الرياضيات': role === 'admin' || role === 'supervisor',
-                            'العلوم': role === 'admin' || role === 'supervisor'
-                        },
-                        'اللغة الإنجليزية': {
-                            'المبتدئين': role === 'admin' || role === 'supervisor',
-                            'المتوسطين': role === 'admin' || role === 'supervisor',
-                            'المتقدمين': role === 'admin' || role === 'supervisor'
-                        }
-                    }
-                };
+                let defaultPermissions = {};
+                if (role === 'admin') {
+                    defaultPermissions = getAllPermissions();
+                }
                 
                 const newUser = {
                     id: Math.max(...appData.users.map(u => u.id)) + 1,
@@ -2286,6 +1396,7 @@
             saveDataToStorage();
             closeUserModal();
             renderUserList();
+            renderDashboard();
         }
 
         // تعديل مستخدم
@@ -2309,6 +1420,7 @@
                 appData.users = appData.users.filter(u => u.id !== userId);
                 saveDataToStorage();
                 renderUserList();
+                renderDashboard();
                 alert('تم حذف المستخدم بنجاح');
             }
         }
@@ -2359,6 +1471,7 @@
             saveDataToStorage();
             closeTeacherModal();
             renderTeachersList();
+            renderDashboard();
         }
 
         // تعديل مدرس
@@ -2380,29 +1493,9 @@
                 appData.teachersList = appData.teachersList.filter(t => t.id !== teacherId);
                 saveDataToStorage();
                 renderTeachersList();
+                renderDashboard();
                 alert('تم حذف المدرس بنجاح');
             }
-        }
-
-        // دوال الحفظ للبيانات المختلفة
-        function saveMiddleLeadership() {
-            saveDataToStorage();
-            alert('تم حفظ بيانات القيادة الوسطى بنجاح');
-        }
-
-        function savePerformance() {
-            saveDataToStorage();
-            alert('تم حفظ بيانات التقييم بنجاح');
-        }
-
-        function saveTeachers() {
-            saveDataToStorage();
-            alert('تم حفظ بيانات المعلمين بنجاح');
-        }
-
-        function saveReports() {
-            saveDataToStorage();
-            alert('تم حفظ بيانات التقارير بنجاح');
         }
     </script>
 </body>
