@@ -255,6 +255,20 @@
             background-color: #c82333;
         }
 
+        .btn-warning {
+            background-color: var(--warning);
+            color: var(--dark);
+        }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 0.875rem;
+        }
+
         .btn-group {
             display: flex;
             gap: 10px;
@@ -352,6 +366,151 @@
             gap: 10px;
         }
 
+        /* Permissions */
+        .permissions-section {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+        }
+
+        .permissions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .permission-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            border: 1px solid #ddd;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--success);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Sub-sections */
+        .sub-sections {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .sub-section-btn {
+            padding: 8px 16px;
+            background-color: #e9ecef;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .sub-section-btn:hover {
+            background-color: #dee2e6;
+        }
+
+        .sub-section-btn.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1100;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 1.5rem;
+            box-shadow: var(--box-shadow);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .header-content {
@@ -376,6 +535,10 @@
             .user-actions {
                 width: 100%;
                 justify-content: flex-end;
+            }
+            
+            .permissions-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -504,8 +667,7 @@
                     </table>
                     
                     <div class="btn-group">
-                        <button class="btn" id="addMiddleLeadership">إضافة بيانات</button>
-                        <button class="btn btn-secondary" id="saveMiddleLeadership">حفظ البيانات</button>
+                        <button class="btn" id="saveMiddleLeadership">حفظ البيانات</button>
                     </div>
                 </section>
 
@@ -513,28 +675,18 @@
                 <section id="visits" class="section">
                     <div class="section-header">
                         <h2 class="section-title">الزيارات الصفية</h2>
+                        <button class="btn" id="addVisitBtn">إضافة زيارة</button>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="monthSelect">اختر الشهر:</label>
-                        <select id="monthSelect">
-                            <option value="يناير">يناير</option>
-                            <option value="فبراير">فبراير</option>
-                            <option value="مارس">مارس</option>
-                            <option value="أبريل">أبريل</option>
-                            <option value="مايو">مايو</option>
-                            <option value="يونيو">يونيو</option>
-                            <option value="يوليو">يوليو</option>
-                            <option value="أغسطس">أغسطس</option>
-                            <option value="سبتمبر">سبتمبر</option>
-                            <option value="أكتوبر">أكتوبر</option>
-                            <option value="نوفمبر">نوفمبر</option>
-                            <option value="ديسمبر">ديسمبر</option>
-                        </select>
-                    </div>
-                    
-                    <div class="section-header">
-                        <h3 class="section-title">بيان أسماء المعلمين المُزارين</h3>
+                    <div class="sub-sections" id="visitsSubSections">
+                        <button class="sub-section-btn active" data-department="اللغة العربية">اللغة العربية</button>
+                        <button class="sub-section-btn" data-department="رياضيات وعلوم">رياضيات وعلوم</button>
+                        <button class="sub-section-btn" data-department="اللغة الإنجليزية">اللغة الإنجليزية</button>
+                        <button class="sub-section-btn" data-department="تربية اسلامية">تربية اسلامية</button>
+                        <button class="sub-section-btn" data-department="المواد الاجتماعية">المواد الاجتماعية</button>
+                        <button class="sub-section-btn" data-department="نظام فصل">نظام فصل</button>
+                        <button class="sub-section-btn" data-department="المواد الإثرائية">المواد الإثرائية</button>
+                        <button class="sub-section-btn" data-department="التربية الرياضية">التربية الرياضية</button>
                     </div>
                     
                     <table>
@@ -544,19 +696,18 @@
                                 <th>اسم المعلم</th>
                                 <th>القسم</th>
                                 <th>تاريخ الزيارة</th>
+                                <th>الحصة</th>
+                                <th>الصف</th>
                                 <th>تقييم الزيارة</th>
                                 <th>اسم الزائر</th>
+                                <th>الملاحظات</th>
+                                <th>الإجراءات</th>
                             </tr>
                         </thead>
                         <tbody id="visitsTable">
                             <!-- سيتم ملؤها بالبيانات -->
                         </tbody>
                     </table>
-                    
-                    <div class="btn-group">
-                        <button class="btn" id="addVisit">إضافة زيارة</button>
-                        <button class="btn btn-secondary" id="saveVisits">حفظ البيانات</button>
-                    </div>
                 </section>
 
                 <!-- Performance Section -->
@@ -583,7 +734,6 @@
                     </table>
                     
                     <div class="btn-group">
-                        <button class="btn" id="addPerformance">إضافة تقييم</button>
                         <button class="btn btn-secondary" id="savePerformance">حفظ البيانات</button>
                     </div>
                 </section>
@@ -653,7 +803,6 @@
                     </table>
                     
                     <div class="btn-group">
-                        <button class="btn" id="addReport">إضافة تقرير</button>
                         <button class="btn btn-secondary" id="saveReports">حفظ البيانات</button>
                     </div>
                 </section>
@@ -673,14 +822,126 @@
         </main>
     </div>
 
+    <!-- Modal for Adding/Editing Visit -->
+    <div id="visitModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="visitModalTitle">إضافة زيارة صفية</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="visitForm">
+                <input type="hidden" id="visitId">
+                <div class="form-group">
+                    <label for="teacherName">اسم المعلم</label>
+                    <input type="text" id="teacherName" required>
+                </div>
+                <div class="form-group">
+                    <label for="department">القسم</label>
+                    <select id="department" required>
+                        <option value="اللغة العربية">اللغة العربية</option>
+                        <option value="رياضيات وعلوم">رياضيات وعلوم</option>
+                        <option value="اللغة الإنجليزية">اللغة الإنجليزية</option>
+                        <option value="تربية اسلامية">تربية اسلامية</option>
+                        <option value="المواد الاجتماعية">المواد الاجتماعية</option>
+                        <option value="نظام فصل">نظام فصل</option>
+                        <option value="المواد الإثرائية">المواد الإثرائية</option>
+                        <option value="التربية الرياضية">التربية الرياضية</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="visitDate">تاريخ الزيارة</label>
+                    <input type="date" id="visitDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="classPeriod">الحصة</label>
+                    <input type="text" id="classPeriod" required>
+                </div>
+                <div class="form-group">
+                    <label for="classGrade">الصف</label>
+                    <input type="text" id="classGrade" required>
+                </div>
+                <div class="form-group">
+                    <label for="evaluation">تقييم الزيارة</label>
+                    <select id="evaluation" required>
+                        <option value="ممتاز">ممتاز</option>
+                        <option value="جيد جداً">جيد جداً</option>
+                        <option value="جيد">جيد</option>
+                        <option value="مقبول">مقبول</option>
+                        <option value="ضعيف">ضعيف</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="visitorName">اسم الزائر</label>
+                    <input type="text" id="visitorName" required>
+                </div>
+                <div class="form-group">
+                    <label for="notes">الملاحظات</label>
+                    <textarea id="notes" rows="3"></textarea>
+                </div>
+                <div class="btn-group">
+                    <button type="submit" class="btn">حفظ</button>
+                    <button type="button" class="btn btn-secondary" id="cancelVisit">إلغاء</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         // بيانات التطبيق
         const appData = {
             currentUser: null,
             users: [
-                { id: 1, username: 'admin', password: 'admin123', name: 'مدير النظام', role: 'admin', avatar: 'م' },
-                { id: 2, username: 'teacher1', password: 'teacher123', name: 'أحمد محمد', role: 'teacher', avatar: 'أ' },
-                { id: 3, username: 'supervisor', password: 'super123', name: 'محمد علي', role: 'supervisor', avatar: 'م' }
+                { 
+                    id: 1, 
+                    username: 'admin', 
+                    password: 'admin123', 
+                    name: 'مدير النظام', 
+                    role: 'admin', 
+                    avatar: 'م',
+                    permissions: {
+                        dashboard: true,
+                        middleLeadership: true,
+                        visits: true,
+                        performance: true,
+                        teachers: true,
+                        reports: true,
+                        users: true
+                    }
+                },
+                { 
+                    id: 2, 
+                    username: 'teacher1', 
+                    password: 'teacher123', 
+                    name: 'أحمد محمد', 
+                    role: 'teacher', 
+                    avatar: 'أ',
+                    permissions: {
+                        dashboard: true,
+                        middleLeadership: false,
+                        visits: true,
+                        performance: false,
+                        teachers: false,
+                        reports: false,
+                        users: false
+                    }
+                },
+                { 
+                    id: 3, 
+                    username: 'supervisor', 
+                    password: 'super123', 
+                    name: 'محمد علي', 
+                    role: 'supervisor', 
+                    avatar: 'م',
+                    permissions: {
+                        dashboard: true,
+                        middleLeadership: true,
+                        visits: true,
+                        performance: true,
+                        teachers: true,
+                        reports: true,
+                        users: false
+                    }
+                }
             ],
             middleLeadership: [
                 { department: 'معلم أول / منسق اللغة العربية', visits: 5, meeting: 'نعم', plan: 'نعم', reasons: '' },
@@ -693,10 +954,10 @@
                 { department: 'منسق التربية الرياضية', visits: 5, meeting: 'نعم', plan: 'نعم', reasons: '' }
             ],
             visits: [
-                { id: 1, teacher: 'أحمد محمد', department: 'الرياضيات', date: '2025-10-05', evaluation: 'ممتاز', visitor: 'مدير المدرسة' },
-                { id: 2, teacher: 'فاطمة علي', department: 'العلوم', date: '2025-10-07', evaluation: 'جيد جداً', visitor: 'المدير المساعد' },
-                { id: 3, teacher: 'خالد إبراهيم', department: 'اللغة العربية', date: '2025-10-10', evaluation: 'ممتاز', visitor: 'معلم أول/منسق اللغة العربية' },
-                { id: 4, teacher: 'سارة عبدالله', department: 'اللغة الإنجليزية', date: '2025-10-12', evaluation: 'جيد', visitor: 'معلم اول/منسق اللغة الإنجليزية' }
+                { id: 1, teacher: 'أحمد محمد', department: 'اللغة العربية', date: '2025-10-05', period: 'الأولى', grade: 'الصف السادس', evaluation: 'ممتاز', visitor: 'مدير المدرسة', notes: 'أداء متميز في إدارة الصف' },
+                { id: 2, teacher: 'فاطمة علي', department: 'رياضيات وعلوم', date: '2025-10-07', period: 'الثانية', grade: 'الصف الخامس', evaluation: 'جيد جداً', visitor: 'المدير المساعد', notes: 'استخدام جيد للوسائل التعليمية' },
+                { id: 3, teacher: 'خالد إبراهيم', department: 'اللغة العربية', date: '2025-10-10', period: 'الثالثة', grade: 'الصف الرابع', evaluation: 'ممتاز', visitor: 'معلم أول/منسق اللغة العربية', notes: 'تفاعل الطلاب كان ممتازاً' },
+                { id: 4, teacher: 'سارة عبدالله', department: 'اللغة الإنجليزية', date: '2025-10-12', period: 'الرابعة', grade: 'الصف السابع', evaluation: 'جيد', visitor: 'معلم اول/منسق اللغة الإنجليزية', notes: 'بحاجة إلى تحسين في إدارة الوقت' }
             ],
             performance: [
                 { department: 'قسم الرياضيات', total: 15, excellent: 5, veryGood: 7, good: 3, fair: 0 },
@@ -746,6 +1007,9 @@
             // إعداد الأزرار والإجراءات
             setupButtons();
             
+            // إعداد الروابط حسب الهاش
+            setupHashRouting();
+            
             // عرض البيانات
             renderData();
         });
@@ -762,6 +1026,41 @@
         // حفظ البيانات إلى localStorage
         function saveDataToStorage() {
             localStorage.setItem('educationQualityData', JSON.stringify(appData));
+        }
+
+        // إعداد التوجيه حسب الهاش
+        function setupHashRouting() {
+            // تحديث الرابط عند تغيير القسم
+            window.addEventListener('hashchange', function() {
+                const hash = window.location.hash.substring(1) || 'dashboard';
+                navigateToSection(hash);
+            });
+            
+            // التعامل مع الرابط الأولي عند التحميل
+            const initialHash = window.location.hash.substring(1) || 'dashboard';
+            navigateToSection(initialHash);
+        }
+
+        // التنقل إلى قسم معين
+        function navigateToSection(sectionId) {
+            // تحديث الروابط
+            document.querySelectorAll('.nav-tabs a').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.getAttribute('data-section') === sectionId) {
+                    tab.classList.add('active');
+                }
+            });
+            
+            // إظهار القسم المطلوب
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+                if (section.id === sectionId) {
+                    section.classList.add('active');
+                }
+            });
+            
+            // تحديث الهاش في الرابط
+            window.location.hash = sectionId;
         }
 
         // معالج تسجيل الدخول
@@ -806,20 +1105,8 @@
             navTabs.forEach(tab => {
                 tab.addEventListener('click', function(e) {
                     e.preventDefault();
-                    
-                    // إزالة النشاط من جميع الأقسام
-                    navTabs.forEach(t => t.classList.remove('active'));
-                    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-                    
-                    // إضافة النشاط للقسم المحدد
-                    this.classList.add('active');
                     const sectionId = this.getAttribute('data-section');
-                    document.getElementById(sectionId).classList.add('active');
-                    
-                    // إذا كان قسم المستخدمين، عرض قائمة المستخدمين
-                    if (sectionId === 'users') {
-                        renderUserList();
-                    }
+                    navigateToSection(sectionId);
                 });
             });
         }
@@ -830,7 +1117,20 @@
             document.getElementById('saveMiddleLeadership').addEventListener('click', saveMiddleLeadership);
             
             // أزرار الزيارات
-            document.getElementById('saveVisits').addEventListener('click', saveVisits);
+            document.getElementById('addVisitBtn').addEventListener('click', showAddVisitModal);
+            document.getElementById('cancelVisit').addEventListener('click', closeVisitModal);
+            document.querySelector('.close-modal').addEventListener('click', closeVisitModal);
+            document.getElementById('visitForm').addEventListener('submit', saveVisit);
+            
+            // أزرار الأقسام الفرعية للزيارات
+            document.querySelectorAll('.sub-section-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.sub-section-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    const department = this.getAttribute('data-department');
+                    renderVisitsByDepartment(department);
+                });
+            });
             
             // أزرار التقييم
             document.getElementById('savePerformance').addEventListener('click', savePerformance);
@@ -906,20 +1206,58 @@
 
         // عرض بيانات الزيارات
         function renderVisits() {
+            // عرض الزيارات للقسم النشط افتراضياً (اللغة العربية)
+            renderVisitsByDepartment('اللغة العربية');
+        }
+
+        // عرض الزيارات حسب القسم
+        function renderVisitsByDepartment(department) {
             const table = document.getElementById('visitsTable');
             table.innerHTML = '';
             
-            appData.visits.forEach((visit, index) => {
+            const filteredVisits = appData.visits.filter(visit => visit.department === department);
+            
+            filteredVisits.forEach((visit, index) => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${index + 1}</td>
                     <td>${visit.teacher}</td>
                     <td>${visit.department}</td>
                     <td>${visit.date}</td>
+                    <td>${visit.period}</td>
+                    <td>${visit.grade}</td>
                     <td>${visit.evaluation}</td>
                     <td>${visit.visitor}</td>
+                    <td>${visit.notes}</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning view-visit" data-id="${visit.id}">معاينة</button>
+                        <button class="btn btn-sm btn-secondary edit-visit" data-id="${visit.id}">تعديل</button>
+                        <button class="btn btn-sm btn-danger delete-visit" data-id="${visit.id}">حذف</button>
+                    </td>
                 `;
                 table.appendChild(row);
+            });
+            
+            // إضافة معالجي الأحداث للأزرار
+            document.querySelectorAll('.view-visit').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const visitId = parseInt(this.getAttribute('data-id'));
+                    viewVisit(visitId);
+                });
+            });
+            
+            document.querySelectorAll('.edit-visit').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const visitId = parseInt(this.getAttribute('data-id'));
+                    editVisit(visitId);
+                });
+            });
+            
+            document.querySelectorAll('.delete-visit').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const visitId = parseInt(this.getAttribute('data-id'));
+                    deleteVisit(visitId);
+                });
             });
         }
 
@@ -1016,6 +1354,34 @@
                     </div>
                 `;
                 userList.appendChild(userCard);
+                
+                // قسم الصلاحيات
+                const permissionsSection = document.createElement('div');
+                permissionsSection.className = 'permissions-section';
+                permissionsSection.innerHTML = `
+                    <h4>الصلاحيات:</h4>
+                    <div class="permissions-grid" id="permissions-${user.id}">
+                        ${Object.keys(user.permissions).map(permission => `
+                            <div class="permission-item">
+                                <span>${getPermissionName(permission)}</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" ${user.permissions[permission] ? 'checked' : ''} data-user="${user.id}" data-permission="${permission}">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                userList.appendChild(permissionsSection);
+                
+                // إضافة معالجي الأحداث لمفاتيح التبديل
+                document.querySelectorAll(`#permissions-${user.id} input[type="checkbox"]`).forEach(checkbox => {
+                    checkbox.addEventListener('change', function() {
+                        const userId = parseInt(this.getAttribute('data-user'));
+                        const permission = this.getAttribute('data-permission');
+                        updateUserPermission(userId, permission, this.checked);
+                    });
+                });
             });
             
             // إضافة معالجي الأحداث للأزرار
@@ -1042,6 +1408,159 @@
                 'teacher': 'معلم'
             };
             return roles[role] || role;
+        }
+
+        // الحصول على اسم الصلاحية
+        function getPermissionName(permission) {
+            const permissions = {
+                'dashboard': 'لوحة التحكم',
+                'middleLeadership': 'متابعة القيادة الوسطى',
+                'visits': 'الزيارات الصفية',
+                'performance': 'تقييم الأداء',
+                'teachers': 'المعلمين المتميزين',
+                'reports': 'التقارير النوعية',
+                'users': 'إدارة المستخدمين'
+            };
+            return permissions[permission] || permission;
+        }
+
+        // تحديث صلاحية المستخدم
+        function updateUserPermission(userId, permission, value) {
+            const user = appData.users.find(u => u.id === userId);
+            if (user) {
+                user.permissions[permission] = value;
+                saveDataToStorage();
+            }
+        }
+
+        // عرض نموذج إضافة زيارة
+        function showAddVisitModal() {
+            document.getElementById('visitModalTitle').textContent = 'إضافة زيارة صفية';
+            document.getElementById('visitForm').reset();
+            document.getElementById('visitId').value = '';
+            document.getElementById('visitorName').value = appData.currentUser.name;
+            
+            // تعيين القسم بناءً على القسم النشط
+            const activeDepartment = document.querySelector('.sub-section-btn.active').getAttribute('data-department');
+            document.getElementById('department').value = activeDepartment;
+            
+            document.getElementById('visitModal').style.display = 'flex';
+        }
+
+        // إغلاق نافذة الزيارة
+        function closeVisitModal() {
+            document.getElementById('visitModal').style.display = 'none';
+        }
+
+        // حفظ زيارة
+        function saveVisit(e) {
+            e.preventDefault();
+            
+            const visitId = document.getElementById('visitId').value;
+            const teacherName = document.getElementById('teacherName').value;
+            const department = document.getElementById('department').value;
+            const visitDate = document.getElementById('visitDate').value;
+            const classPeriod = document.getElementById('classPeriod').value;
+            const classGrade = document.getElementById('classGrade').value;
+            const evaluation = document.getElementById('evaluation').value;
+            const visitorName = document.getElementById('visitorName').value;
+            const notes = document.getElementById('notes').value;
+            
+            if (visitId) {
+                // تعديل زيارة موجودة
+                const visitIndex = appData.visits.findIndex(v => v.id === parseInt(visitId));
+                if (visitIndex !== -1) {
+                    appData.visits[visitIndex] = {
+                        id: parseInt(visitId),
+                        teacher: teacherName,
+                        department,
+                        date: visitDate,
+                        period: classPeriod,
+                        grade: classGrade,
+                        evaluation,
+                        visitor: visitorName,
+                        notes
+                    };
+                }
+            } else {
+                // إضافة زيارة جديدة
+                const newVisit = {
+                    id: Math.max(...appData.visits.map(v => v.id), 0) + 1,
+                    teacher: teacherName,
+                    department,
+                    date: visitDate,
+                    period: classPeriod,
+                    grade: classGrade,
+                    evaluation,
+                    visitor: visitorName,
+                    notes
+                };
+                appData.visits.push(newVisit);
+            }
+            
+            saveDataToStorage();
+            closeVisitModal();
+            
+            // إعادة عرض الزيارات للقسم النشط
+            const activeDepartment = document.querySelector('.sub-section-btn.active').getAttribute('data-department');
+            renderVisitsByDepartment(activeDepartment);
+            
+            // تحديث لوحة التحكم
+            renderDashboard();
+            
+            alert('تم حفظ الزيارة بنجاح');
+        }
+
+        // معاينة زيارة
+        function viewVisit(visitId) {
+            const visit = appData.visits.find(v => v.id === visitId);
+            if (!visit) return;
+            
+            alert(`معاينة الزيارة:
+المعلم: ${visit.teacher}
+القسم: ${visit.department}
+التاريخ: ${visit.date}
+الحصة: ${visit.period}
+الصف: ${visit.grade}
+التقييم: ${visit.evaluation}
+الزائر: ${visit.visitor}
+الملاحظات: ${visit.notes}`);
+        }
+
+        // تعديل زيارة
+        function editVisit(visitId) {
+            const visit = appData.visits.find(v => v.id === visitId);
+            if (!visit) return;
+            
+            document.getElementById('visitModalTitle').textContent = 'تعديل زيارة صفية';
+            document.getElementById('visitId').value = visit.id;
+            document.getElementById('teacherName').value = visit.teacher;
+            document.getElementById('department').value = visit.department;
+            document.getElementById('visitDate').value = visit.date;
+            document.getElementById('classPeriod').value = visit.period;
+            document.getElementById('classGrade').value = visit.grade;
+            document.getElementById('evaluation').value = visit.evaluation;
+            document.getElementById('visitorName').value = visit.visitor;
+            document.getElementById('notes').value = visit.notes;
+            
+            document.getElementById('visitModal').style.display = 'flex';
+        }
+
+        // حذف زيارة
+        function deleteVisit(visitId) {
+            if (confirm('هل أنت متأكد من حذف هذه الزيارة؟')) {
+                appData.visits = appData.visits.filter(v => v.id !== visitId);
+                saveDataToStorage();
+                
+                // إعادة عرض الزيارات للقسم النشط
+                const activeDepartment = document.querySelector('.sub-section-btn.active').getAttribute('data-department');
+                renderVisitsByDepartment(activeDepartment);
+                
+                // تحديث لوحة التحكم
+                renderDashboard();
+                
+                alert('تم حذف الزيارة بنجاح');
+            }
         }
 
         // عرض نموذج إضافة مستخدم
@@ -1104,13 +1623,25 @@
                 return;
             }
             
+            // إنشاء صلاحيات افتراضية بناءً على الدور
+            const defaultPermissions = {
+                dashboard: true,
+                middleLeadership: role === 'admin' || role === 'supervisor',
+                visits: true,
+                performance: role === 'admin' || role === 'supervisor',
+                teachers: role === 'admin' || role === 'supervisor',
+                reports: role === 'admin' || role === 'supervisor',
+                users: role === 'admin'
+            };
+            
             const newUser = {
                 id: Math.max(...appData.users.map(u => u.id)) + 1,
                 name,
                 username,
                 password,
                 role,
-                avatar
+                avatar,
+                permissions: defaultPermissions
             };
             
             appData.users.push(newUser);
@@ -1213,11 +1744,6 @@
         function saveMiddleLeadership() {
             saveDataToStorage();
             alert('تم حفظ بيانات القيادة الوسطى بنجاح');
-        }
-
-        function saveVisits() {
-            saveDataToStorage();
-            alert('تم حفظ بيانات الزيارات بنجاح');
         }
 
         function savePerformance() {
