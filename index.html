@@ -1087,27 +1087,30 @@
                 userList.appendChild(userCard);
             });
             
-            // إضافة معالجي الأحداث للأزرار
-            document.querySelectorAll('.edit-user').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const userId = parseInt(this.getAttribute('data-id'));
-                    editUser(userId);
+            // إضافة معالجي الأحداث للأزرار - الإصلاح هنا
+            setTimeout(() => {
+                document.querySelectorAll('.manage-permissions').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const userId = parseInt(this.getAttribute('data-id'));
+                        console.log('إدارة صلاحيات للمستخدم:', userId); // للتتبع
+                        managePermissions(userId);
+                    });
                 });
-            });
-            
-            document.querySelectorAll('.delete-user').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const userId = parseInt(this.getAttribute('data-id'));
-                    deleteUser(userId);
+                
+                document.querySelectorAll('.edit-user').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const userId = parseInt(this.getAttribute('data-id'));
+                        editUser(userId);
+                    });
                 });
-            });
-            
-            document.querySelectorAll('.manage-permissions').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const userId = parseInt(this.getAttribute('data-id'));
-                    managePermissions(userId);
+                
+                document.querySelectorAll('.delete-user').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const userId = parseInt(this.getAttribute('data-id'));
+                        deleteUser(userId);
+                    });
                 });
-            });
+            }, 100);
         }
 
         // عرض قائمة المدرسين
@@ -1160,10 +1163,14 @@
             return roles[role] || role;
         }
 
-        // إدارة صلاحيات المستخدم
+        // إدارة صلاحيات المستخدم - الإصلاح هنا
         function managePermissions(userId) {
+            console.log('بدء إدارة الصلاحيات للمستخدم:', userId);
             const user = appData.users.find(u => u.id === userId);
-            if (!user) return;
+            if (!user) {
+                console.error('المستخدم غير موجود:', userId);
+                return;
+            }
             
             document.getElementById('permissionsModalTitle').textContent = `إدارة صلاحيات المستخدم: ${user.name}`;
             
@@ -1175,7 +1182,7 @@
             `;
             
             for (const mainSection in siteStructure) {
-                const hasMainAccess = user.permissions[mainSection] !== undefined;
+                const hasMainAccess = user.permissions && user.permissions[mainSection] !== undefined;
                 
                 permissionsHTML += `
                     <div class="permission-item">
@@ -1261,6 +1268,7 @@
             });
             
             document.getElementById('permissionsModal').style.display = 'flex';
+            console.log('تم فتح نافذة الصلاحيات');
         }
 
         // حفظ الصلاحيات
