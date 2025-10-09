@@ -381,7 +381,7 @@
 
         .permissions-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 10px;
             margin-top: 10px;
         }
@@ -521,6 +521,10 @@
             margin-top: 2rem;
             height: 400px;
             position: relative;
+            background: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
         }
 
         /* Month Selector */
@@ -532,6 +536,25 @@
             padding: 10px 15px;
             background-color: #f8f9fa;
             border-radius: var(--border-radius);
+        }
+
+        /* Department Permissions */
+        .department-permissions {
+            margin-top: 1rem;
+        }
+
+        .department-section {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+        }
+
+        .department-title {
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
         }
 
         /* Responsive */
@@ -863,38 +886,8 @@
                         <button class="btn" id="addUserBtn">إضافة مستخدم</button>
                     </div>
                     
-                    <div class="sub-sections">
-                        <button class="sub-section-btn active" data-subsection="users">المستخدمين</button>
-                        <button class="sub-section-btn" data-subsection="teachersList">المدرسين</button>
-                    </div>
-                    
-                    <!-- Users Subsection -->
-                    <div id="usersSubsection" class="user-subsection">
-                        <div class="user-list" id="userList">
-                            <!-- سيتم ملؤها بالبيانات -->
-                        </div>
-                    </div>
-                    
-                    <!-- Teachers List Subsection -->
-                    <div id="teachersListSubsection" class="user-subsection" style="display: none;">
-                        <div class="section-header">
-                            <h3 class="section-title">قائمة المدرسين</h3>
-                            <button class="btn" id="addTeacherBtn">إضافة مدرس</button>
-                        </div>
-                        
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>الرقم</th>
-                                    <th>اسم المعلم</th>
-                                    <th>القسم</th>
-                                    <th>الإجراءات</th>
-                                </tr>
-                            </thead>
-                            <tbody id="teachersListTable">
-                                <!-- سيتم ملؤها بالبيانات -->
-                            </tbody>
-                        </table>
+                    <div class="user-list" id="userList">
+                        <!-- سيتم ملؤها بالبيانات -->
                     </div>
                 </section>
             </div>
@@ -965,35 +958,38 @@
         </div>
     </div>
 
-    <!-- Modal for Adding/Editing Teacher -->
-    <div id="teacherModal" class="modal">
+    <!-- Modal for Adding/Editing User -->
+    <div id="userModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title" id="teacherModalTitle">إضافة مدرس</h3>
+                <h3 class="modal-title" id="userModalTitle">إضافة مستخدم جديد</h3>
                 <button class="close-modal">&times;</button>
             </div>
-            <form id="teacherForm">
-                <input type="hidden" id="teacherId">
+            <form id="userForm">
+                <input type="hidden" id="userId">
                 <div class="form-group">
-                    <label for="teacherFullName">اسم المعلم</label>
-                    <input type="text" id="teacherFullName" required>
+                    <label for="userFullName">الاسم الكامل</label>
+                    <input type="text" id="userFullName" required>
                 </div>
                 <div class="form-group">
-                    <label for="teacherDepartment">القسم</label>
-                    <select id="teacherDepartment" required>
-                        <option value="اللغة العربية">اللغة العربية</option>
-                        <option value="رياضيات وعلوم">رياضيات وعلوم</option>
-                        <option value="اللغة الإنجليزية">اللغة الإنجليزية</option>
-                        <option value="تربية اسلامية">تربية اسلامية</option>
-                        <option value="المواد الاجتماعية">المواد الاجتماعية</option>
-                        <option value="نظام فصل">نظام فصل</option>
-                        <option value="المواد الإثرائية">المواد الإثرائية</option>
-                        <option value="التربية الرياضية">التربية الرياضية</option>
+                    <label for="userUsername">اسم المستخدم</label>
+                    <input type="text" id="userUsername" required>
+                </div>
+                <div class="form-group">
+                    <label for="userPassword">كلمة المرور</label>
+                    <input type="password" id="userPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="userRole">الدور</label>
+                    <select id="userRole" required>
+                        <option value="admin">مدير النظام</option>
+                        <option value="supervisor">مشرف</option>
+                        <option value="teacher">معلم</option>
                     </select>
                 </div>
                 <div class="btn-group">
                     <button type="submit" class="btn">حفظ</button>
-                    <button type="button" class="btn btn-secondary" id="cancelTeacher">إلغاء</button>
+                    <button type="button" class="btn btn-secondary" id="cancelUser">إلغاء</button>
                 </div>
             </form>
         </div>
@@ -1012,13 +1008,42 @@
                     role: 'admin', 
                     avatar: 'م',
                     permissions: {
+                        // الصلاحيات الأساسية
                         dashboard: true,
                         middleLeadership: true,
                         visits: true,
                         performance: true,
                         teachers: true,
                         reports: true,
-                        users: true
+                        users: true,
+                        // صلاحيات الأقسام
+                        departments: {
+                            'اللغة العربية': true,
+                            'رياضيات وعلوم': true,
+                            'اللغة الإنجليزية': true,
+                            'تربية اسلامية': true,
+                            'المواد الاجتماعية': true,
+                            'نظام فصل': true,
+                            'المواد الإثرائية': true,
+                            'التربية الرياضية': true
+                        },
+                        // صلاحيات الأقسام الفرعية
+                        subDepartments: {
+                            'اللغة العربية': {
+                                'الصف الأول': true,
+                                'الصف الثاني': true,
+                                'الصف الثالث': true
+                            },
+                            'رياضيات وعلوم': {
+                                'الرياضيات': true,
+                                'العلوم': true
+                            },
+                            'اللغة الإنجليزية': {
+                                'المبتدئين': true,
+                                'المتوسطين': true,
+                                'المتقدمين': true
+                            }
+                        }
                     }
                 },
                 { 
@@ -1035,7 +1060,24 @@
                         performance: false,
                         teachers: false,
                         reports: false,
-                        users: false
+                        users: false,
+                        departments: {
+                            'اللغة العربية': true,
+                            'رياضيات وعلوم': false,
+                            'اللغة الإنجليزية': false,
+                            'تربية اسلامية': false,
+                            'المواد الاجتماعية': false,
+                            'نظام فصل': false,
+                            'المواد الإثرائية': false,
+                            'التربية الرياضية': false
+                        },
+                        subDepartments: {
+                            'اللغة العربية': {
+                                'الصف الأول': true,
+                                'الصف الثاني': false,
+                                'الصف الثالث': true
+                            }
+                        }
                     }
                 },
                 { 
@@ -1052,15 +1094,35 @@
                         performance: true,
                         teachers: true,
                         reports: true,
-                        users: false
+                        users: false,
+                        departments: {
+                            'اللغة العربية': true,
+                            'رياضيات وعلوم': true,
+                            'اللغة الإنجليزية': true,
+                            'تربية اسلامية': false,
+                            'المواد الاجتماعية': false,
+                            'نظام فصل': false,
+                            'المواد الإثرائية': false,
+                            'التربية الرياضية': false
+                        },
+                        subDepartments: {
+                            'اللغة العربية': {
+                                'الصف الأول': true,
+                                'الصف الثاني': true,
+                                'الصف الثالث': true
+                            },
+                            'رياضيات وعلوم': {
+                                'الرياضيات': true,
+                                'العلوم': true
+                            },
+                            'اللغة الإنجليزية': {
+                                'المبتدئين': true,
+                                'المتوسطين': true,
+                                'المتقدمين': false
+                            }
+                        }
                     }
                 }
-            ],
-            teachersList: [
-                { id: 1, name: 'أحمد محمد', department: 'اللغة العربية' },
-                { id: 2, name: 'فاطمة علي', department: 'رياضيات وعلوم' },
-                { id: 3, name: 'خالد إبراهيم', department: 'اللغة الإنجليزية' },
-                { id: 4, name: 'سارة عبدالله', department: 'تربية اسلامية' }
             ],
             middleLeadership: [
                 { department: 'معلم أول / منسق اللغة العربية', visits: 5, meeting: 'نعم', plan: 'نعم', reasons: '' },
@@ -1298,25 +1360,6 @@
                 });
             });
             
-            // أزرار الأقسام الفرعية لإدارة المستخدمين
-            document.querySelectorAll('#users .sub-section-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('#users .sub-section-btn').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    const subsection = this.getAttribute('data-subsection');
-                    
-                    if (subsection === 'users') {
-                        document.getElementById('usersSubsection').style.display = 'block';
-                        document.getElementById('teachersListSubsection').style.display = 'none';
-                        renderUserList();
-                    } else if (subsection === 'teachersList') {
-                        document.getElementById('usersSubsection').style.display = 'none';
-                        document.getElementById('teachersListSubsection').style.display = 'block';
-                        renderTeachersList();
-                    }
-                });
-            });
-            
             // أزرار التقييم
             document.getElementById('savePerformance').addEventListener('click', savePerformance);
             document.getElementById('performanceMonth').addEventListener('change', renderPerformanceChart);
@@ -1328,11 +1371,10 @@
             document.getElementById('saveReports').addEventListener('click', saveReports);
             
             // أزرار إدارة المستخدمين
-            document.getElementById('addUserBtn').addEventListener('click', showAddUserForm);
-            document.getElementById('addTeacherBtn').addEventListener('click', showAddTeacherModal);
-            document.getElementById('cancelTeacher').addEventListener('click', closeTeacherModal);
-            document.querySelector('#teacherModal .close-modal').addEventListener('click', closeTeacherModal);
-            document.getElementById('teacherForm').addEventListener('submit', saveTeacher);
+            document.getElementById('addUserBtn').addEventListener('click', showAddUserModal);
+            document.getElementById('cancelUser').addEventListener('click', closeUserModal);
+            document.querySelector('#userModal .close-modal').addEventListener('click', closeUserModal);
+            document.getElementById('userForm').addEventListener('submit', saveUser);
         }
 
         // عرض البيانات
@@ -1489,6 +1531,14 @@
             const goodData = appData.performance.map(item => item.good);
             const fairData = appData.performance.map(item => item.fair);
             
+            // ألوان أكثر جمالية
+            const colors = {
+                excellent: 'rgba(40, 167, 69, 0.8)',
+                veryGood: 'rgba(23, 162, 184, 0.8)',
+                good: 'rgba(255, 193, 7, 0.8)',
+                fair: 'rgba(220, 53, 69, 0.8)'
+            };
+            
             window.performanceChartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -1497,62 +1547,130 @@
                         {
                             label: 'يفوق التوقعات بكثير',
                             data: excellentData,
-                            backgroundColor: '#28a745',
-                            borderColor: '#28a745',
-                            borderWidth: 1
+                            backgroundColor: colors.excellent,
+                            borderColor: colors.excellent.replace('0.8', '1'),
+                            borderWidth: 2,
+                            borderRadius: 5,
+                            borderSkipped: false,
                         },
                         {
                             label: 'يفوق التوقعات',
                             data: veryGoodData,
-                            backgroundColor: '#17a2b8',
-                            borderColor: '#17a2b8',
-                            borderWidth: 1
+                            backgroundColor: colors.veryGood,
+                            borderColor: colors.veryGood.replace('0.8', '1'),
+                            borderWidth: 2,
+                            borderRadius: 5,
+                            borderSkipped: false,
                         },
                         {
                             label: 'يفي بالتوقعات',
                             data: goodData,
-                            backgroundColor: '#ffc107',
-                            borderColor: '#ffc107',
-                            borderWidth: 1
+                            backgroundColor: colors.good,
+                            borderColor: colors.good.replace('0.8', '1'),
+                            borderWidth: 2,
+                            borderRadius: 5,
+                            borderSkipped: false,
                         },
                         {
                             label: 'يفي بالتوقعات جزئياً',
                             data: fairData,
-                            backgroundColor: '#dc3545',
-                            borderColor: '#dc3545',
-                            borderWidth: 1
+                            backgroundColor: colors.fair,
+                            borderColor: colors.fair.replace('0.8', '1'),
+                            borderWidth: 2,
+                            borderRadius: 5,
+                            borderSkipped: false,
                         }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            rtl: true,
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20,
+                                font: {
+                                    size: 14,
+                                    family: 'Cairo'
+                                }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'توزيع تقييمات الأداء الصفي حسب الأقسام',
+                            font: {
+                                size: 18,
+                                family: 'Cairo',
+                                weight: 'bold'
+                            },
+                            padding: 20
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                            titleFont: {
+                                family: 'Cairo'
+                            },
+                            bodyFont: {
+                                family: 'Cairo'
+                            },
+                            padding: 10,
+                            cornerRadius: 5
+                        }
+                    },
                     scales: {
                         x: {
                             display: true,
                             title: {
                                 display: true,
-                                text: 'الأقسام الأكاديمية'
+                                text: 'الأقسام الأكاديمية',
+                                font: {
+                                    size: 14,
+                                    family: 'Cairo',
+                                    weight: 'bold'
+                                }
+                            },
+                            ticks: {
+                                font: {
+                                    family: 'Cairo'
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
                             }
                         },
                         y: {
                             display: true,
                             title: {
                                 display: true,
-                                text: 'عدد الزيارات'
+                                text: 'عدد الزيارات',
+                                font: {
+                                    size: 14,
+                                    family: 'Cairo',
+                                    weight: 'bold'
+                                }
                             },
-                            beginAtZero: true
+                            beginAtZero: true,
+                            ticks: {
+                                font: {
+                                    family: 'Cairo'
+                                },
+                                stepSize: 1
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
                         }
                     },
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                            rtl: true
-                        },
-                        title: {
-                            display: true,
-                            text: 'توزيع تقييمات الأداء الصفي حسب الأقسام'
-                        }
+                    animation: {
+                        duration: 1000,
+                        easing: 'easeOutQuart'
+                    },
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
                     }
                 }
             });
@@ -1632,13 +1750,13 @@
                 `;
                 userList.appendChild(userCard);
                 
-                // قسم الصلاحيات
-                const permissionsSection = document.createElement('div');
-                permissionsSection.className = 'permissions-section';
-                permissionsSection.innerHTML = `
-                    <h4>الصلاحيات:</h4>
-                    <div class="permissions-grid" id="permissions-${user.id}">
-                        ${Object.keys(user.permissions).map(permission => `
+                // قسم الصلاحيات الأساسية
+                const basicPermissionsSection = document.createElement('div');
+                basicPermissionsSection.className = 'permissions-section';
+                basicPermissionsSection.innerHTML = `
+                    <h4>الصلاحيات الأساسية:</h4>
+                    <div class="permissions-grid" id="basic-permissions-${user.id}">
+                        ${Object.keys(user.permissions).filter(p => !['departments', 'subDepartments'].includes(p)).map(permission => `
                             <div class="permission-item">
                                 <span>${getPermissionName(permission)}</span>
                                 <label class="toggle-switch">
@@ -1649,14 +1767,62 @@
                         `).join('')}
                     </div>
                 `;
-                userList.appendChild(permissionsSection);
+                userList.appendChild(basicPermissionsSection);
+                
+                // قسم صلاحيات الأقسام
+                const departmentPermissionsSection = document.createElement('div');
+                departmentPermissionsSection.className = 'department-permissions';
+                departmentPermissionsSection.innerHTML = `
+                    <h4>صلاحيات الأقسام:</h4>
+                    ${Object.keys(user.permissions.departments || {}).map(department => `
+                        <div class="department-section">
+                            <div class="department-title">${department}</div>
+                            <div class="permissions-grid">
+                                <div class="permission-item">
+                                    <span>الوصول للقسم</span>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" ${user.permissions.departments[department] ? 'checked' : ''} data-user="${user.id}" data-type="department" data-department="${department}">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                ${user.permissions.subDepartments && user.permissions.subDepartments[department] ? 
+                                    Object.keys(user.permissions.subDepartments[department]).map(subDept => `
+                                        <div class="permission-item">
+                                            <span>${subDept}</span>
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" ${user.permissions.subDepartments[department][subDept] ? 'checked' : ''} data-user="${user.id}" data-type="subdepartment" data-department="${department}" data-subdepartment="${subDept}">
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                        </div>
+                                    `).join('') : ''
+                                }
+                            </div>
+                        </div>
+                    `).join('')}
+                `;
+                userList.appendChild(departmentPermissionsSection);
                 
                 // إضافة معالجي الأحداث لمفاتيح التبديل
-                document.querySelectorAll(`#permissions-${user.id} input[type="checkbox"]`).forEach(checkbox => {
+                document.querySelectorAll(`#basic-permissions-${user.id} input[type="checkbox"]`).forEach(checkbox => {
                     checkbox.addEventListener('change', function() {
                         const userId = parseInt(this.getAttribute('data-user'));
                         const permission = this.getAttribute('data-permission');
                         updateUserPermission(userId, permission, this.checked);
+                    });
+                });
+                
+                document.querySelectorAll(`.department-permissions input[type="checkbox"]`).forEach(checkbox => {
+                    checkbox.addEventListener('change', function() {
+                        const userId = parseInt(this.getAttribute('data-user'));
+                        const type = this.getAttribute('data-type');
+                        const department = this.getAttribute('data-department');
+                        const subdepartment = this.getAttribute('data-subdepartment');
+                        
+                        if (type === 'department') {
+                            updateUserDepartmentPermission(userId, department, this.checked);
+                        } else if (type === 'subdepartment') {
+                            updateUserSubDepartmentPermission(userId, department, subdepartment, this.checked);
+                        }
                     });
                 });
             });
@@ -1673,41 +1839,6 @@
                 btn.addEventListener('click', function() {
                     const userId = parseInt(this.getAttribute('data-id'));
                     deleteUser(userId);
-                });
-            });
-        }
-
-        // عرض قائمة المدرسين
-        function renderTeachersList() {
-            const table = document.getElementById('teachersListTable');
-            table.innerHTML = '';
-            
-            appData.teachersList.forEach((teacher, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${teacher.name}</td>
-                    <td>${teacher.department}</td>
-                    <td>
-                        <button class="btn btn-sm btn-secondary edit-teacher-list" data-id="${teacher.id}">تعديل</button>
-                        <button class="btn btn-sm btn-danger delete-teacher-list" data-id="${teacher.id}">حذف</button>
-                    </td>
-                `;
-                table.appendChild(row);
-            });
-            
-            // إضافة معالجي الأحداث للأزرار
-            document.querySelectorAll('.edit-teacher-list').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const teacherId = parseInt(this.getAttribute('data-id'));
-                    editTeacher(teacherId);
-                });
-            });
-            
-            document.querySelectorAll('.delete-teacher-list').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const teacherId = parseInt(this.getAttribute('data-id'));
-                    deleteTeacher(teacherId);
                 });
             });
         }
@@ -1736,11 +1867,38 @@
             return permissions[permission] || permission;
         }
 
-        // تحديث صلاحية المستخدم
+        // تحديث صلاحية المستخدم الأساسية
         function updateUserPermission(userId, permission, value) {
             const user = appData.users.find(u => u.id === userId);
             if (user) {
                 user.permissions[permission] = value;
+                saveDataToStorage();
+            }
+        }
+
+        // تحديث صلاحية قسم للمستخدم
+        function updateUserDepartmentPermission(userId, department, value) {
+            const user = appData.users.find(u => u.id === userId);
+            if (user) {
+                if (!user.permissions.departments) {
+                    user.permissions.departments = {};
+                }
+                user.permissions.departments[department] = value;
+                saveDataToStorage();
+            }
+        }
+
+        // تحديث صلاحية قسم فرعي للمستخدم
+        function updateUserSubDepartmentPermission(userId, department, subdepartment, value) {
+            const user = appData.users.find(u => u.id === userId);
+            if (user) {
+                if (!user.permissions.subDepartments) {
+                    user.permissions.subDepartments = {};
+                }
+                if (!user.permissions.subDepartments[department]) {
+                    user.permissions.subDepartments[department] = {};
+                }
+                user.permissions.subDepartments[department][subdepartment] = value;
                 saveDataToStorage();
             }
         }
@@ -1876,90 +2034,109 @@
         }
 
         // عرض نموذج إضافة مستخدم
-        function showAddUserForm() {
-            const formHtml = `
-                <div class="login-box" style="margin: 20px auto;">
-                    <h2 class="login-title">إضافة مستخدم جديد</h2>
-                    <form id="addUserForm">
-                        <div class="form-group">
-                            <label for="newUserName">الاسم الكامل</label>
-                            <input type="text" id="newUserName" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="newUserUsername">اسم المستخدم</label>
-                            <input type="text" id="newUserUsername" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="newUserPassword">كلمة المرور</label>
-                            <input type="password" id="newUserPassword" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="newUserRole">الدور</label>
-                            <select id="newUserRole" required>
-                                <option value="admin">مدير النظام</option>
-                                <option value="supervisor">مشرف</option>
-                                <option value="teacher">معلم</option>
-                            </select>
-                        </div>
-                        <div class="btn-group">
-                            <button type="submit" class="btn">إضافة المستخدم</button>
-                            <button type="button" class="btn btn-secondary" id="cancelAddUser">إلغاء</button>
-                        </div>
-                    </form>
-                </div>
-            `;
-            
-            document.getElementById('userList').innerHTML = formHtml;
-            
-            document.getElementById('addUserForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                addNewUser();
-            });
-            
-            document.getElementById('cancelAddUser').addEventListener('click', function() {
-                renderUserList();
-            });
+        function showAddUserModal() {
+            document.getElementById('userModalTitle').textContent = 'إضافة مستخدم جديد';
+            document.getElementById('userForm').reset();
+            document.getElementById('userId').value = '';
+            document.getElementById('userModal').style.display = 'flex';
         }
 
-        // إضافة مستخدم جديد
-        function addNewUser() {
-            const name = document.getElementById('newUserName').value;
-            const username = document.getElementById('newUserUsername').value;
-            const password = document.getElementById('newUserPassword').value;
-            const role = document.getElementById('newUserRole').value;
+        // إغلاق نافذة المستخدم
+        function closeUserModal() {
+            document.getElementById('userModal').style.display = 'none';
+        }
+
+        // حفظ مستخدم
+        function saveUser(e) {
+            e.preventDefault();
+            
+            const userId = document.getElementById('userId').value;
+            const name = document.getElementById('userFullName').value;
+            const username = document.getElementById('userUsername').value;
+            const password = document.getElementById('userPassword').value;
+            const role = document.getElementById('userRole').value;
             const avatar = name.charAt(0);
             
-            // التحقق من عدم تكرار اسم المستخدم
-            if (appData.users.some(u => u.username === username)) {
-                alert('اسم المستخدم موجود مسبقاً');
-                return;
+            if (userId) {
+                // تعديل مستخدم موجود
+                const userIndex = appData.users.findIndex(u => u.id === parseInt(userId));
+                if (userIndex !== -1) {
+                    // التحقق من عدم تكرار اسم المستخدم (باستثناء المستخدم الحالي)
+                    if (appData.users.some(u => u.username === username && u.id !== parseInt(userId))) {
+                        alert('اسم المستخدم موجود مسبقاً');
+                        return;
+                    }
+                    
+                    appData.users[userIndex].name = name;
+                    appData.users[userIndex].username = username;
+                    appData.users[userIndex].role = role;
+                    appData.users[userIndex].avatar = avatar;
+                    
+                    if (password) {
+                        appData.users[userIndex].password = password;
+                    }
+                }
+            } else {
+                // التحقق من عدم تكرار اسم المستخدم
+                if (appData.users.some(u => u.username === username)) {
+                    alert('اسم المستخدم موجود مسبقاً');
+                    return;
+                }
+                
+                // إنشاء صلاحيات افتراضية بناءً على الدور
+                const defaultPermissions = {
+                    dashboard: true,
+                    middleLeadership: role === 'admin' || role === 'supervisor',
+                    visits: true,
+                    performance: role === 'admin' || role === 'supervisor',
+                    teachers: role === 'admin' || role === 'supervisor',
+                    reports: role === 'admin' || role === 'supervisor',
+                    users: role === 'admin',
+                    departments: {
+                        'اللغة العربية': role === 'admin' || role === 'supervisor',
+                        'رياضيات وعلوم': role === 'admin' || role === 'supervisor',
+                        'اللغة الإنجليزية': role === 'admin' || role === 'supervisor',
+                        'تربية اسلامية': role === 'admin' || role === 'supervisor',
+                        'المواد الاجتماعية': role === 'admin' || role === 'supervisor',
+                        'نظام فصل': role === 'admin' || role === 'supervisor',
+                        'المواد الإثرائية': role === 'admin' || role === 'supervisor',
+                        'التربية الرياضية': role === 'admin' || role === 'supervisor'
+                    },
+                    subDepartments: {
+                        'اللغة العربية': {
+                            'الصف الأول': role === 'admin' || role === 'supervisor',
+                            'الصف الثاني': role === 'admin' || role === 'supervisor',
+                            'الصف الثالث': role === 'admin' || role === 'supervisor'
+                        },
+                        'رياضيات وعلوم': {
+                            'الرياضيات': role === 'admin' || role === 'supervisor',
+                            'العلوم': role === 'admin' || role === 'supervisor'
+                        },
+                        'اللغة الإنجليزية': {
+                            'المبتدئين': role === 'admin' || role === 'supervisor',
+                            'المتوسطين': role === 'admin' || role === 'supervisor',
+                            'المتقدمين': role === 'admin' || role === 'supervisor'
+                        }
+                    }
+                };
+                
+                const newUser = {
+                    id: Math.max(...appData.users.map(u => u.id)) + 1,
+                    name,
+                    username,
+                    password,
+                    role,
+                    avatar,
+                    permissions: defaultPermissions
+                };
+                
+                appData.users.push(newUser);
             }
             
-            // إنشاء صلاحيات افتراضية بناءً على الدور
-            const defaultPermissions = {
-                dashboard: true,
-                middleLeadership: role === 'admin' || role === 'supervisor',
-                visits: true,
-                performance: role === 'admin' || role === 'supervisor',
-                teachers: role === 'admin' || role === 'supervisor',
-                reports: role === 'admin' || role === 'supervisor',
-                users: role === 'admin'
-            };
-            
-            const newUser = {
-                id: Math.max(...appData.users.map(u => u.id)) + 1,
-                name,
-                username,
-                password,
-                role,
-                avatar,
-                permissions: defaultPermissions
-            };
-            
-            appData.users.push(newUser);
             saveDataToStorage();
+            closeUserModal();
             renderUserList();
-            alert('تم إضافة المستخدم بنجاح');
+            alert('تم حفظ المستخدم بنجاح');
         }
 
         // تعديل مستخدم
@@ -1967,79 +2144,14 @@
             const user = appData.users.find(u => u.id === userId);
             if (!user) return;
             
-            const formHtml = `
-                <div class="login-box" style="margin: 20px auto;">
-                    <h2 class="login-title">تعديل بيانات المستخدم</h2>
-                    <form id="editUserForm">
-                        <div class="form-group">
-                            <label for="editUserName">الاسم الكامل</label>
-                            <input type="text" id="editUserName" value="${user.name}" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="editUserUsername">اسم المستخدم</label>
-                            <input type="text" id="editUserUsername" value="${user.username}" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="editUserPassword">كلمة المرور (اتركها فارغة للحفاظ على كلمة المرور الحالية)</label>
-                            <input type="password" id="editUserPassword">
-                        </div>
-                        <div class="form-group">
-                            <label for="editUserRole">الدور</label>
-                            <select id="editUserRole" required>
-                                <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>مدير النظام</option>
-                                <option value="supervisor" ${user.role === 'supervisor' ? 'selected' : ''}>مشرف</option>
-                                <option value="teacher" ${user.role === 'teacher' ? 'selected' : ''}>معلم</option>
-                            </select>
-                        </div>
-                        <div class="btn-group">
-                            <button type="submit" class="btn">حفظ التعديلات</button>
-                            <button type="button" class="btn btn-secondary" id="cancelEditUser">إلغاء</button>
-                        </div>
-                    </form>
-                </div>
-            `;
+            document.getElementById('userModalTitle').textContent = 'تعديل بيانات المستخدم';
+            document.getElementById('userId').value = user.id;
+            document.getElementById('userFullName').value = user.name;
+            document.getElementById('userUsername').value = user.username;
+            document.getElementById('userRole').value = user.role;
+            document.getElementById('userPassword').value = '';
             
-            document.getElementById('userList').innerHTML = formHtml;
-            
-            document.getElementById('editUserForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                saveUserChanges(userId);
-            });
-            
-            document.getElementById('cancelEditUser').addEventListener('click', function() {
-                renderUserList();
-            });
-        }
-
-        // حفظ تغييرات المستخدم
-        function saveUserChanges(userId) {
-            const user = appData.users.find(u => u.id === userId);
-            if (!user) return;
-            
-            const name = document.getElementById('editUserName').value;
-            const username = document.getElementById('editUserUsername').value;
-            const password = document.getElementById('editUserPassword').value;
-            const role = document.getElementById('editUserRole').value;
-            const avatar = name.charAt(0);
-            
-            // التحقق من عدم تكرار اسم المستخدم (باستثناء المستخدم الحالي)
-            if (appData.users.some(u => u.username === username && u.id !== userId)) {
-                alert('اسم المستخدم موجود مسبقاً');
-                return;
-            }
-            
-            user.name = name;
-            user.username = username;
-            user.role = role;
-            user.avatar = avatar;
-            
-            if (password) {
-                user.password = password;
-            }
-            
-            saveDataToStorage();
-            renderUserList();
-            alert('تم حفظ التعديلات بنجاح');
+            document.getElementById('userModal').style.display = 'flex';
         }
 
         // حذف مستخدم
@@ -2049,76 +2161,6 @@
                 saveDataToStorage();
                 renderUserList();
                 alert('تم حذف المستخدم بنجاح');
-            }
-        }
-
-        // عرض نموذج إضافة مدرس
-        function showAddTeacherModal() {
-            document.getElementById('teacherModalTitle').textContent = 'إضافة مدرس';
-            document.getElementById('teacherForm').reset();
-            document.getElementById('teacherId').value = '';
-            document.getElementById('teacherModal').style.display = 'flex';
-        }
-
-        // إغلاق نافذة المدرس
-        function closeTeacherModal() {
-            document.getElementById('teacherModal').style.display = 'none';
-        }
-
-        // حفظ مدرس
-        function saveTeacher(e) {
-            e.preventDefault();
-            
-            const teacherId = document.getElementById('teacherId').value;
-            const teacherName = document.getElementById('teacherFullName').value;
-            const department = document.getElementById('teacherDepartment').value;
-            
-            if (teacherId) {
-                // تعديل مدرس موجود
-                const teacherIndex = appData.teachersList.findIndex(t => t.id === parseInt(teacherId));
-                if (teacherIndex !== -1) {
-                    appData.teachersList[teacherIndex] = {
-                        id: parseInt(teacherId),
-                        name: teacherName,
-                        department
-                    };
-                }
-            } else {
-                // إضافة مدرس جديد
-                const newTeacher = {
-                    id: Math.max(...appData.teachersList.map(t => t.id), 0) + 1,
-                    name: teacherName,
-                    department
-                };
-                appData.teachersList.push(newTeacher);
-            }
-            
-            saveDataToStorage();
-            closeTeacherModal();
-            renderTeachersList();
-            alert('تم حفظ المدرس بنجاح');
-        }
-
-        // تعديل مدرس
-        function editTeacher(teacherId) {
-            const teacher = appData.teachersList.find(t => t.id === teacherId);
-            if (!teacher) return;
-            
-            document.getElementById('teacherModalTitle').textContent = 'تعديل بيانات المدرس';
-            document.getElementById('teacherId').value = teacher.id;
-            document.getElementById('teacherFullName').value = teacher.name;
-            document.getElementById('teacherDepartment').value = teacher.department;
-            
-            document.getElementById('teacherModal').style.display = 'flex';
-        }
-
-        // حذف مدرس
-        function deleteTeacher(teacherId) {
-            if (confirm('هل أنت متأكد من حذف هذا المدرس؟')) {
-                appData.teachersList = appData.teachersList.filter(t => t.id !== teacherId);
-                saveDataToStorage();
-                renderTeachersList();
-                alert('تم حذف المدرس بنجاح');
             }
         }
 
