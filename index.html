@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام متابعة جودة التعليم والتعلم</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c5aa0;
+            --primary-light: #4a7bc8;
+            --secondary: #4caf50;
+            --accent: #ff9800;
+            --light: #f5f7fa;
+            --dark: #333;
+            --gray: #6c757d;
+            --danger: #dc3545;
+            --success: #28a745;
+            --warning: #ffc107;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 1rem 0;
+            box-shadow: var(--box-shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: white;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* Navigation */
+        nav {
+            background-color: white;
+            padding: 0.5rem 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-tabs {
+            display: flex;
+            list-style: none;
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 0 10px;
+        }
+
+        .nav-tabs li {
+            margin: 0 5px;
+        }
+
+        .nav-tabs a {
+            display: block;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: var(--gray);
+            border-radius: var(--border-radius);
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .nav-tabs a:hover, .nav-tabs a.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        /* Main Content */
+        main {
+            padding: 2rem 0;
+        }
+
+        .section {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--light);
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: right;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        tr:hover {
+            background-color: #e9ecef;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+        }
+
+        .btn-secondary:hover {
+            background-color: #3d8b40;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        /* Login Page */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        }
+
+        .login-box {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 2rem;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-title {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        /* Dashboard */
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .stat-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .stat-card p {
+            color: var(--gray);
+            font-weight: 600;
+        }
+
+        /* User Management */
+        .user-list {
+            margin-top: 1.5rem;
+        }
+
+        .user-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+            background-color: white;
+        }
+
+        .user-details {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .stats-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .user-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .user-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <div class="login-box">
+            <h2 class="login-title">تسجيل الدخول</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">اسم المستخدم</label>
+                    <input type="text" id="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">كلمة المرور</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="btn btn-block">تسجيل الدخول</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="app" style="display: none;">
+        <header>
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">
+                        <i class="fas fa-graduation-cap"></i>
+                        <h1>نظام متابعة جودة التعليم والتعلم</h1>
+                    </div>
+                    <div class="user-info">
+                        <div class="user-avatar" id="userAvatar">م</div>
+                        <span id="userName">مستخدم</span>
+                        <button id="logoutBtn" class="btn btn-danger">تسجيل الخروج</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <nav>
+            <div class="container">
+                <ul class="nav-tabs" id="navTabs">
+                    <li><a href="#" data-section="dashboard" class="active">لوحة التحكم</a></li>
+                    <li><a href="#" data-section="middleLeadership">متابعة القيادة الوسطى</a></li>
+                    <li><a href="#" data-section="visits">الزيارات الصفية</a></li>
+                    <li><a href="#" data-section="performance">تقييم الأداء</a></li>
+                    <li><a href="#" data-section="teachers">المعلمين المتميزين</a></li>
+                    <li><a href="#" data-section="reports">التقارير النوعية</a></li>
+                    <li><a href="#" data-section="users" id="usersTab" style="display: none;">إدارة المستخدمين</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main>
+            <div class="container">
+                <!-- Dashboard Section -->
+                <section id="dashboard" class="section active">
+                    <div class="section-header">
+                        <h2 class="section-title">لوحة التحكم</h2>
+                    </div>
+                    
+                    <div class="stats-cards">
+                        <div class="stat-card">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                            <h3 id="totalVisits">0</h3>
+                            <p>إجمالي الزيارات الصفية</p>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-user-check"></i>
+                            <h3 id="distinguishedTeachers">0</h3>
+                            <p>المعلمين المتميزين</p>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-user-clock"></i>
+                            <h3 id="teachersNeedCare">0</h3>
+                            <p>المعلمين الأولى بالرعاية</p>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-chart-line"></i>
+                            <h3 id="performanceRate">0%</h3>
+                            <p>معدل الأداء المتميز</p>
+                        </div>
+                    </div>
+                    
+                    <div class="section-header">
+                        <h2 class="section-title">آخر الزيارات</h2>
+                    </div>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>اسم المعلم</th>
+                                <th>القسم</th>
+                                <th>تاريخ الزيارة</th>
+                                <th>التقييم</th>
+                                <th>الزائر</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentVisitsTable">
+                            <!-- سيتم ملؤها بالبيانات -->
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Middle Leadership Section -->
+                <section id="middleLeadership" class="section">
+                    <div class="section-header">
+                        <h2 class="section-title">متابعة تسليم القيادة الوسطى</h2>
+                    </div>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>القسم</th>
+                                <th>عدد استمارات الزيارات الصفية</th>
+                                <th>محضر اجتماع المعلم الأول أو المنسق</th>
+                                <th>الخطة الأسبوعية للمعلم الأول أو المنسق</th>
+                                <th>أسباب عدم التسليم</th>
+                            </tr>
+                        </thead>
+                        <tbody id="middleLeadershipTable">
+                            <!-- سيتم ملؤها بالبيانات -->
+                        </tbody>
+                    </table>
+                    
+                    <div class="btn-group">
+                        <button class="btn" id="addMiddleLeadership">إضافة بيانات</button>
+                        <button class="btn btn-secondary" id="saveMiddleLeadership">حفظ البيانات</button>
+                    </div>
+                </section>
+
+                <!-- Visits Section -->
+                <section id="visits" class="section">
+                    <div class="section-header">
+                        <h2 class="section-title">الزيارات الصفية</h2>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monthSelect">اختر الشهر:</label>
+                        <select id="monthSelect">
+                            <option value="يناير">يناير</option>
+                            <option value="فبراير">فبراير</option>
+                            <option value="مارس">مارس</option>
+                            <option value="أبريل">أبريل</option>
+                            <option value="مايو">مايو</option>
+                            <option value="يونيو">يونيو</option>
+                            <option value="يوليو">يوليو</option>
+                            <option value="أغسطس">أغسطس</option>
+                            <option value="سبتمبر">سبتمبر</option>
+                            <option value="أكتوبر">أكتوبر</option>
+                            <option value="نوفمبر">نوفمبر</option>
+                            <option value="ديسمبر">ديسمبر</option>
+                        </select>
+                    </div>
+                    
+                    <div class="section-header">
+                        <h3 class="section-title">بيان أسماء المعلمين المُزارين</h3>
+                    </div>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>م</th>
+                                <th>اسم المعلم</th>
+                                <th>القسم</th>
+                                <th>تاريخ الزيارة</th>
+                                <th>تقييم الزيارة</th>
+                                <th>اسم الزائر</th>
+                            </tr>
+                        </thead>
+                        <tbody id="visitsTable">
+                            <!-- سيتم ملؤها بالبيانات -->
+                        </tbody>
+                    </table>
+                    
+                    <div class="btn-group">
+                        <button class="btn" id="addVisit">إضافة زيارة</button>
+                        <button class="btn btn-secondary" id="saveVisits">حفظ البيانات</button>
+                    </div>
+                </section>
+
+                <!-- Performance Section -->
+                <section id="performance" class="section">
+                    <div class="section-header">
+                        <h2 class="section-title">تقييم الأداء الصفي</h2>
+                    </div>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>م</th>
+                                <th>الأقسام الأكاديمية</th>
+                                <th>مجموع عدد الزيارات للقسم</th>
+                                <th>يفوق التوقعات بكثير</th>
+                                <th>يفوق التوقعات</th>
+                                <th>يفي بالتوقعات</th>
+                                <th>يفي بالتوقعات جزئياً</th>
+                            </tr>
+                        </thead>
+                        <tbody id="performanceTable">
+                            <!-- سيتم ملؤها بالبيانات -->
+                        </tbody>
+                    </table>
+                    
+                    <div class="btn-group">
+                        <button class="btn" id="addPerformance">إضافة تقييم</button>
+                        <button class="btn btn-secondary" id="savePerformance">حفظ البيانات</button>
+                    </div>
+                </section>
+
+                <!-- Teachers Section -->
+                <section id="teachers" class="section">
+                    <div class="section-header">
+                        <h2 class="section-title">المعلمين المتميزين والأولى بالرعاية</h2>
+                    </div>
+                    
+                    <h3>المعلمين المتميزين</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>الرقم</th>
+                                <th>اسم المعلم</th>
+                                <th>التقدير</th>
+                                <th>المبررات</th>
+                                <th>القسم الأكاديمي</th>
+                            </tr>
+                        </thead>
+                        <tbody id="distinguishedTeachersTable">
+                            <!-- سيتم ملؤها بالبيانات -->
+                        </tbody>
+                    </table>
+                    
+                    <h3>المعلمين الأولى بالرعاية</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>الرقم</th>
+                                <th>اسم المعلم</th>
+                                <th>التقدير</th>
+                                <th>المبررات</th>
+                                <th>القسم الأكاديمي</th>
+                            </tr>
+                        </thead>
+                        <tbody id="teachersNeedCareTable">
+                            <!-- سيتم ملؤها بالبيانات -->
+                        </tbody>
+                    </table>
+                    
+                    <div class="btn-group">
+                        <button class="btn" id="addDistinguishedTeacher">إضافة معلم متميز</button>
+                        <button class="btn" id="addTeacherNeedCare">إضافة معلم يحتاج رعاية</button>
+                        <button class="btn btn-secondary" id="saveTeachers">حفظ البيانات</button>
+                    </div>
+                </section>
+
+                <!-- Reports Section -->
+                <section id="reports" class="section">
+                    <div class="section-header">
+                        <h2 class="section-title">التقرير النوعي</h2>
+                    </div>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>الأقسام الأكاديمية</th>
+                                <th>جوانب القوة</th>
+                                <th>جوانب بحاجة إلى تطوير</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportsTable">
+                            <!-- سيتم ملؤها بالبيانات -->
+                        </tbody>
+                    </table>
+                    
+                    <div class="btn-group">
+                        <button class="btn" id="addReport">إضافة تقرير</button>
+                        <button class="btn btn-secondary" id="saveReports">حفظ البيانات</button>
+                    </div>
+                </section>
+
+                <!-- Users Management Section -->
+                <section id="users" class="section">
+                    <div class="section-header">
+                        <h2 class="section-title">إدارة المستخدمين</h2>
+                        <button class="btn" id="addUserBtn">إضافة مستخدم</button>
+                    </div>
+                    
+                    <div class="user-list" id="userList">
+                        <!-- سيتم ملؤها بالبيانات -->
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // بيانات التطبيق
+        const appData = {
+            currentUser: null,
+            users: [
+                { id: 1, username: 'admin', password: 'admin123', name: 'مدير النظام', role: 'admin', avatar: 'م' },
+                { id: 2, username: 'teacher1', password: 'teacher123', name: 'أحمد محمد', role: 'teacher', avatar: 'أ' },
+                { id: 3, username: 'supervisor', password: 'super123', name: 'محمد علي', role: 'supervisor', avatar: 'م' }
+            ],
+            middleLeadership: [
+                { department: 'معلم أول / منسق اللغة العربية', visits: 5, meeting: 'نعم', plan: 'نعم', reasons: '' },
+                { department: 'معلم أول/منسق رياضيات وعلوم', visits: 4, meeting: 'نعم', plan: 'نعم', reasons: '' },
+                { department: 'معلم اول/منسق اللغة الإنجليزية', visits: 6, meeting: 'نعم', plan: 'نعم', reasons: '' },
+                { department: 'معلم أول/منسق تربية اسلامية', visits: 3, meeting: 'نعم', plan: 'نعم', reasons: '' },
+                { department: 'معلم اول/منسق المواد الاجتماعية', visits: 4, meeting: 'نعم', plan: 'نعم', reasons: '' },
+                { department: 'معلم أول/منسق نظام فصل', visits: 2, meeting: 'نعم', plan: 'نعم', reasons: '' },
+                { department: 'منسق المواد الإثرائية', visits: 3, meeting: 'نعم', plan: 'نعم', reasons: '' },
+                { department: 'منسق التربية الرياضية', visits: 5, meeting: 'نعم', plan: 'نعم', reasons: '' }
+            ],
+            visits: [
+                { id: 1, teacher: 'أحمد محمد', department: 'الرياضيات', date: '2025-10-05', evaluation: 'ممتاز', visitor: 'مدير المدرسة' },
+                { id: 2, teacher: 'فاطمة علي', department: 'العلوم', date: '2025-10-07', evaluation: 'جيد جداً', visitor: 'المدير المساعد' },
+                { id: 3, teacher: 'خالد إبراهيم', department: 'اللغة العربية', date: '2025-10-10', evaluation: 'ممتاز', visitor: 'معلم أول/منسق اللغة العربية' },
+                { id: 4, teacher: 'سارة عبدالله', department: 'اللغة الإنجليزية', date: '2025-10-12', evaluation: 'جيد', visitor: 'معلم اول/منسق اللغة الإنجليزية' }
+            ],
+            performance: [
+                { department: 'قسم الرياضيات', total: 15, excellent: 5, veryGood: 7, good: 3, fair: 0 },
+                { department: 'قسم العلوم', total: 12, excellent: 4, veryGood: 6, good: 2, fair: 0 },
+                { department: 'قسم اللغة العربية', total: 18, excellent: 7, veryGood: 8, good: 3, fair: 0 },
+                { department: 'قسم اللغة الانجليزية', total: 14, excellent: 5, veryGood: 6, good: 3, fair: 0 },
+                { department: 'قسم التربية الاسلامية', total: 10, excellent: 3, veryGood: 5, good: 2, fair: 0 },
+                { department: 'قسم المواد الاجتماعية', total: 8, excellent: 2, veryGood: 4, good: 2, fair: 0 },
+                { department: 'قسم المواد الاثرائية', total: 6, excellent: 2, veryGood: 3, good: 1, fair: 0 },
+                { department: 'قسم التربية الرياضية', total: 9, excellent: 3, veryGood: 4, good: 2, fair: 0 },
+                { department: 'قسم نظام فصل', total: 5, excellent: 2, veryGood: 2, good: 1, fair: 0 }
+            ],
+            distinguishedTeachers: [
+                { id: 1, name: 'أحمد محمد', evaluation: 'متميز', reasons: 'إبداع في طرق التدريس - تفاعل الطلاب', department: 'الرياضيات' },
+                { id: 2, name: 'فاطمة علي', evaluation: 'متميز', reasons: 'استخدام التقنية في التعليم - تنوع الأنشطة', department: 'العلوم' }
+            ],
+            teachersNeedCare: [
+                { id: 1, name: 'خالد إبراهيم', evaluation: 'بحاجة إلى تحسين', reasons: 'ضعف في إدارة الصف - قلة تفاعل الطلاب', department: 'اللغة العربية' },
+                { id: 2, name: 'سارة عبدالله', evaluation: 'بحاجة إلى تطوير', reasons: 'عدم استخدام استراتيجيات متنوعة - ضعف في التخطيط', department: 'اللغة الإنجليزية' }
+            ],
+            reports: [
+                { department: 'الرياضيات والعلوم', strengths: 'استخدام استراتيجيات متنوعة - تفاعل الطلاب', improvements: 'تحسين التقييم التكويني' },
+                { department: 'اللغة العربية', strengths: 'التمكن من المادة العلمية - استخدام اللغة الفصحى', improvements: 'تنويع الأنشطة الصفية' },
+                { department: 'اللغة الانجليزية', strengths: 'استخدام الوسائل التعليمية - مهارات التواصل', improvements: 'تحسين إدارة الوقت في الحصة' },
+                { department: 'التربية الإسلامية', strengths: 'الربط بالقيم - استخدام القصص الهادفة', improvements: 'تنويع أساليب التقويم' },
+                { department: 'المواد الاجتماعية', strengths: 'الربط بالواقع - استخدام الخرائط والوسائل', improvements: 'زيادة تفعيل التعلم النشط' },
+                { department: 'المواد الاثرائية', strengths: 'تنمية المهارات - الاهتمام بالمواهب', improvements: 'تحسين التخطيط للأنشطة' },
+                { department: 'التربية الرياضية', strengths: 'تنمية الروح الرياضية - الاهتمام بالصحة', improvements: 'تنويع الألعاب والأنشطة' },
+                { department: 'نظام الفصل', strengths: 'التفريد في التعليم - المتابعة الفردية', improvements: 'تحسين التنويع في الاستراتيجيات' }
+            ]
+        };
+
+        // تهيئة التطبيق
+        document.addEventListener('DOMContentLoaded', function() {
+            // تحميل البيانات من localStorage إذا كانت موجودة
+            loadDataFromStorage();
+            
+            // إعداد معالج تسجيل الدخول
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            
+            // إعداد معالج تسجيل الخروج
+            document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+            
+            // إعداد التنقل بين الأقسام
+            setupNavigation();
+            
+            // إعداد الأزرار والإجراءات
+            setupButtons();
+            
+            // عرض البيانات
+            renderData();
+        });
+
+        // تحميل البيانات من localStorage
+        function loadDataFromStorage() {
+            const savedData = localStorage.getItem('educationQualityData');
+            if (savedData) {
+                const parsedData = JSON.parse(savedData);
+                Object.assign(appData, parsedData);
+            }
+        }
+
+        // حفظ البيانات إلى localStorage
+        function saveDataToStorage() {
+            localStorage.setItem('educationQualityData', JSON.stringify(appData));
+        }
+
+        // معالج تسجيل الدخول
+        function handleLogin(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            const user = appData.users.find(u => u.username === username && u.password === password);
+            
+            if (user) {
+                appData.currentUser = user;
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('app').style.display = 'block';
+                document.getElementById('userName').textContent = user.name;
+                document.getElementById('userAvatar').textContent = user.avatar;
+                
+                // إظهار أو إخفاء تبويب إدارة المستخدمين بناءً على الصلاحية
+                if (user.role === 'admin') {
+                    document.getElementById('usersTab').style.display = 'block';
+                }
+                
+                renderData();
+            } else {
+                alert('اسم المستخدم أو كلمة المرور غير صحيحة');
+            }
+        }
+
+        // معالج تسجيل الخروج
+        function handleLogout() {
+            appData.currentUser = null;
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('app').style.display = 'none';
+            document.getElementById('loginForm').reset();
+        }
+
+        // إعداد التنقل بين الأقسام
+        function setupNavigation() {
+            const navTabs = document.querySelectorAll('.nav-tabs a');
+            
+            navTabs.forEach(tab => {
+                tab.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // إزالة النشاط من جميع الأقسام
+                    navTabs.forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                    
+                    // إضافة النشاط للقسم المحدد
+                    this.classList.add('active');
+                    const sectionId = this.getAttribute('data-section');
+                    document.getElementById(sectionId).classList.add('active');
+                    
+                    // إذا كان قسم المستخدمين، عرض قائمة المستخدمين
+                    if (sectionId === 'users') {
+                        renderUserList();
+                    }
+                });
+            });
+        }
+
+        // إعداد الأزرار والإجراءات
+        function setupButtons() {
+            // أزرار القيادة الوسطى
+            document.getElementById('saveMiddleLeadership').addEventListener('click', saveMiddleLeadership);
+            
+            // أزرار الزيارات
+            document.getElementById('saveVisits').addEventListener('click', saveVisits);
+            
+            // أزرار التقييم
+            document.getElementById('savePerformance').addEventListener('click', savePerformance);
+            
+            // أزرار المعلمين
+            document.getElementById('saveTeachers').addEventListener('click', saveTeachers);
+            
+            // أزرار التقارير
+            document.getElementById('saveReports').addEventListener('click', saveReports);
+            
+            // أزرار إدارة المستخدمين
+            document.getElementById('addUserBtn').addEventListener('click', showAddUserForm);
+        }
+
+        // عرض البيانات
+        function renderData() {
+            renderDashboard();
+            renderMiddleLeadership();
+            renderVisits();
+            renderPerformance();
+            renderTeachers();
+            renderReports();
+        }
+
+        // عرض لوحة التحكم
+        function renderDashboard() {
+            // حساب الإحصائيات
+            const totalVisits = appData.visits.length;
+            const distinguishedTeachers = appData.distinguishedTeachers.length;
+            const teachersNeedCare = appData.teachersNeedCare.length;
+            const performanceRate = Math.round((distinguishedTeachers / (distinguishedTeachers + teachersNeedCare)) * 100) || 0;
+            
+            // تحديث الإحصائيات
+            document.getElementById('totalVisits').textContent = totalVisits;
+            document.getElementById('distinguishedTeachers').textContent = distinguishedTeachers;
+            document.getElementById('teachersNeedCare').textContent = teachersNeedCare;
+            document.getElementById('performanceRate').textContent = `${performanceRate}%`;
+            
+            // عرض آخر الزيارات
+            const recentVisitsTable = document.getElementById('recentVisitsTable');
+            recentVisitsTable.innerHTML = '';
+            
+            appData.visits.slice(0, 5).forEach(visit => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${visit.teacher}</td>
+                    <td>${visit.department}</td>
+                    <td>${visit.date}</td>
+                    <td>${visit.evaluation}</td>
+                    <td>${visit.visitor}</td>
+                `;
+                recentVisitsTable.appendChild(row);
+            });
+        }
+
+        // عرض بيانات القيادة الوسطى
+        function renderMiddleLeadership() {
+            const table = document.getElementById('middleLeadershipTable');
+            table.innerHTML = '';
+            
+            appData.middleLeadership.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.department}</td>
+                    <td>${item.visits}</td>
+                    <td>${item.meeting}</td>
+                    <td>${item.plan}</td>
+                    <td>${item.reasons}</td>
+                `;
+                table.appendChild(row);
+            });
+        }
+
+        // عرض بيانات الزيارات
+        function renderVisits() {
+            const table = document.getElementById('visitsTable');
+            table.innerHTML = '';
+            
+            appData.visits.forEach((visit, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${visit.teacher}</td>
+                    <td>${visit.department}</td>
+                    <td>${visit.date}</td>
+                    <td>${visit.evaluation}</td>
+                    <td>${visit.visitor}</td>
+                `;
+                table.appendChild(row);
+            });
+        }
+
+        // عرض بيانات التقييم
+        function renderPerformance() {
+            const table = document.getElementById('performanceTable');
+            table.innerHTML = '';
+            
+            appData.performance.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${item.department}</td>
+                    <td>${item.total}</td>
+                    <td>${item.excellent}</td>
+                    <td>${item.veryGood}</td>
+                    <td>${item.good}</td>
+                    <td>${item.fair}</td>
+                `;
+                table.appendChild(row);
+            });
+        }
+
+        // عرض بيانات المعلمين
+        function renderTeachers() {
+            // المعلمين المتميزين
+            const distinguishedTable = document.getElementById('distinguishedTeachersTable');
+            distinguishedTable.innerHTML = '';
+            
+            appData.distinguishedTeachers.forEach((teacher, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${teacher.name}</td>
+                    <td>${teacher.evaluation}</td>
+                    <td>${teacher.reasons}</td>
+                    <td>${teacher.department}</td>
+                `;
+                distinguishedTable.appendChild(row);
+            });
+            
+            // المعلمين الأولى بالرعاية
+            const needCareTable = document.getElementById('teachersNeedCareTable');
+            needCareTable.innerHTML = '';
+            
+            appData.teachersNeedCare.forEach((teacher, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${teacher.name}</td>
+                    <td>${teacher.evaluation}</td>
+                    <td>${teacher.reasons}</td>
+                    <td>${teacher.department}</td>
+                `;
+                needCareTable.appendChild(row);
+            });
+        }
+
+        // عرض بيانات التقارير
+        function renderReports() {
+            const table = document.getElementById('reportsTable');
+            table.innerHTML = '';
+            
+            appData.reports.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.department}</td>
+                    <td>${item.strengths}</td>
+                    <td>${item.improvements}</td>
+                `;
+                table.appendChild(row);
+            });
+        }
+
+        // عرض قائمة المستخدمين
+        function renderUserList() {
+            const userList = document.getElementById('userList');
+            userList.innerHTML = '';
+            
+            appData.users.forEach(user => {
+                const userCard = document.createElement('div');
+                userCard.className = 'user-card';
+                userCard.innerHTML = `
+                    <div class="user-details">
+                        <div class="user-avatar">${user.avatar}</div>
+                        <div>
+                            <h3>${user.name}</h3>
+                            <p>اسم المستخدم: ${user.username} | الدور: ${getRoleName(user.role)}</p>
+                        </div>
+                    </div>
+                    <div class="user-actions">
+                        <button class="btn btn-secondary edit-user" data-id="${user.id}">تعديل</button>
+                        ${user.id !== appData.currentUser.id ? `<button class="btn btn-danger delete-user" data-id="${user.id}">حذف</button>` : ''}
+                    </div>
+                `;
+                userList.appendChild(userCard);
+            });
+            
+            // إضافة معالجي الأحداث للأزرار
+            document.querySelectorAll('.edit-user').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const userId = parseInt(this.getAttribute('data-id'));
+                    editUser(userId);
+                });
+            });
+            
+            document.querySelectorAll('.delete-user').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const userId = parseInt(this.getAttribute('data-id'));
+                    deleteUser(userId);
+                });
+            });
+        }
+
+        // الحصول على اسم الدور
+        function getRoleName(role) {
+            const roles = {
+                'admin': 'مدير النظام',
+                'supervisor': 'مشرف',
+                'teacher': 'معلم'
+            };
+            return roles[role] || role;
+        }
+
+        // عرض نموذج إضافة مستخدم
+        function showAddUserForm() {
+            const formHtml = `
+                <div class="login-box" style="margin: 20px auto;">
+                    <h2 class="login-title">إضافة مستخدم جديد</h2>
+                    <form id="addUserForm">
+                        <div class="form-group">
+                            <label for="newUserName">الاسم الكامل</label>
+                            <input type="text" id="newUserName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="newUserUsername">اسم المستخدم</label>
+                            <input type="text" id="newUserUsername" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="newUserPassword">كلمة المرور</label>
+                            <input type="password" id="newUserPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="newUserRole">الدور</label>
+                            <select id="newUserRole" required>
+                                <option value="admin">مدير النظام</option>
+                                <option value="supervisor">مشرف</option>
+                                <option value="teacher">معلم</option>
+                            </select>
+                        </div>
+                        <div class="btn-group">
+                            <button type="submit" class="btn">إضافة المستخدم</button>
+                            <button type="button" class="btn btn-secondary" id="cancelAddUser">إلغاء</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            
+            document.getElementById('userList').innerHTML = formHtml;
+            
+            document.getElementById('addUserForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addNewUser();
+            });
+            
+            document.getElementById('cancelAddUser').addEventListener('click', function() {
+                renderUserList();
+            });
+        }
+
+        // إضافة مستخدم جديد
+        function addNewUser() {
+            const name = document.getElementById('newUserName').value;
+            const username = document.getElementById('newUserUsername').value;
+            const password = document.getElementById('newUserPassword').value;
+            const role = document.getElementById('newUserRole').value;
+            const avatar = name.charAt(0);
+            
+            // التحقق من عدم تكرار اسم المستخدم
+            if (appData.users.some(u => u.username === username)) {
+                alert('اسم المستخدم موجود مسبقاً');
+                return;
+            }
+            
+            const newUser = {
+                id: Math.max(...appData.users.map(u => u.id)) + 1,
+                name,
+                username,
+                password,
+                role,
+                avatar
+            };
+            
+            appData.users.push(newUser);
+            saveDataToStorage();
+            renderUserList();
+            alert('تم إضافة المستخدم بنجاح');
+        }
+
+        // تعديل مستخدم
+        function editUser(userId) {
+            const user = appData.users.find(u => u.id === userId);
+            if (!user) return;
+            
+            const formHtml = `
+                <div class="login-box" style="margin: 20px auto;">
+                    <h2 class="login-title">تعديل بيانات المستخدم</h2>
+                    <form id="editUserForm">
+                        <div class="form-group">
+                            <label for="editUserName">الاسم الكامل</label>
+                            <input type="text" id="editUserName" value="${user.name}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editUserUsername">اسم المستخدم</label>
+                            <input type="text" id="editUserUsername" value="${user.username}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editUserPassword">كلمة المرور (اتركها فارغة للحفاظ على كلمة المرور الحالية)</label>
+                            <input type="password" id="editUserPassword">
+                        </div>
+                        <div class="form-group">
+                            <label for="editUserRole">الدور</label>
+                            <select id="editUserRole" required>
+                                <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>مدير النظام</option>
+                                <option value="supervisor" ${user.role === 'supervisor' ? 'selected' : ''}>مشرف</option>
+                                <option value="teacher" ${user.role === 'teacher' ? 'selected' : ''}>معلم</option>
+                            </select>
+                        </div>
+                        <div class="btn-group">
+                            <button type="submit" class="btn">حفظ التعديلات</button>
+                            <button type="button" class="btn btn-secondary" id="cancelEditUser">إلغاء</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            
+            document.getElementById('userList').innerHTML = formHtml;
+            
+            document.getElementById('editUserForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveUserChanges(userId);
+            });
+            
+            document.getElementById('cancelEditUser').addEventListener('click', function() {
+                renderUserList();
+            });
+        }
+
+        // حفظ تغييرات المستخدم
+        function saveUserChanges(userId) {
+            const user = appData.users.find(u => u.id === userId);
+            if (!user) return;
+            
+            const name = document.getElementById('editUserName').value;
+            const username = document.getElementById('editUserUsername').value;
+            const password = document.getElementById('editUserPassword').value;
+            const role = document.getElementById('editUserRole').value;
+            const avatar = name.charAt(0);
+            
+            // التحقق من عدم تكرار اسم المستخدم (باستثناء المستخدم الحالي)
+            if (appData.users.some(u => u.username === username && u.id !== userId)) {
+                alert('اسم المستخدم موجود مسبقاً');
+                return;
+            }
+            
+            user.name = name;
+            user.username = username;
+            user.role = role;
+            user.avatar = avatar;
+            
+            if (password) {
+                user.password = password;
+            }
+            
+            saveDataToStorage();
+            renderUserList();
+            alert('تم حفظ التعديلات بنجاح');
+        }
+
+        // حذف مستخدم
+        function deleteUser(userId) {
+            if (confirm('هل أنت متأكد من حذف هذا المستخدم؟')) {
+                appData.users = appData.users.filter(u => u.id !== userId);
+                saveDataToStorage();
+                renderUserList();
+                alert('تم حذف المستخدم بنجاح');
+            }
+        }
+
+        // دوال الحفظ للبيانات المختلفة
+        function saveMiddleLeadership() {
+            saveDataToStorage();
+            alert('تم حفظ بيانات القيادة الوسطى بنجاح');
+        }
+
+        function saveVisits() {
+            saveDataToStorage();
+            alert('تم حفظ بيانات الزيارات بنجاح');
+        }
+
+        function savePerformance() {
+            saveDataToStorage();
+            alert('تم حفظ بيانات التقييم بنجاح');
+        }
+
+        function saveTeachers() {
+            saveDataToStorage();
+            alert('تم حفظ بيانات المعلمين بنجاح');
+        }
+
+        function saveReports() {
+            saveDataToStorage();
+            alert('تم حفظ بيانات التقارير بنجاح');
+        }
+    </script>
+</body>
+</html>
