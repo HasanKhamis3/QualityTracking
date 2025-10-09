@@ -6,6 +6,7 @@
     <title>نظام متابعة جودة التعليم والتعلم</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --primary: #2c5aa0;
@@ -190,6 +191,10 @@
 
         tr:hover {
             background-color: #e9ecef;
+        }
+
+        .table-center td {
+            text-align: center;
         }
 
         /* Form Styles */
@@ -511,6 +516,24 @@
             color: var(--gray);
         }
 
+        /* Chart Container */
+        .chart-container {
+            margin-top: 2rem;
+            height: 400px;
+            position: relative;
+        }
+
+        /* Month Selector */
+        .month-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+            padding: 10px 15px;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .header-content {
@@ -539,6 +562,10 @@
             
             .permissions-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .chart-container {
+                height: 300px;
             }
         }
     </style>
@@ -716,7 +743,25 @@
                         <h2 class="section-title">تقييم الأداء الصفي</h2>
                     </div>
                     
-                    <table>
+                    <div class="month-selector">
+                        <label for="performanceMonth">اختر الشهر:</label>
+                        <select id="performanceMonth">
+                            <option value="يناير">يناير</option>
+                            <option value="فبراير">فبراير</option>
+                            <option value="مارس">مارس</option>
+                            <option value="أبريل">أبريل</option>
+                            <option value="مايو">مايو</option>
+                            <option value="يونيو">يونيو</option>
+                            <option value="يوليو">يوليو</option>
+                            <option value="أغسطس">أغسطس</option>
+                            <option value="سبتمبر">سبتمبر</option>
+                            <option value="أكتوبر">أكتوبر</option>
+                            <option value="نوفمبر">نوفمبر</option>
+                            <option value="ديسمبر">ديسمبر</option>
+                        </select>
+                    </div>
+                    
+                    <table class="table-center">
                         <thead>
                             <tr>
                                 <th>م</th>
@@ -732,6 +777,10 @@
                             <!-- سيتم ملؤها بالبيانات -->
                         </tbody>
                     </table>
+                    
+                    <div class="chart-container">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
                     
                     <div class="btn-group">
                         <button class="btn btn-secondary" id="savePerformance">حفظ البيانات</button>
@@ -814,8 +863,38 @@
                         <button class="btn" id="addUserBtn">إضافة مستخدم</button>
                     </div>
                     
-                    <div class="user-list" id="userList">
-                        <!-- سيتم ملؤها بالبيانات -->
+                    <div class="sub-sections">
+                        <button class="sub-section-btn active" data-subsection="users">المستخدمين</button>
+                        <button class="sub-section-btn" data-subsection="teachersList">المدرسين</button>
+                    </div>
+                    
+                    <!-- Users Subsection -->
+                    <div id="usersSubsection" class="user-subsection">
+                        <div class="user-list" id="userList">
+                            <!-- سيتم ملؤها بالبيانات -->
+                        </div>
+                    </div>
+                    
+                    <!-- Teachers List Subsection -->
+                    <div id="teachersListSubsection" class="user-subsection" style="display: none;">
+                        <div class="section-header">
+                            <h3 class="section-title">قائمة المدرسين</h3>
+                            <button class="btn" id="addTeacherBtn">إضافة مدرس</button>
+                        </div>
+                        
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>الرقم</th>
+                                    <th>اسم المعلم</th>
+                                    <th>القسم</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="teachersListTable">
+                                <!-- سيتم ملؤها بالبيانات -->
+                            </tbody>
+                        </table>
                     </div>
                 </section>
             </div>
@@ -886,6 +965,40 @@
         </div>
     </div>
 
+    <!-- Modal for Adding/Editing Teacher -->
+    <div id="teacherModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="teacherModalTitle">إضافة مدرس</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="teacherForm">
+                <input type="hidden" id="teacherId">
+                <div class="form-group">
+                    <label for="teacherFullName">اسم المعلم</label>
+                    <input type="text" id="teacherFullName" required>
+                </div>
+                <div class="form-group">
+                    <label for="teacherDepartment">القسم</label>
+                    <select id="teacherDepartment" required>
+                        <option value="اللغة العربية">اللغة العربية</option>
+                        <option value="رياضيات وعلوم">رياضيات وعلوم</option>
+                        <option value="اللغة الإنجليزية">اللغة الإنجليزية</option>
+                        <option value="تربية اسلامية">تربية اسلامية</option>
+                        <option value="المواد الاجتماعية">المواد الاجتماعية</option>
+                        <option value="نظام فصل">نظام فصل</option>
+                        <option value="المواد الإثرائية">المواد الإثرائية</option>
+                        <option value="التربية الرياضية">التربية الرياضية</option>
+                    </select>
+                </div>
+                <div class="btn-group">
+                    <button type="submit" class="btn">حفظ</button>
+                    <button type="button" class="btn btn-secondary" id="cancelTeacher">إلغاء</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         // بيانات التطبيق
         const appData = {
@@ -943,6 +1056,12 @@
                     }
                 }
             ],
+            teachersList: [
+                { id: 1, name: 'أحمد محمد', department: 'اللغة العربية' },
+                { id: 2, name: 'فاطمة علي', department: 'رياضيات وعلوم' },
+                { id: 3, name: 'خالد إبراهيم', department: 'اللغة الإنجليزية' },
+                { id: 4, name: 'سارة عبدالله', department: 'تربية اسلامية' }
+            ],
             middleLeadership: [
                 { department: 'معلم أول / منسق اللغة العربية', visits: 5, meeting: 'نعم', plan: 'نعم', reasons: '' },
                 { department: 'معلم أول/منسق رياضيات وعلوم', visits: 4, meeting: 'نعم', plan: 'نعم', reasons: '' },
@@ -992,6 +1111,31 @@
 
         // تهيئة التطبيق
         document.addEventListener('DOMContentLoaded', function() {
+            // محاولة استعادة حالة تسجيل الدخول من localStorage
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                const userData = JSON.parse(savedUser);
+                const user = appData.users.find(u => u.id === userData.id);
+                if (user) {
+                    appData.currentUser = user;
+                    document.getElementById('loginPage').style.display = 'none';
+                    document.getElementById('app').style.display = 'block';
+                    document.getElementById('userName').textContent = user.name;
+                    document.getElementById('userAvatar').textContent = user.avatar;
+                    
+                    // إظهار أو إخفاء تبويب إدارة المستخدمين بناءً على الصلاحية
+                    if (user.role === 'admin') {
+                        document.getElementById('usersTab').style.display = 'block';
+                    }
+                    
+                    renderData();
+                    
+                    // التنقل إلى القسم المحفوظ
+                    const savedSection = localStorage.getItem('currentSection') || 'dashboard';
+                    navigateToSection(savedSection);
+                }
+            }
+            
             // تحميل البيانات من localStorage إذا كانت موجودة
             loadDataFromStorage();
             
@@ -1009,9 +1153,6 @@
             
             // إعداد الروابط حسب الهاش
             setupHashRouting();
-            
-            // عرض البيانات
-            renderData();
         });
 
         // تحميل البيانات من localStorage
@@ -1019,7 +1160,12 @@
             const savedData = localStorage.getItem('educationQualityData');
             if (savedData) {
                 const parsedData = JSON.parse(savedData);
+                // دمج البيانات مع الحفاظ على المستخدم الحالي
+                const currentUser = appData.currentUser;
                 Object.assign(appData, parsedData);
+                if (currentUser) {
+                    appData.currentUser = currentUser;
+                }
             }
         }
 
@@ -1043,6 +1189,9 @@
 
         // التنقل إلى قسم معين
         function navigateToSection(sectionId) {
+            // حفظ القسم الحالي
+            localStorage.setItem('currentSection', sectionId);
+            
             // تحديث الروابط
             document.querySelectorAll('.nav-tabs a').forEach(tab => {
                 tab.classList.remove('active');
@@ -1061,6 +1210,16 @@
             
             // تحديث الهاش في الرابط
             window.location.hash = sectionId;
+            
+            // إذا كان قسم المستخدمين، عرض قائمة المستخدمين
+            if (sectionId === 'users') {
+                renderUserList();
+            }
+            
+            // إذا كان قسم تقييم الأداء، عرض الرسم البياني
+            if (sectionId === 'performance') {
+                renderPerformanceChart();
+            }
         }
 
         // معالج تسجيل الدخول
@@ -1074,6 +1233,9 @@
             
             if (user) {
                 appData.currentUser = user;
+                // حفظ حالة تسجيل الدخول
+                localStorage.setItem('currentUser', JSON.stringify({ id: user.id }));
+                
                 document.getElementById('loginPage').style.display = 'none';
                 document.getElementById('app').style.display = 'block';
                 document.getElementById('userName').textContent = user.name;
@@ -1085,6 +1247,9 @@
                 }
                 
                 renderData();
+                
+                // التنقل إلى القسم الافتراضي
+                navigateToSection('dashboard');
             } else {
                 alert('اسم المستخدم أو كلمة المرور غير صحيحة');
             }
@@ -1093,6 +1258,7 @@
         // معالج تسجيل الخروج
         function handleLogout() {
             appData.currentUser = null;
+            localStorage.removeItem('currentUser');
             document.getElementById('loginPage').style.display = 'flex';
             document.getElementById('app').style.display = 'none';
             document.getElementById('loginForm').reset();
@@ -1119,21 +1285,41 @@
             // أزرار الزيارات
             document.getElementById('addVisitBtn').addEventListener('click', showAddVisitModal);
             document.getElementById('cancelVisit').addEventListener('click', closeVisitModal);
-            document.querySelector('.close-modal').addEventListener('click', closeVisitModal);
+            document.querySelector('#visitModal .close-modal').addEventListener('click', closeVisitModal);
             document.getElementById('visitForm').addEventListener('submit', saveVisit);
             
             // أزرار الأقسام الفرعية للزيارات
-            document.querySelectorAll('.sub-section-btn').forEach(btn => {
+            document.querySelectorAll('#visitsSubSections .sub-section-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    document.querySelectorAll('.sub-section-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('#visitsSubSections .sub-section-btn').forEach(b => b.classList.remove('active'));
                     this.classList.add('active');
                     const department = this.getAttribute('data-department');
                     renderVisitsByDepartment(department);
                 });
             });
             
+            // أزرار الأقسام الفرعية لإدارة المستخدمين
+            document.querySelectorAll('#users .sub-section-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('#users .sub-section-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    const subsection = this.getAttribute('data-subsection');
+                    
+                    if (subsection === 'users') {
+                        document.getElementById('usersSubsection').style.display = 'block';
+                        document.getElementById('teachersListSubsection').style.display = 'none';
+                        renderUserList();
+                    } else if (subsection === 'teachersList') {
+                        document.getElementById('usersSubsection').style.display = 'none';
+                        document.getElementById('teachersListSubsection').style.display = 'block';
+                        renderTeachersList();
+                    }
+                });
+            });
+            
             // أزرار التقييم
             document.getElementById('savePerformance').addEventListener('click', savePerformance);
+            document.getElementById('performanceMonth').addEventListener('change', renderPerformanceChart);
             
             // أزرار المعلمين
             document.getElementById('saveTeachers').addEventListener('click', saveTeachers);
@@ -1143,6 +1329,10 @@
             
             // أزرار إدارة المستخدمين
             document.getElementById('addUserBtn').addEventListener('click', showAddUserForm);
+            document.getElementById('addTeacherBtn').addEventListener('click', showAddTeacherModal);
+            document.getElementById('cancelTeacher').addEventListener('click', closeTeacherModal);
+            document.querySelector('#teacherModal .close-modal').addEventListener('click', closeTeacherModal);
+            document.getElementById('teacherForm').addEventListener('submit', saveTeacher);
         }
 
         // عرض البيانات
@@ -1279,6 +1469,93 @@
                 `;
                 table.appendChild(row);
             });
+            
+            // عرض الرسم البياني
+            renderPerformanceChart();
+        }
+
+        // عرض الرسم البياني لتقييم الأداء
+        function renderPerformanceChart() {
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            
+            // إذا كان هناك رسم بياني موجود، قم بتدميره أولاً
+            if (window.performanceChartInstance) {
+                window.performanceChartInstance.destroy();
+            }
+            
+            const departments = appData.performance.map(item => item.department);
+            const excellentData = appData.performance.map(item => item.excellent);
+            const veryGoodData = appData.performance.map(item => item.veryGood);
+            const goodData = appData.performance.map(item => item.good);
+            const fairData = appData.performance.map(item => item.fair);
+            
+            window.performanceChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: departments,
+                    datasets: [
+                        {
+                            label: 'يفوق التوقعات بكثير',
+                            data: excellentData,
+                            backgroundColor: '#28a745',
+                            borderColor: '#28a745',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'يفوق التوقعات',
+                            data: veryGoodData,
+                            backgroundColor: '#17a2b8',
+                            borderColor: '#17a2b8',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'يفي بالتوقعات',
+                            data: goodData,
+                            backgroundColor: '#ffc107',
+                            borderColor: '#ffc107',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'يفي بالتوقعات جزئياً',
+                            data: fairData,
+                            backgroundColor: '#dc3545',
+                            borderColor: '#dc3545',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'الأقسام الأكاديمية'
+                            }
+                        },
+                        y: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'عدد الزيارات'
+                            },
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            rtl: true
+                        },
+                        title: {
+                            display: true,
+                            text: 'توزيع تقييمات الأداء الصفي حسب الأقسام'
+                        }
+                    }
+                }
+            });
         }
 
         // عرض بيانات المعلمين
@@ -1400,6 +1677,41 @@
             });
         }
 
+        // عرض قائمة المدرسين
+        function renderTeachersList() {
+            const table = document.getElementById('teachersListTable');
+            table.innerHTML = '';
+            
+            appData.teachersList.forEach((teacher, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${teacher.name}</td>
+                    <td>${teacher.department}</td>
+                    <td>
+                        <button class="btn btn-sm btn-secondary edit-teacher-list" data-id="${teacher.id}">تعديل</button>
+                        <button class="btn btn-sm btn-danger delete-teacher-list" data-id="${teacher.id}">حذف</button>
+                    </td>
+                `;
+                table.appendChild(row);
+            });
+            
+            // إضافة معالجي الأحداث للأزرار
+            document.querySelectorAll('.edit-teacher-list').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const teacherId = parseInt(this.getAttribute('data-id'));
+                    editTeacher(teacherId);
+                });
+            });
+            
+            document.querySelectorAll('.delete-teacher-list').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const teacherId = parseInt(this.getAttribute('data-id'));
+                    deleteTeacher(teacherId);
+                });
+            });
+        }
+
         // الحصول على اسم الدور
         function getRoleName(role) {
             const roles = {
@@ -1441,7 +1753,7 @@
             document.getElementById('visitorName').value = appData.currentUser.name;
             
             // تعيين القسم بناءً على القسم النشط
-            const activeDepartment = document.querySelector('.sub-section-btn.active').getAttribute('data-department');
+            const activeDepartment = document.querySelector('#visitsSubSections .sub-section-btn.active').getAttribute('data-department');
             document.getElementById('department').value = activeDepartment;
             
             document.getElementById('visitModal').style.display = 'flex';
@@ -1502,7 +1814,7 @@
             closeVisitModal();
             
             // إعادة عرض الزيارات للقسم النشط
-            const activeDepartment = document.querySelector('.sub-section-btn.active').getAttribute('data-department');
+            const activeDepartment = document.querySelector('#visitsSubSections .sub-section-btn.active').getAttribute('data-department');
             renderVisitsByDepartment(activeDepartment);
             
             // تحديث لوحة التحكم
@@ -1553,7 +1865,7 @@
                 saveDataToStorage();
                 
                 // إعادة عرض الزيارات للقسم النشط
-                const activeDepartment = document.querySelector('.sub-section-btn.active').getAttribute('data-department');
+                const activeDepartment = document.querySelector('#visitsSubSections .sub-section-btn.active').getAttribute('data-department');
                 renderVisitsByDepartment(activeDepartment);
                 
                 // تحديث لوحة التحكم
@@ -1737,6 +2049,76 @@
                 saveDataToStorage();
                 renderUserList();
                 alert('تم حذف المستخدم بنجاح');
+            }
+        }
+
+        // عرض نموذج إضافة مدرس
+        function showAddTeacherModal() {
+            document.getElementById('teacherModalTitle').textContent = 'إضافة مدرس';
+            document.getElementById('teacherForm').reset();
+            document.getElementById('teacherId').value = '';
+            document.getElementById('teacherModal').style.display = 'flex';
+        }
+
+        // إغلاق نافذة المدرس
+        function closeTeacherModal() {
+            document.getElementById('teacherModal').style.display = 'none';
+        }
+
+        // حفظ مدرس
+        function saveTeacher(e) {
+            e.preventDefault();
+            
+            const teacherId = document.getElementById('teacherId').value;
+            const teacherName = document.getElementById('teacherFullName').value;
+            const department = document.getElementById('teacherDepartment').value;
+            
+            if (teacherId) {
+                // تعديل مدرس موجود
+                const teacherIndex = appData.teachersList.findIndex(t => t.id === parseInt(teacherId));
+                if (teacherIndex !== -1) {
+                    appData.teachersList[teacherIndex] = {
+                        id: parseInt(teacherId),
+                        name: teacherName,
+                        department
+                    };
+                }
+            } else {
+                // إضافة مدرس جديد
+                const newTeacher = {
+                    id: Math.max(...appData.teachersList.map(t => t.id), 0) + 1,
+                    name: teacherName,
+                    department
+                };
+                appData.teachersList.push(newTeacher);
+            }
+            
+            saveDataToStorage();
+            closeTeacherModal();
+            renderTeachersList();
+            alert('تم حفظ المدرس بنجاح');
+        }
+
+        // تعديل مدرس
+        function editTeacher(teacherId) {
+            const teacher = appData.teachersList.find(t => t.id === teacherId);
+            if (!teacher) return;
+            
+            document.getElementById('teacherModalTitle').textContent = 'تعديل بيانات المدرس';
+            document.getElementById('teacherId').value = teacher.id;
+            document.getElementById('teacherFullName').value = teacher.name;
+            document.getElementById('teacherDepartment').value = teacher.department;
+            
+            document.getElementById('teacherModal').style.display = 'flex';
+        }
+
+        // حذف مدرس
+        function deleteTeacher(teacherId) {
+            if (confirm('هل أنت متأكد من حذف هذا المدرس؟')) {
+                appData.teachersList = appData.teachersList.filter(t => t.id !== teacherId);
+                saveDataToStorage();
+                renderTeachersList();
+                alert('تم حذف المدرس بنجاح');
             }
         }
 
