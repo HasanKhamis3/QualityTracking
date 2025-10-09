@@ -557,11 +557,6 @@
             font-weight: 600;
         }
 
-        /* User Subsection */
-        .user-subsection {
-            display: block;
-        }
-
         /* Responsive */
         @media (max-width: 768px) {
             .header-content {
@@ -891,38 +886,8 @@
                         <button class="btn" id="addUserBtn">إضافة مستخدم</button>
                     </div>
                     
-                    <div class="sub-sections">
-                        <button class="sub-section-btn active" data-subsection="users">المستخدمين</button>
-                        <button class="sub-section-btn" data-subsection="teachersList">المدرسين</button>
-                    </div>
-                    
-                    <!-- Users Subsection -->
-                    <div id="usersSubsection" class="user-subsection">
-                        <div class="user-list" id="userList">
-                            <!-- سيتم ملؤها بالبيانات -->
-                        </div>
-                    </div>
-                    
-                    <!-- Teachers List Subsection -->
-                    <div id="teachersListSubsection" class="user-subsection" style="display: none;">
-                        <div class="section-header">
-                            <h3 class="section-title">قائمة المدرسين</h3>
-                            <button class="btn" id="addTeacherBtn">إضافة مدرس</button>
-                        </div>
-                        
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>الرقم</th>
-                                    <th>اسم المعلم</th>
-                                    <th>القسم</th>
-                                    <th>الإجراءات</th>
-                                </tr>
-                            </thead>
-                            <tbody id="teachersListTable">
-                                <!-- سيتم ملؤها بالبيانات -->
-                            </tbody>
-                        </table>
+                    <div class="user-list" id="userList">
+                        <!-- سيتم ملؤها بالبيانات -->
                     </div>
                 </section>
             </div>
@@ -1025,40 +990,6 @@
                 <div class="btn-group">
                     <button type="submit" class="btn">حفظ</button>
                     <button type="button" class="btn btn-secondary" id="cancelUser">إلغاء</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal for Adding/Editing Teacher -->
-    <div id="teacherModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="teacherModalTitle">إضافة مدرس</h3>
-                <button class="close-modal">&times;</button>
-            </div>
-            <form id="teacherForm">
-                <input type="hidden" id="teacherId">
-                <div class="form-group">
-                    <label for="teacherFullName">اسم المعلم</label>
-                    <input type="text" id="teacherFullName" required>
-                </div>
-                <div class="form-group">
-                    <label for="teacherDepartment">القسم</label>
-                    <select id="teacherDepartment" required>
-                        <option value="اللغة العربية">اللغة العربية</option>
-                        <option value="رياضيات وعلوم">رياضيات وعلوم</option>
-                        <option value="اللغة الإنجليزية">اللغة الإنجليزية</option>
-                        <option value="تربية اسلامية">تربية اسلامية</option>
-                        <option value="المواد الاجتماعية">المواد الاجتماعية</option>
-                        <option value="نظام فصل">نظام فصل</option>
-                        <option value="المواد الإثرائية">المواد الإثرائية</option>
-                        <option value="التربية الرياضية">التربية الرياضية</option>
-                    </select>
-                </div>
-                <div class="btn-group">
-                    <button type="submit" class="btn">حفظ</button>
-                    <button type="button" class="btn btn-secondary" id="cancelTeacher">إلغاء</button>
                 </div>
             </form>
         </div>
@@ -1192,14 +1123,6 @@
                         }
                     }
                 }
-            ],
-            teachersList: [
-                { id: 1, name: 'أحمد محمد', department: 'اللغة العربية' },
-                { id: 2, name: 'فاطمة علي', department: 'رياضيات وعلوم' },
-                { id: 3, name: 'خالد إبراهيم', department: 'اللغة الإنجليزية' },
-                { id: 4, name: 'سارة عبدالله', department: 'تربية اسلامية' },
-                { id: 5, name: 'علي حسن', department: 'المواد الاجتماعية' },
-                { id: 6, name: 'نورة أحمد', department: 'نظام فصل' }
             ],
             middleLeadership: [
                 { department: 'معلم أول / منسق اللغة العربية', visits: 5, meeting: 'نعم', plan: 'نعم', reasons: '' },
@@ -1437,25 +1360,6 @@
                 });
             });
             
-            // أزرار الأقسام الفرعية لإدارة المستخدمين
-            document.querySelectorAll('#users .sub-section-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('#users .sub-section-btn').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    const subsection = this.getAttribute('data-subsection');
-                    
-                    if (subsection === 'users') {
-                        document.getElementById('usersSubsection').style.display = 'block';
-                        document.getElementById('teachersListSubsection').style.display = 'none';
-                        renderUserList();
-                    } else if (subsection === 'teachersList') {
-                        document.getElementById('usersSubsection').style.display = 'none';
-                        document.getElementById('teachersListSubsection').style.display = 'block';
-                        renderTeachersList();
-                    }
-                });
-            });
-            
             // أزرار التقييم
             document.getElementById('savePerformance').addEventListener('click', savePerformance);
             document.getElementById('performanceMonth').addEventListener('change', renderPerformanceChart);
@@ -1471,12 +1375,6 @@
             document.getElementById('cancelUser').addEventListener('click', closeUserModal);
             document.querySelector('#userModal .close-modal').addEventListener('click', closeUserModal);
             document.getElementById('userForm').addEventListener('submit', saveUser);
-            
-            // أزرار المدرسين
-            document.getElementById('addTeacherBtn').addEventListener('click', showAddTeacherModal);
-            document.getElementById('cancelTeacher').addEventListener('click', closeTeacherModal);
-            document.querySelector('#teacherModal .close-modal').addEventListener('click', closeTeacherModal);
-            document.getElementById('teacherForm').addEventListener('submit', saveTeacher);
         }
 
         // عرض البيانات
@@ -1834,11 +1732,6 @@
             const userList = document.getElementById('userList');
             userList.innerHTML = '';
             
-            if (appData.users.length === 0) {
-                userList.innerHTML = '<p>لا يوجد مستخدمين مسجلين في النظام</p>';
-                return;
-            }
-            
             appData.users.forEach(user => {
                 const userCard = document.createElement('div');
                 userCard.className = 'user-card';
@@ -1946,46 +1839,6 @@
                 btn.addEventListener('click', function() {
                     const userId = parseInt(this.getAttribute('data-id'));
                     deleteUser(userId);
-                });
-            });
-        }
-
-        // عرض قائمة المدرسين
-        function renderTeachersList() {
-            const table = document.getElementById('teachersListTable');
-            table.innerHTML = '';
-            
-            if (appData.teachersList.length === 0) {
-                table.innerHTML = '<tr><td colspan="4" style="text-align: center;">لا يوجد مدرسين مسجلين في النظام</td></tr>';
-                return;
-            }
-            
-            appData.teachersList.forEach((teacher, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${teacher.name}</td>
-                    <td>${teacher.department}</td>
-                    <td>
-                        <button class="btn btn-sm btn-secondary edit-teacher-list" data-id="${teacher.id}">تعديل</button>
-                        <button class="btn btn-sm btn-danger delete-teacher-list" data-id="${teacher.id}">حذف</button>
-                    </td>
-                `;
-                table.appendChild(row);
-            });
-            
-            // إضافة معالجي الأحداث للأزرار
-            document.querySelectorAll('.edit-teacher-list').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const teacherId = parseInt(this.getAttribute('data-id'));
-                    editTeacher(teacherId);
-                });
-            });
-            
-            document.querySelectorAll('.delete-teacher-list').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const teacherId = parseInt(this.getAttribute('data-id'));
-                    deleteTeacher(teacherId);
                 });
             });
         }
@@ -2222,8 +2075,6 @@
                     if (password) {
                         appData.users[userIndex].password = password;
                     }
-                    
-                    alert('تم تعديل المستخدم بنجاح');
                 }
             } else {
                 // التحقق من عدم تكرار اسم المستخدم
@@ -2280,12 +2131,12 @@
                 };
                 
                 appData.users.push(newUser);
-                alert('تم إضافة المستخدم بنجاح');
             }
             
             saveDataToStorage();
             closeUserModal();
             renderUserList();
+            alert('تم حفظ المستخدم بنجاح');
         }
 
         // تعديل مستخدم
@@ -2310,77 +2161,6 @@
                 saveDataToStorage();
                 renderUserList();
                 alert('تم حذف المستخدم بنجاح');
-            }
-        }
-
-        // عرض نموذج إضافة مدرس
-        function showAddTeacherModal() {
-            document.getElementById('teacherModalTitle').textContent = 'إضافة مدرس';
-            document.getElementById('teacherForm').reset();
-            document.getElementById('teacherId').value = '';
-            document.getElementById('teacherModal').style.display = 'flex';
-        }
-
-        // إغلاق نافذة المدرس
-        function closeTeacherModal() {
-            document.getElementById('teacherModal').style.display = 'none';
-        }
-
-        // حفظ مدرس
-        function saveTeacher(e) {
-            e.preventDefault();
-            
-            const teacherId = document.getElementById('teacherId').value;
-            const teacherName = document.getElementById('teacherFullName').value;
-            const department = document.getElementById('teacherDepartment').value;
-            
-            if (teacherId) {
-                // تعديل مدرس موجود
-                const teacherIndex = appData.teachersList.findIndex(t => t.id === parseInt(teacherId));
-                if (teacherIndex !== -1) {
-                    appData.teachersList[teacherIndex] = {
-                        id: parseInt(teacherId),
-                        name: teacherName,
-                        department
-                    };
-                    alert('تم تعديل المدرس بنجاح');
-                }
-            } else {
-                // إضافة مدرس جديد
-                const newTeacher = {
-                    id: Math.max(...appData.teachersList.map(t => t.id), 0) + 1,
-                    name: teacherName,
-                    department
-                };
-                appData.teachersList.push(newTeacher);
-                alert('تم إضافة المدرس بنجاح');
-            }
-            
-            saveDataToStorage();
-            closeTeacherModal();
-            renderTeachersList();
-        }
-
-        // تعديل مدرس
-        function editTeacher(teacherId) {
-            const teacher = appData.teachersList.find(t => t.id === teacherId);
-            if (!teacher) return;
-            
-            document.getElementById('teacherModalTitle').textContent = 'تعديل بيانات المدرس';
-            document.getElementById('teacherId').value = teacher.id;
-            document.getElementById('teacherFullName').value = teacher.name;
-            document.getElementById('teacherDepartment').value = teacher.department;
-            
-            document.getElementById('teacherModal').style.display = 'flex';
-        }
-
-        // حذف مدرس
-        function deleteTeacher(teacherId) {
-            if (confirm('هل أنت متأكد من حذف هذا المدرس؟')) {
-                appData.teachersList = appData.teachersList.filter(t => t.id !== teacherId);
-                saveDataToStorage();
-                renderTeachersList();
-                alert('تم حذف المدرس بنجاح');
             }
         }
 
