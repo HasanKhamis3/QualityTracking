@@ -557,6 +557,34 @@
             font-weight: 600;
         }
 
+        /* Excel Upload */
+        .excel-upload {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+        }
+
+        .upload-area {
+            border: 2px dashed #ddd;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            text-align: center;
+            margin-top: 1rem;
+            background-color: white;
+        }
+
+        .upload-area.active {
+            border-color: var(--primary);
+            background-color: rgba(44, 90, 160, 0.05);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .header-content {
@@ -737,6 +765,8 @@
                         <button class="sub-section-btn" data-department="نظام فصل">نظام فصل</button>
                         <button class="sub-section-btn" data-department="المواد الإثرائية">المواد الإثرائية</button>
                         <button class="sub-section-btn" data-department="التربية الرياضية">التربية الرياضية</button>
+                        <button class="sub-section-btn" data-department="القيادة العليا">القيادة العليا</button>
+                        <button class="sub-section-btn" data-department="القيادة الوسطى">القيادة الوسطى</button>
                     </div>
                     
                     <table>
@@ -746,8 +776,6 @@
                                 <th>اسم المعلم</th>
                                 <th>القسم</th>
                                 <th>تاريخ الزيارة</th>
-                                <th>الحصة</th>
-                                <th>الصف</th>
                                 <th>تقييم الزيارة</th>
                                 <th>اسم الزائر</th>
                                 <th>الملاحظات</th>
@@ -886,6 +914,39 @@
                         <button class="btn" id="addUserBtn">إضافة مستخدم</button>
                     </div>
                     
+                    <!-- قسم القيادة العليا -->
+                    <div class="excel-upload">
+                        <h3>القيادة العليا</h3>
+                        <div class="upload-area" id="seniorLeadershipUpload">
+                            <i class="fas fa-file-excel upload-icon"></i>
+                            <p>اسحب وأفلت ملف Excel هنا أو انقر للاختيار</p>
+                            <input type="file" id="seniorLeadershipFile" accept=".xlsx, .xls" style="display: none;">
+                            <button class="btn" id="seniorLeadershipUploadBtn">رفع ملف Excel</button>
+                        </div>
+                    </div>
+                    
+                    <!-- قسم القيادة الوسطى -->
+                    <div class="excel-upload">
+                        <h3>القيادة الوسطى</h3>
+                        <div class="upload-area" id="middleLeadershipUpload">
+                            <i class="fas fa-file-excel upload-icon"></i>
+                            <p>اسحب وأفلت ملف Excel هنا أو انقر للاختيار</p>
+                            <input type="file" id="middleLeadershipFile" accept=".xlsx, .xls" style="display: none;">
+                            <button class="btn" id="middleLeadershipUploadBtn">رفع ملف Excel</button>
+                        </div>
+                    </div>
+                    
+                    <!-- قسم المعلمات -->
+                    <div class="excel-upload">
+                        <h3>المعلمات</h3>
+                        <div class="upload-area" id="teachersUpload">
+                            <i class="fas fa-file-excel upload-icon"></i>
+                            <p>اسحب وأفلت ملف Excel هنا أو انقر للاختيار</p>
+                            <input type="file" id="teachersFile" accept=".xlsx, .xls" style="display: none;">
+                            <button class="btn" id="teachersUploadBtn">رفع ملف Excel</button>
+                        </div>
+                    </div>
+                    
                     <div class="user-list" id="userList">
                         <!-- سيتم ملؤها بالبيانات -->
                     </div>
@@ -918,19 +979,13 @@
                         <option value="نظام فصل">نظام فصل</option>
                         <option value="المواد الإثرائية">المواد الإثرائية</option>
                         <option value="التربية الرياضية">التربية الرياضية</option>
+                        <option value="القيادة العليا">القيادة العليا</option>
+                        <option value="القيادة الوسطى">القيادة الوسطى</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="visitDate">تاريخ الزيارة</label>
                     <input type="date" id="visitDate" required>
-                </div>
-                <div class="form-group">
-                    <label for="classPeriod">الحصة</label>
-                    <input type="text" id="classPeriod" required>
-                </div>
-                <div class="form-group">
-                    <label for="classGrade">الصف</label>
-                    <input type="text" id="classGrade" required>
                 </div>
                 <div class="form-group">
                     <label for="evaluation">تقييم الزيارة</label>
@@ -985,6 +1040,8 @@
                         <option value="admin">مدير النظام</option>
                         <option value="supervisor">مشرف</option>
                         <option value="teacher">معلم</option>
+                        <option value="senior_leadership">القيادة العليا</option>
+                        <option value="middle_leadership">القيادة الوسطى</option>
                     </select>
                 </div>
                 <div class="btn-group">
@@ -1025,150 +1082,19 @@
                             'المواد الاجتماعية': true,
                             'نظام فصل': true,
                             'المواد الإثرائية': true,
-                            'التربية الرياضية': true
-                        },
-                        // صلاحيات الأقسام الفرعية
-                        subDepartments: {
-                            'اللغة العربية': {
-                                'الصف الأول': true,
-                                'الصف الثاني': true,
-                                'الصف الثالث': true
-                            },
-                            'رياضيات وعلوم': {
-                                'الرياضيات': true,
-                                'العلوم': true
-                            },
-                            'اللغة الإنجليزية': {
-                                'المبتدئين': true,
-                                'المتوسطين': true,
-                                'المتقدمين': true
-                            }
-                        }
-                    }
-                },
-                { 
-                    id: 2, 
-                    username: 'teacher1', 
-                    password: 'teacher123', 
-                    name: 'أحمد محمد', 
-                    role: 'teacher', 
-                    avatar: 'أ',
-                    permissions: {
-                        dashboard: true,
-                        middleLeadership: false,
-                        visits: true,
-                        performance: false,
-                        teachers: false,
-                        reports: false,
-                        users: false,
-                        departments: {
-                            'اللغة العربية': true,
-                            'رياضيات وعلوم': false,
-                            'اللغة الإنجليزية': false,
-                            'تربية اسلامية': false,
-                            'المواد الاجتماعية': false,
-                            'نظام فصل': false,
-                            'المواد الإثرائية': false,
-                            'التربية الرياضية': false
-                        },
-                        subDepartments: {
-                            'اللغة العربية': {
-                                'الصف الأول': true,
-                                'الصف الثاني': false,
-                                'الصف الثالث': true
-                            }
-                        }
-                    }
-                },
-                { 
-                    id: 3, 
-                    username: 'supervisor', 
-                    password: 'super123', 
-                    name: 'محمد علي', 
-                    role: 'supervisor', 
-                    avatar: 'م',
-                    permissions: {
-                        dashboard: true,
-                        middleLeadership: true,
-                        visits: true,
-                        performance: true,
-                        teachers: true,
-                        reports: true,
-                        users: false,
-                        departments: {
-                            'اللغة العربية': true,
-                            'رياضيات وعلوم': true,
-                            'اللغة الإنجليزية': true,
-                            'تربية اسلامية': false,
-                            'المواد الاجتماعية': false,
-                            'نظام فصل': false,
-                            'المواد الإثرائية': false,
-                            'التربية الرياضية': false
-                        },
-                        subDepartments: {
-                            'اللغة العربية': {
-                                'الصف الأول': true,
-                                'الصف الثاني': true,
-                                'الصف الثالث': true
-                            },
-                            'رياضيات وعلوم': {
-                                'الرياضيات': true,
-                                'العلوم': true
-                            },
-                            'اللغة الإنجليزية': {
-                                'المبتدئين': true,
-                                'المتوسطين': true,
-                                'المتقدمين': false
-                            }
+                            'التربية الرياضية': true,
+                            'القيادة العليا': true,
+                            'القيادة الوسطى': true
                         }
                     }
                 }
             ],
-            middleLeadership: [
-                { department: 'معلم أول / منسق اللغة العربية', visits: 5, meeting: 'نعم', plan: 'نعم', reasons: '' },
-                { department: 'معلم أول/منسق رياضيات وعلوم', visits: 4, meeting: 'نعم', plan: 'نعم', reasons: '' },
-                { department: 'معلم اول/منسق اللغة الإنجليزية', visits: 6, meeting: 'نعم', plan: 'نعم', reasons: '' },
-                { department: 'معلم أول/منسق تربية اسلامية', visits: 3, meeting: 'نعم', plan: 'نعم', reasons: '' },
-                { department: 'معلم اول/منسق المواد الاجتماعية', visits: 4, meeting: 'نعم', plan: 'نعم', reasons: '' },
-                { department: 'معلم أول/منسق نظام فصل', visits: 2, meeting: 'نعم', plan: 'نعم', reasons: '' },
-                { department: 'منسق المواد الإثرائية', visits: 3, meeting: 'نعم', plan: 'نعم', reasons: '' },
-                { department: 'منسق التربية الرياضية', visits: 5, meeting: 'نعم', plan: 'نعم', reasons: '' }
-            ],
-            visits: [
-                { id: 1, teacher: 'أحمد محمد', department: 'اللغة العربية', date: '2025-10-05', period: 'الأولى', grade: 'الصف السادس', evaluation: 'ممتاز', visitor: 'مدير المدرسة', notes: 'أداء متميز في إدارة الصف' },
-                { id: 2, teacher: 'فاطمة علي', department: 'رياضيات وعلوم', date: '2025-10-07', period: 'الثانية', grade: 'الصف الخامس', evaluation: 'جيد جداً', visitor: 'المدير المساعد', notes: 'استخدام جيد للوسائل التعليمية' },
-                { id: 3, teacher: 'خالد إبراهيم', department: 'اللغة العربية', date: '2025-10-10', period: 'الثالثة', grade: 'الصف الرابع', evaluation: 'ممتاز', visitor: 'معلم أول/منسق اللغة العربية', notes: 'تفاعل الطلاب كان ممتازاً' },
-                { id: 4, teacher: 'سارة عبدالله', department: 'اللغة الإنجليزية', date: '2025-10-12', period: 'الرابعة', grade: 'الصف السابع', evaluation: 'جيد', visitor: 'معلم اول/منسق اللغة الإنجليزية', notes: 'بحاجة إلى تحسين في إدارة الوقت' }
-            ],
-            performance: [
-                { department: 'قسم الرياضيات', total: 15, excellent: 5, veryGood: 7, good: 3, fair: 0 },
-                { department: 'قسم العلوم', total: 12, excellent: 4, veryGood: 6, good: 2, fair: 0 },
-                { department: 'قسم اللغة العربية', total: 18, excellent: 7, veryGood: 8, good: 3, fair: 0 },
-                { department: 'قسم اللغة الانجليزية', total: 14, excellent: 5, veryGood: 6, good: 3, fair: 0 },
-                { department: 'قسم التربية الاسلامية', total: 10, excellent: 3, veryGood: 5, good: 2, fair: 0 },
-                { department: 'قسم المواد الاجتماعية', total: 8, excellent: 2, veryGood: 4, good: 2, fair: 0 },
-                { department: 'قسم المواد الاثرائية', total: 6, excellent: 2, veryGood: 3, good: 1, fair: 0 },
-                { department: 'قسم التربية الرياضية', total: 9, excellent: 3, veryGood: 4, good: 2, fair: 0 },
-                { department: 'قسم نظام فصل', total: 5, excellent: 2, veryGood: 2, good: 1, fair: 0 }
-            ],
-            distinguishedTeachers: [
-                { id: 1, name: 'أحمد محمد', evaluation: 'متميز', reasons: 'إبداع في طرق التدريس - تفاعل الطلاب', department: 'الرياضيات' },
-                { id: 2, name: 'فاطمة علي', evaluation: 'متميز', reasons: 'استخدام التقنية في التعليم - تنوع الأنشطة', department: 'العلوم' }
-            ],
-            teachersNeedCare: [
-                { id: 1, name: 'خالد إبراهيم', evaluation: 'بحاجة إلى تحسين', reasons: 'ضعف في إدارة الصف - قلة تفاعل الطلاب', department: 'اللغة العربية' },
-                { id: 2, name: 'سارة عبدالله', evaluation: 'بحاجة إلى تطوير', reasons: 'عدم استخدام استراتيجيات متنوعة - ضعف في التخطيط', department: 'اللغة الإنجليزية' }
-            ],
-            reports: [
-                { department: 'الرياضيات والعلوم', strengths: 'استخدام استراتيجيات متنوعة - تفاعل الطلاب', improvements: 'تحسين التقييم التكويني' },
-                { department: 'اللغة العربية', strengths: 'التمكن من المادة العلمية - استخدام اللغة الفصحى', improvements: 'تنويع الأنشطة الصفية' },
-                { department: 'اللغة الانجليزية', strengths: 'استخدام الوسائل التعليمية - مهارات التواصل', improvements: 'تحسين إدارة الوقت في الحصة' },
-                { department: 'التربية الإسلامية', strengths: 'الربط بالقيم - استخدام القصص الهادفة', improvements: 'تنويع أساليب التقويم' },
-                { department: 'المواد الاجتماعية', strengths: 'الربط بالواقع - استخدام الخرائط والوسائل', improvements: 'زيادة تفعيل التعلم النشط' },
-                { department: 'المواد الاثرائية', strengths: 'تنمية المهارات - الاهتمام بالمواهب', improvements: 'تحسين التخطيط للأنشطة' },
-                { department: 'التربية الرياضية', strengths: 'تنمية الروح الرياضية - الاهتمام بالصحة', improvements: 'تنويع الألعاب والأنشطة' },
-                { department: 'نظام الفصل', strengths: 'التفريد في التعليم - المتابعة الفردية', improvements: 'تحسين التنويع في الاستراتيجيات' }
-            ]
+            middleLeadership: [],
+            visits: [],
+            performance: [],
+            distinguishedTeachers: [],
+            teachersNeedCare: [],
+            reports: []
         };
 
         // تهيئة التطبيق
@@ -1375,6 +1301,84 @@
             document.getElementById('cancelUser').addEventListener('click', closeUserModal);
             document.querySelector('#userModal .close-modal').addEventListener('click', closeUserModal);
             document.getElementById('userForm').addEventListener('submit', saveUser);
+            
+            // أزرار رفع ملفات Excel
+            document.getElementById('seniorLeadershipUploadBtn').addEventListener('click', function() {
+                document.getElementById('seniorLeadershipFile').click();
+            });
+            
+            document.getElementById('middleLeadershipUploadBtn').addEventListener('click', function() {
+                document.getElementById('middleLeadershipFile').click();
+            });
+            
+            document.getElementById('teachersUploadBtn').addEventListener('click', function() {
+                document.getElementById('teachersFile').click();
+            });
+            
+            // معالجة اختيار الملفات
+            document.getElementById('seniorLeadershipFile').addEventListener('change', handleExcelUpload);
+            document.getElementById('middleLeadershipFile').addEventListener('change', handleExcelUpload);
+            document.getElementById('teachersFile').addEventListener('change', handleExcelUpload);
+        }
+
+        // معالجة رفع ملفات Excel
+        function handleExcelUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const fileType = e.target.id;
+            let userRole = '';
+            
+            if (fileType === 'seniorLeadershipFile') {
+                userRole = 'senior_leadership';
+            } else if (fileType === 'middleLeadershipFile') {
+                userRole = 'middle_leadership';
+            } else if (fileType === 'teachersFile') {
+                userRole = 'teacher';
+            }
+            
+            // محاكاة معالجة ملف Excel
+            alert(`تم رفع ملف ${file.name} بنجاح. سيتم معالجة البيانات وإضافة المستخدمين الجدد.`);
+            
+            // محاكاة إضافة مستخدمين من ملف Excel
+            const newUsers = [
+                { 
+                    id: Math.max(...appData.users.map(u => u.id)) + 1,
+                    username: `user${Math.floor(Math.random() * 1000)}`, 
+                    password: 'default123', 
+                    name: 'مستخدم جديد', 
+                    role: userRole, 
+                    avatar: 'ج',
+                    permissions: {
+                        dashboard: true,
+                        middleLeadership: false,
+                        visits: true,
+                        performance: false,
+                        teachers: false,
+                        reports: false,
+                        users: false,
+                        departments: {
+                            'اللغة العربية': false,
+                            'رياضيات وعلوم': false,
+                            'اللغة الإنجليزية': false,
+                            'تربية اسلامية': false,
+                            'المواد الاجتماعية': false,
+                            'نظام فصل': false,
+                            'المواد الإثرائية': false,
+                            'التربية الرياضية': false,
+                            'القيادة العليا': userRole === 'senior_leadership',
+                            'القيادة الوسطى': userRole === 'middle_leadership'
+                        }
+                    }
+                }
+            ];
+            
+            appData.users.push(...newUsers);
+            saveDataToStorage();
+            renderUserList();
+            
+            // إعادة تعيين حقل الملف
+            e.target.value = '';
         }
 
         // عرض البيانات
@@ -1447,7 +1451,24 @@
             const table = document.getElementById('visitsTable');
             table.innerHTML = '';
             
-            const filteredVisits = appData.visits.filter(visit => visit.department === department);
+            let filteredVisits = [];
+            
+            if (department === 'القيادة العليا') {
+                // عرض زيارات القيادة العليا حسب المستخدمين
+                const seniorLeadershipUsers = appData.users.filter(u => u.role === 'senior_leadership');
+                filteredVisits = appData.visits.filter(visit => 
+                    seniorLeadershipUsers.some(user => user.name === visit.visitor)
+                );
+            } else if (department === 'القيادة الوسطى') {
+                // عرض زيارات القيادة الوسطى حسب المستخدمين
+                const middleLeadershipUsers = appData.users.filter(u => u.role === 'middle_leadership');
+                filteredVisits = appData.visits.filter(visit => 
+                    middleLeadershipUsers.some(user => user.name === visit.visitor)
+                );
+            } else {
+                // عرض الزيارات العادية حسب القسم
+                filteredVisits = appData.visits.filter(visit => visit.department === department);
+            }
             
             filteredVisits.forEach((visit, index) => {
                 const row = document.createElement('tr');
@@ -1456,8 +1477,6 @@
                     <td>${visit.teacher}</td>
                     <td>${visit.department}</td>
                     <td>${visit.date}</td>
-                    <td>${visit.period}</td>
-                    <td>${visit.grade}</td>
                     <td>${visit.evaluation}</td>
                     <td>${visit.visitor}</td>
                     <td>${visit.notes}</td>
@@ -1756,7 +1775,7 @@
                 basicPermissionsSection.innerHTML = `
                     <h4>الصلاحيات الأساسية:</h4>
                     <div class="permissions-grid" id="basic-permissions-${user.id}">
-                        ${Object.keys(user.permissions).filter(p => !['departments', 'subDepartments'].includes(p)).map(permission => `
+                        ${Object.keys(user.permissions).filter(p => !['departments'].includes(p)).map(permission => `
                             <div class="permission-item">
                                 <span>${getPermissionName(permission)}</span>
                                 <label class="toggle-switch">
@@ -1785,17 +1804,6 @@
                                         <span class="toggle-slider"></span>
                                     </label>
                                 </div>
-                                ${user.permissions.subDepartments && user.permissions.subDepartments[department] ? 
-                                    Object.keys(user.permissions.subDepartments[department]).map(subDept => `
-                                        <div class="permission-item">
-                                            <span>${subDept}</span>
-                                            <label class="toggle-switch">
-                                                <input type="checkbox" ${user.permissions.subDepartments[department][subDept] ? 'checked' : ''} data-user="${user.id}" data-type="subdepartment" data-department="${department}" data-subdepartment="${subDept}">
-                                                <span class="toggle-slider"></span>
-                                            </label>
-                                        </div>
-                                    `).join('') : ''
-                                }
                             </div>
                         </div>
                     `).join('')}
@@ -1814,15 +1822,8 @@
                 document.querySelectorAll(`.department-permissions input[type="checkbox"]`).forEach(checkbox => {
                     checkbox.addEventListener('change', function() {
                         const userId = parseInt(this.getAttribute('data-user'));
-                        const type = this.getAttribute('data-type');
                         const department = this.getAttribute('data-department');
-                        const subdepartment = this.getAttribute('data-subdepartment');
-                        
-                        if (type === 'department') {
-                            updateUserDepartmentPermission(userId, department, this.checked);
-                        } else if (type === 'subdepartment') {
-                            updateUserSubDepartmentPermission(userId, department, subdepartment, this.checked);
-                        }
+                        updateUserDepartmentPermission(userId, department, this.checked);
                     });
                 });
             });
@@ -1848,7 +1849,9 @@
             const roles = {
                 'admin': 'مدير النظام',
                 'supervisor': 'مشرف',
-                'teacher': 'معلم'
+                'teacher': 'معلم',
+                'senior_leadership': 'القيادة العليا',
+                'middle_leadership': 'القيادة الوسطى'
             };
             return roles[role] || role;
         }
@@ -1888,21 +1891,6 @@
             }
         }
 
-        // تحديث صلاحية قسم فرعي للمستخدم
-        function updateUserSubDepartmentPermission(userId, department, subdepartment, value) {
-            const user = appData.users.find(u => u.id === userId);
-            if (user) {
-                if (!user.permissions.subDepartments) {
-                    user.permissions.subDepartments = {};
-                }
-                if (!user.permissions.subDepartments[department]) {
-                    user.permissions.subDepartments[department] = {};
-                }
-                user.permissions.subDepartments[department][subdepartment] = value;
-                saveDataToStorage();
-            }
-        }
-
         // عرض نموذج إضافة زيارة
         function showAddVisitModal() {
             document.getElementById('visitModalTitle').textContent = 'إضافة زيارة صفية';
@@ -1930,8 +1918,6 @@
             const teacherName = document.getElementById('teacherName').value;
             const department = document.getElementById('department').value;
             const visitDate = document.getElementById('visitDate').value;
-            const classPeriod = document.getElementById('classPeriod').value;
-            const classGrade = document.getElementById('classGrade').value;
             const evaluation = document.getElementById('evaluation').value;
             const visitorName = document.getElementById('visitorName').value;
             const notes = document.getElementById('notes').value;
@@ -1945,8 +1931,6 @@
                         teacher: teacherName,
                         department,
                         date: visitDate,
-                        period: classPeriod,
-                        grade: classGrade,
                         evaluation,
                         visitor: visitorName,
                         notes
@@ -1959,8 +1943,6 @@
                     teacher: teacherName,
                     department,
                     date: visitDate,
-                    period: classPeriod,
-                    grade: classGrade,
                     evaluation,
                     visitor: visitorName,
                     notes
@@ -1990,8 +1972,6 @@
 المعلم: ${visit.teacher}
 القسم: ${visit.department}
 التاريخ: ${visit.date}
-الحصة: ${visit.period}
-الصف: ${visit.grade}
 التقييم: ${visit.evaluation}
 الزائر: ${visit.visitor}
 الملاحظات: ${visit.notes}`);
@@ -2007,8 +1987,6 @@
             document.getElementById('teacherName').value = visit.teacher;
             document.getElementById('department').value = visit.department;
             document.getElementById('visitDate').value = visit.date;
-            document.getElementById('classPeriod').value = visit.period;
-            document.getElementById('classGrade').value = visit.grade;
             document.getElementById('evaluation').value = visit.evaluation;
             document.getElementById('visitorName').value = visit.visitor;
             document.getElementById('notes').value = visit.notes;
@@ -2100,23 +2078,9 @@
                         'المواد الاجتماعية': role === 'admin' || role === 'supervisor',
                         'نظام فصل': role === 'admin' || role === 'supervisor',
                         'المواد الإثرائية': role === 'admin' || role === 'supervisor',
-                        'التربية الرياضية': role === 'admin' || role === 'supervisor'
-                    },
-                    subDepartments: {
-                        'اللغة العربية': {
-                            'الصف الأول': role === 'admin' || role === 'supervisor',
-                            'الصف الثاني': role === 'admin' || role === 'supervisor',
-                            'الصف الثالث': role === 'admin' || role === 'supervisor'
-                        },
-                        'رياضيات وعلوم': {
-                            'الرياضيات': role === 'admin' || role === 'supervisor',
-                            'العلوم': role === 'admin' || role === 'supervisor'
-                        },
-                        'اللغة الإنجليزية': {
-                            'المبتدئين': role === 'admin' || role === 'supervisor',
-                            'المتوسطين': role === 'admin' || role === 'supervisor',
-                            'المتقدمين': role === 'admin' || role === 'supervisor'
-                        }
+                        'التربية الرياضية': role === 'admin' || role === 'supervisor',
+                        'القيادة العليا': role === 'admin' || role === 'senior_leadership',
+                        'القيادة الوسطى': role === 'admin' || role === 'middle_leadership'
                     }
                 };
                 
