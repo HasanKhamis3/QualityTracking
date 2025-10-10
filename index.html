@@ -585,6 +585,32 @@
             margin-bottom: 1rem;
         }
 
+        /* User Categories */
+        .user-categories {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .category-btn {
+            padding: 10px 20px;
+            background-color: #e9ecef;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .category-btn:hover {
+            background-color: #dee2e6;
+        }
+
+        .category-btn.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .header-content {
@@ -769,23 +795,9 @@
                         <button class="sub-section-btn" data-department="القيادة الوسطى">القيادة الوسطى</button>
                     </div>
                     
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>م</th>
-                                <th>اسم المعلم</th>
-                                <th>القسم</th>
-                                <th>تاريخ الزيارة</th>
-                                <th>تقييم الزيارة</th>
-                                <th>اسم الزائر</th>
-                                <th>الملاحظات</th>
-                                <th>الإجراءات</th>
-                            </tr>
-                        </thead>
-                        <tbody id="visitsTable">
-                            <!-- سيتم ملؤها بالبيانات -->
-                        </tbody>
-                    </table>
+                    <div id="visitsContent">
+                        <!-- سيتم ملؤها بالبيانات حسب القسم المختار -->
+                    </div>
                 </section>
 
                 <!-- Performance Section -->
@@ -914,6 +926,13 @@
                         <button class="btn" id="addUserBtn">إضافة مستخدم</button>
                     </div>
                     
+                    <div class="user-categories">
+                        <button class="category-btn active" data-category="all">جميع المستخدمين</button>
+                        <button class="category-btn" data-category="senior_leadership">القيادة العليا</button>
+                        <button class="category-btn" data-category="middle_leadership">القيادة الوسطى</button>
+                        <button class="category-btn" data-category="teacher">المعلمات</button>
+                    </div>
+                    
                     <!-- قسم القيادة العليا -->
                     <div class="excel-upload">
                         <h3>القيادة العليا</h3>
@@ -1039,9 +1058,9 @@
                     <select id="userRole" required>
                         <option value="admin">مدير النظام</option>
                         <option value="supervisor">مشرف</option>
-                        <option value="teacher">معلم</option>
                         <option value="senior_leadership">القيادة العليا</option>
                         <option value="middle_leadership">القيادة الوسطى</option>
+                        <option value="teacher">معلم</option>
                     </select>
                 </div>
                 <div class="btn-group">
@@ -1319,6 +1338,16 @@
             document.getElementById('seniorLeadershipFile').addEventListener('change', handleExcelUpload);
             document.getElementById('middleLeadershipFile').addEventListener('change', handleExcelUpload);
             document.getElementById('teachersFile').addEventListener('change', handleExcelUpload);
+            
+            // أزرار التصنيف في قسم المستخدمين
+            document.querySelectorAll('.user-categories .category-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.user-categories .category-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    const category = this.getAttribute('data-category');
+                    renderUserList(category);
+                });
+            });
         }
 
         // معالجة رفع ملفات Excel
@@ -1448,46 +1477,154 @@
 
         // عرض الزيارات حسب القسم
         function renderVisitsByDepartment(department) {
-            const table = document.getElementById('visitsTable');
-            table.innerHTML = '';
-            
-            let filteredVisits = [];
+            const visitsContent = document.getElementById('visitsContent');
+            visitsContent.innerHTML = '';
             
             if (department === 'القيادة العليا') {
                 // عرض زيارات القيادة العليا حسب المستخدمين
                 const seniorLeadershipUsers = appData.users.filter(u => u.role === 'senior_leadership');
-                filteredVisits = appData.visits.filter(visit => 
-                    seniorLeadershipUsers.some(user => user.name === visit.visitor)
-                );
+                
+                seniorLeadershipUsers.forEach(user => {
+                    const userVisits = appData.visits.filter(visit => visit.visitor === user.name);
+                    
+                    if (userVisits.length > 0) {
+                        const userSection = document.createElement('div');
+                        userSection.className = 'department-section';
+                        userSection.innerHTML = `
+                            <h3 class="department-title">${user.name}</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>م</th>
+                                        <th>اسم المعلم</th>
+                                        <th>القسم</th>
+                                        <th>تاريخ الزيارة</th>
+                                        <th>تقييم الزيارة</th>
+                                        <th>الملاحظات</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="visits-${user.id}">
+                                </tbody>
+                            </table>
+                        `;
+                        visitsContent.appendChild(userSection);
+                        
+                        const userVisitsTable = document.getElementById(`visits-${user.id}`);
+                        userVisits.forEach((visit, index) => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${index + 1}</td>
+                                <td>${visit.teacher}</td>
+                                <td>${visit.department}</td>
+                                <td>${visit.date}</td>
+                                <td>${visit.evaluation}</td>
+                                <td>${visit.notes}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning view-visit" data-id="${visit.id}">معاينة</button>
+                                    <button class="btn btn-sm btn-secondary edit-visit" data-id="${visit.id}">تعديل</button>
+                                    <button class="btn btn-sm btn-danger delete-visit" data-id="${visit.id}">حذف</button>
+                                </td>
+                            `;
+                            userVisitsTable.appendChild(row);
+                        });
+                    }
+                });
+                
             } else if (department === 'القيادة الوسطى') {
                 // عرض زيارات القيادة الوسطى حسب المستخدمين
                 const middleLeadershipUsers = appData.users.filter(u => u.role === 'middle_leadership');
-                filteredVisits = appData.visits.filter(visit => 
-                    middleLeadershipUsers.some(user => user.name === visit.visitor)
-                );
+                
+                middleLeadershipUsers.forEach(user => {
+                    const userVisits = appData.visits.filter(visit => visit.visitor === user.name);
+                    
+                    if (userVisits.length > 0) {
+                        const userSection = document.createElement('div');
+                        userSection.className = 'department-section';
+                        userSection.innerHTML = `
+                            <h3 class="department-title">${user.name}</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>م</th>
+                                        <th>اسم المعلم</th>
+                                        <th>القسم</th>
+                                        <th>تاريخ الزيارة</th>
+                                        <th>تقييم الزيارة</th>
+                                        <th>الملاحظات</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="visits-${user.id}">
+                                </tbody>
+                            </table>
+                        `;
+                        visitsContent.appendChild(userSection);
+                        
+                        const userVisitsTable = document.getElementById(`visits-${user.id}`);
+                        userVisits.forEach((visit, index) => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${index + 1}</td>
+                                <td>${visit.teacher}</td>
+                                <td>${visit.department}</td>
+                                <td>${visit.date}</td>
+                                <td>${visit.evaluation}</td>
+                                <td>${visit.notes}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning view-visit" data-id="${visit.id}">معاينة</button>
+                                    <button class="btn btn-sm btn-secondary edit-visit" data-id="${visit.id}">تعديل</button>
+                                    <button class="btn btn-sm btn-danger delete-visit" data-id="${visit.id}">حذف</button>
+                                </td>
+                            `;
+                            userVisitsTable.appendChild(row);
+                        });
+                    }
+                });
+                
             } else {
                 // عرض الزيارات العادية حسب القسم
-                filteredVisits = appData.visits.filter(visit => visit.department === department);
-            }
-            
-            filteredVisits.forEach((visit, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${visit.teacher}</td>
-                    <td>${visit.department}</td>
-                    <td>${visit.date}</td>
-                    <td>${visit.evaluation}</td>
-                    <td>${visit.visitor}</td>
-                    <td>${visit.notes}</td>
-                    <td>
-                        <button class="btn btn-sm btn-warning view-visit" data-id="${visit.id}">معاينة</button>
-                        <button class="btn btn-sm btn-secondary edit-visit" data-id="${visit.id}">تعديل</button>
-                        <button class="btn btn-sm btn-danger delete-visit" data-id="${visit.id}">حذف</button>
-                    </td>
+                const filteredVisits = appData.visits.filter(visit => visit.department === department);
+                
+                const table = document.createElement('table');
+                table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>م</th>
+                            <th>اسم المعلم</th>
+                            <th>القسم</th>
+                            <th>تاريخ الزيارة</th>
+                            <th>تقييم الزيارة</th>
+                            <th>اسم الزائر</th>
+                            <th>الملاحظات</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="visitsTable">
+                    </tbody>
                 `;
-                table.appendChild(row);
-            });
+                visitsContent.appendChild(table);
+                
+                const visitsTable = document.getElementById('visitsTable');
+                filteredVisits.forEach((visit, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${visit.teacher}</td>
+                        <td>${visit.department}</td>
+                        <td>${visit.date}</td>
+                        <td>${visit.evaluation}</td>
+                        <td>${visit.visitor}</td>
+                        <td>${visit.notes}</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning view-visit" data-id="${visit.id}">معاينة</button>
+                            <button class="btn btn-sm btn-secondary edit-visit" data-id="${visit.id}">تعديل</button>
+                            <button class="btn btn-sm btn-danger delete-visit" data-id="${visit.id}">حذف</button>
+                        </td>
+                    `;
+                    visitsTable.appendChild(row);
+                });
+            }
             
             // إضافة معالجي الأحداث للأزرار
             document.querySelectorAll('.view-visit').forEach(btn => {
@@ -1747,11 +1884,17 @@
         }
 
         // عرض قائمة المستخدمين
-        function renderUserList() {
+        function renderUserList(category = 'all') {
             const userList = document.getElementById('userList');
             userList.innerHTML = '';
             
-            appData.users.forEach(user => {
+            let filteredUsers = appData.users;
+            
+            if (category !== 'all') {
+                filteredUsers = appData.users.filter(user => user.role === category);
+            }
+            
+            filteredUsers.forEach(user => {
                 const userCard = document.createElement('div');
                 userCard.className = 'user-card';
                 userCard.innerHTML = `
