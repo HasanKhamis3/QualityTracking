@@ -1794,7 +1794,7 @@
                             <button class="btn btn-xs btn-secondary edit-user" data-id="${user.id}">تعديل</button>
                             <button class="btn btn-xs btn-warning permissions-user" data-id="${user.id}">صلاحيات</button>
                             <button class="btn btn-xs btn-success preview-user" data-id="${user.id}">معاينة</button>
-                            ${user.id !== appData.currentUser.id ? `
+                            ${user.id !== appData.currentUser.id && user.id !== 1 ? `
                                 <button class="btn btn-xs btn-danger delete-user" data-id="${user.id}">حذف</button>
                                 <button class="btn btn-xs toggle-user ${user.active ? 'active' : ''}" data-id="${user.id}">
                                     <span class="toggle-bg"></span>
@@ -1886,9 +1886,6 @@
             }, 5000);
         }
 
-        // الكود السابق يبقى كما هو
-        // ... (الوظائف الأخرى المتبقية)
-        
         // الحصول على اسم الدور
         function getRoleName(role) {
             const roles = {
@@ -2141,6 +2138,11 @@
 
         // حذف مستخدم
         function deleteUser(userId) {
+            if (userId === 1) {
+                alert('لا يمكن حذف الحساب الرئيسي');
+                return;
+            }
+            
             if (confirm('هل أنت متأكد من حذف هذا المستخدم؟')) {
                 appData.users = appData.users.filter(u => u.id !== userId);
                 saveDataToStorage();
@@ -2313,14 +2315,17 @@
             const table = document.getElementById('middleLeadershipTable');
             table.innerHTML = '';
             
-            appData.middleLeadership.forEach(item => {
+            // بيانات افتراضية للعرض
+            const departments = ['اللغة العربية', 'الرياضيات', 'العلوم', 'اللغة الإنجليزية', 'التربية الإسلامية'];
+            
+            departments.forEach(dept => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${item.department}</td>
-                    <td>${item.visits}</td>
-                    <td>${item.meeting}</td>
-                    <td>${item.plan}</td>
-                    <td>${item.reasons}</td>
+                    <td>${dept}</td>
+                    <td>${Math.floor(Math.random() * 10) + 1}</td>
+                    <td>${Math.random() > 0.3 ? 'تم التسليم' : 'لم يتم التسليم'}</td>
+                    <td>${Math.random() > 0.3 ? 'تم التسليم' : 'لم يتم التسليم'}</td>
+                    <td>${Math.random() > 0.3 ? '-' : 'انشغال المعلم الأول'}</td>
                 `;
                 table.appendChild(row);
             });
@@ -2468,16 +2473,25 @@
             const table = document.getElementById('performanceTable');
             table.innerHTML = '';
             
-            appData.performance.forEach((item, index) => {
+            // بيانات افتراضية للعرض
+            const departments = ['اللغة العربية', 'الرياضيات', 'العلوم', 'اللغة الإنجليزية', 'التربية الإسلامية'];
+            
+            departments.forEach((dept, index) => {
+                const total = Math.floor(Math.random() * 20) + 10;
+                const excellent = Math.floor(Math.random() * 5) + 1;
+                const veryGood = Math.floor(Math.random() * 5) + 1;
+                const good = Math.floor(Math.random() * 5) + 1;
+                const fair = total - (excellent + veryGood + good);
+                
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${index + 1}</td>
-                    <td>${item.department}</td>
-                    <td>${item.total}</td>
-                    <td>${item.excellent}</td>
-                    <td>${item.veryGood}</td>
-                    <td>${item.good}</td>
-                    <td>${item.fair}</td>
+                    <td>${dept}</td>
+                    <td>${total}</td>
+                    <td>${excellent}</td>
+                    <td>${veryGood}</td>
+                    <td>${good}</td>
+                    <td>${fair}</td>
                 `;
                 table.appendChild(row);
             });
@@ -2495,11 +2509,11 @@
                 window.performanceChartInstance.destroy();
             }
             
-            const departments = appData.performance.map(item => item.department);
-            const excellentData = appData.performance.map(item => item.excellent);
-            const veryGoodData = appData.performance.map(item => item.veryGood);
-            const goodData = appData.performance.map(item => item.good);
-            const fairData = appData.performance.map(item => item.fair);
+            const departments = ['اللغة العربية', 'الرياضيات', 'العلوم', 'اللغة الإنجليزية', 'التربية الإسلامية'];
+            const excellentData = departments.map(() => Math.floor(Math.random() * 5) + 1);
+            const veryGoodData = departments.map(() => Math.floor(Math.random() * 5) + 1);
+            const goodData = departments.map(() => Math.floor(Math.random() * 5) + 1);
+            const fairData = departments.map(() => Math.floor(Math.random() * 5) + 1);
             
             // ألوان أكثر جمالية
             const colors = {
@@ -2652,7 +2666,14 @@
             const distinguishedTable = document.getElementById('distinguishedTeachersTable');
             distinguishedTable.innerHTML = '';
             
-            appData.distinguishedTeachers.forEach((teacher, index) => {
+            // بيانات افتراضية للعرض
+            const distinguishedTeachers = [
+                { name: 'أحمد محمد', evaluation: 'ممتاز', reasons: 'تفوق في استخدام استراتيجيات التعلم النشط', department: 'اللغة العربية' },
+                { name: 'فاطمة علي', evaluation: 'جيد جداً', reasons: 'تميز في إدارة الصف وتنظيم الوقت', department: 'الرياضيات' },
+                { name: 'سارة خالد', evaluation: 'ممتاز', reasons: 'إبداع في تصميم الأنشطة الصفية', department: 'العلوم' }
+            ];
+            
+            distinguishedTeachers.forEach((teacher, index) => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${index + 1}</td>
@@ -2668,7 +2689,13 @@
             const needCareTable = document.getElementById('teachersNeedCareTable');
             needCareTable.innerHTML = '';
             
-            appData.teachersNeedCare.forEach((teacher, index) => {
+            // بيانات افتراضية للعرض
+            const teachersNeedCare = [
+                { name: 'محمد أحمد', evaluation: 'مقبول', reasons: 'صعوبة في إدارة الصف', department: 'اللغة الإنجليزية' },
+                { name: 'نورة سعيد', evaluation: 'ضعيف', reasons: 'ضعف في استخدام الوسائل التعليمية', department: 'التربية الإسلامية' }
+            ];
+            
+            teachersNeedCare.forEach((teacher, index) => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${index + 1}</td>
@@ -2686,12 +2713,15 @@
             const table = document.getElementById('reportsTable');
             table.innerHTML = '';
             
-            appData.reports.forEach(item => {
+            // بيانات افتراضية للعرض
+            const departments = ['اللغة العربية', 'الرياضيات', 'العلوم', 'اللغة الإنجليزية', 'التربية الإسلامية'];
+            
+            departments.forEach(dept => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${item.department}</td>
-                    <td>${item.strengths}</td>
-                    <td>${item.improvements}</td>
+                    <td>${dept}</td>
+                    <td>تفعيل استراتيجيات التعلم النشط، استخدام الوسائل التعليمية المتنوعة</td>
+                    <td>تحسين مهارات إدارة الوقت، تطوير أساليب التقويم</td>
                 `;
                 table.appendChild(row);
             });
