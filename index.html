@@ -269,9 +269,23 @@
             background-color: #e0a800;
         }
 
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+
         .btn-sm {
             padding: 5px 10px;
             font-size: 0.875rem;
+        }
+
+        .btn-xs {
+            padding: 3px 8px;
+            font-size: 0.75rem;
         }
 
         .btn-group {
@@ -568,7 +582,7 @@
         .upload-area {
             border: 2px dashed #ddd;
             border-radius: var(--border-radius);
-            padding: 2rem;
+            padding: 1rem;
             text-align: center;
             margin-top: 1rem;
             background-color: white;
@@ -580,9 +594,16 @@
         }
 
         .upload-icon {
-            font-size: 3rem;
+            font-size: 2rem;
             color: var(--primary);
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
         }
 
         /* User Categories */
@@ -608,6 +629,25 @@
 
         .category-btn.active {
             background-color: var(--primary);
+            color: white;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .status-inactive {
+            background-color: var(--danger);
             color: white;
         }
 
@@ -783,15 +823,7 @@
                     </div>
                     
                     <div class="sub-sections" id="visitsSubSections">
-                        <button class="sub-section-btn active" data-department="اللغة العربية">اللغة العربية</button>
-                        <button class="sub-section-btn" data-department="رياضيات وعلوم">رياضيات وعلوم</button>
-                        <button class="sub-section-btn" data-department="اللغة الإنجليزية">اللغة الإنجليزية</button>
-                        <button class="sub-section-btn" data-department="تربية اسلامية">تربية اسلامية</button>
-                        <button class="sub-section-btn" data-department="المواد الاجتماعية">المواد الاجتماعية</button>
-                        <button class="sub-section-btn" data-department="نظام فصل">نظام فصل</button>
-                        <button class="sub-section-btn" data-department="المواد الإثرائية">المواد الإثرائية</button>
-                        <button class="sub-section-btn" data-department="التربية الرياضية">التربية الرياضية</button>
-                        <button class="sub-section-btn" data-department="القيادة العليا">القيادة العليا</button>
+                        <button class="sub-section-btn active" data-department="القيادة العليا">القيادة العليا</button>
                         <button class="sub-section-btn" data-department="القيادة الوسطى">القيادة الوسطى</button>
                     </div>
                     
@@ -923,46 +955,62 @@
                 <section id="users" class="section">
                     <div class="section-header">
                         <h2 class="section-title">إدارة المستخدمين</h2>
-                        <button class="btn" id="addUserBtn">إضافة مستخدم</button>
+                        <div class="btn-group">
+                            <button class="btn" id="addUserBtn">إضافة مستخدم</button>
+                        </div>
                     </div>
                     
                     <div class="user-categories">
-                        <button class="category-btn active" data-category="all">جميع المستخدمين</button>
-                        <button class="category-btn" data-category="senior_leadership">القيادة العليا</button>
+                        <button class="category-btn active" data-category="senior_leadership">القيادة العليا</button>
                         <button class="category-btn" data-category="middle_leadership">القيادة الوسطى</button>
                         <button class="category-btn" data-category="teacher">المعلمات</button>
                     </div>
                     
                     <!-- قسم القيادة العليا -->
-                    <div class="excel-upload">
-                        <h3>القيادة العليا</h3>
+                    <div class="excel-upload" id="seniorLeadershipSection">
+                        <div class="upload-info">
+                            <h3>القيادة العليا</h3>
+                            <div class="btn-group">
+                                <button class="btn btn-xs" id="downloadSeniorLeadership">تنزيل ملف Excel</button>
+                                <button class="btn btn-xs" id="seniorLeadershipUploadBtn">رفع ملف Excel</button>
+                                <input type="file" id="seniorLeadershipFile" accept=".xlsx, .xls" style="display: none;">
+                            </div>
+                        </div>
                         <div class="upload-area" id="seniorLeadershipUpload">
                             <i class="fas fa-file-excel upload-icon"></i>
                             <p>اسحب وأفلت ملف Excel هنا أو انقر للاختيار</p>
-                            <input type="file" id="seniorLeadershipFile" accept=".xlsx, .xls" style="display: none;">
-                            <button class="btn" id="seniorLeadershipUploadBtn">رفع ملف Excel</button>
                         </div>
                     </div>
                     
                     <!-- قسم القيادة الوسطى -->
-                    <div class="excel-upload">
-                        <h3>القيادة الوسطى</h3>
+                    <div class="excel-upload" id="middleLeadershipSection">
+                        <div class="upload-info">
+                            <h3>القيادة الوسطى</h3>
+                            <div class="btn-group">
+                                <button class="btn btn-xs" id="downloadMiddleLeadership">تنزيل ملف Excel</button>
+                                <button class="btn btn-xs" id="middleLeadershipUploadBtn">رفع ملف Excel</button>
+                                <input type="file" id="middleLeadershipFile" accept=".xlsx, .xls" style="display: none;">
+                            </div>
+                        </div>
                         <div class="upload-area" id="middleLeadershipUpload">
                             <i class="fas fa-file-excel upload-icon"></i>
                             <p>اسحب وأفلت ملف Excel هنا أو انقر للاختيار</p>
-                            <input type="file" id="middleLeadershipFile" accept=".xlsx, .xls" style="display: none;">
-                            <button class="btn" id="middleLeadershipUploadBtn">رفع ملف Excel</button>
                         </div>
                     </div>
                     
                     <!-- قسم المعلمات -->
-                    <div class="excel-upload">
-                        <h3>المعلمات</h3>
+                    <div class="excel-upload" id="teachersSection">
+                        <div class="upload-info">
+                            <h3>المعلمات</h3>
+                            <div class="btn-group">
+                                <button class="btn btn-xs" id="downloadTeachers">تنزيل ملف Excel</button>
+                                <button class="btn btn-xs" id="teachersUploadBtn">رفع ملف Excel</button>
+                                <input type="file" id="teachersFile" accept=".xlsx, .xls" style="display: none;">
+                            </div>
+                        </div>
                         <div class="upload-area" id="teachersUpload">
                             <i class="fas fa-file-excel upload-icon"></i>
                             <p>اسحب وأفلت ملف Excel هنا أو انقر للاختيار</p>
-                            <input type="file" id="teachersFile" accept=".xlsx, .xls" style="display: none;">
-                            <button class="btn" id="teachersUploadBtn">رفع ملف Excel</button>
                         </div>
                     </div>
                     
@@ -990,14 +1038,6 @@
                 <div class="form-group">
                     <label for="department">القسم</label>
                     <select id="department" required>
-                        <option value="اللغة العربية">اللغة العربية</option>
-                        <option value="رياضيات وعلوم">رياضيات وعلوم</option>
-                        <option value="اللغة الإنجليزية">اللغة الإنجليزية</option>
-                        <option value="تربية اسلامية">تربية اسلامية</option>
-                        <option value="المواد الاجتماعية">المواد الاجتماعية</option>
-                        <option value="نظام فصل">نظام فصل</option>
-                        <option value="المواد الإثرائية">المواد الإثرائية</option>
-                        <option value="التربية الرياضية">التربية الرياضية</option>
                         <option value="القيادة العليا">القيادة العليا</option>
                         <option value="القيادة الوسطى">القيادة الوسطى</option>
                     </select>
@@ -1046,6 +1086,10 @@
                     <input type="text" id="userFullName" required>
                 </div>
                 <div class="form-group">
+                    <label for="userPosition">الوظيفة</label>
+                    <input type="text" id="userPosition" required>
+                </div>
+                <div class="form-group">
                     <label for="userUsername">اسم المستخدم</label>
                     <input type="text" id="userUsername" required>
                 </div>
@@ -1071,6 +1115,39 @@
         </div>
     </div>
 
+    <!-- Modal for User Permissions -->
+    <div id="permissionsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">إدارة صلاحيات المستخدم</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div id="permissionsContent">
+                <!-- سيتم ملؤها بالبيانات -->
+            </div>
+            <div class="btn-group">
+                <button class="btn" id="savePermissions">حفظ الصلاحيات</button>
+                <button class="btn btn-secondary" id="cancelPermissions">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for User Preview -->
+    <div id="previewModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">معاينة بيانات المستخدم</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div id="previewContent">
+                <!-- سيتم ملؤها بالبيانات -->
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-secondary" id="closePreview">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // بيانات التطبيق
         const appData = {
@@ -1081,10 +1158,11 @@
                     username: 'admin', 
                     password: 'admin123', 
                     name: 'مدير النظام', 
+                    position: 'مدير النظام',
                     role: 'admin', 
                     avatar: 'م',
+                    active: true,
                     permissions: {
-                        // الصلاحيات الأساسية
                         dashboard: true,
                         middleLeadership: true,
                         visits: true,
@@ -1092,16 +1170,7 @@
                         teachers: true,
                         reports: true,
                         users: true,
-                        // صلاحيات الأقسام
                         departments: {
-                            'اللغة العربية': true,
-                            'رياضيات وعلوم': true,
-                            'اللغة الإنجليزية': true,
-                            'تربية اسلامية': true,
-                            'المواد الاجتماعية': true,
-                            'نظام فصل': true,
-                            'المواد الإثرائية': true,
-                            'التربية الرياضية': true,
                             'القيادة العليا': true,
                             'القيادة الوسطى': true
                         }
@@ -1239,6 +1308,11 @@
             const user = appData.users.find(u => u.username === username && u.password === password);
             
             if (user) {
+                if (!user.active) {
+                    alert('هذا المستخدم غير مفعل. يرجى التواصل مع الإدارة.');
+                    return;
+                }
+                
                 appData.currentUser = user;
                 // حفظ حالة تسجيل الدخول
                 localStorage.setItem('currentUser', JSON.stringify({ id: user.id }));
@@ -1334,6 +1408,19 @@
                 document.getElementById('teachersFile').click();
             });
             
+            // أزرار تنزيل ملفات Excel
+            document.getElementById('downloadSeniorLeadership').addEventListener('click', function() {
+                alert('سيتم تنزيل ملف Excel للقيادة العليا');
+            });
+            
+            document.getElementById('downloadMiddleLeadership').addEventListener('click', function() {
+                alert('سيتم تنزيل ملف Excel للقيادة الوسطى');
+            });
+            
+            document.getElementById('downloadTeachers').addEventListener('click', function() {
+                alert('سيتم تنزيل ملف Excel للمعلمات');
+            });
+            
             // معالجة اختيار الملفات
             document.getElementById('seniorLeadershipFile').addEventListener('change', handleExcelUpload);
             document.getElementById('middleLeadershipFile').addEventListener('change', handleExcelUpload);
@@ -1348,6 +1435,14 @@
                     renderUserList(category);
                 });
             });
+            
+            // أزرار النماذج الإضافية
+            document.getElementById('savePermissions').addEventListener('click', savePermissions);
+            document.getElementById('cancelPermissions').addEventListener('click', closePermissionsModal);
+            document.querySelector('#permissionsModal .close-modal').addEventListener('click', closePermissionsModal);
+            
+            document.getElementById('closePreview').addEventListener('click', closePreviewModal);
+            document.querySelector('#previewModal .close-modal').addEventListener('click', closePreviewModal);
         }
 
         // معالجة رفع ملفات Excel
@@ -1368,43 +1463,6 @@
             
             // محاكاة معالجة ملف Excel
             alert(`تم رفع ملف ${file.name} بنجاح. سيتم معالجة البيانات وإضافة المستخدمين الجدد.`);
-            
-            // محاكاة إضافة مستخدمين من ملف Excel
-            const newUsers = [
-                { 
-                    id: Math.max(...appData.users.map(u => u.id)) + 1,
-                    username: `user${Math.floor(Math.random() * 1000)}`, 
-                    password: 'default123', 
-                    name: 'مستخدم جديد', 
-                    role: userRole, 
-                    avatar: 'ج',
-                    permissions: {
-                        dashboard: true,
-                        middleLeadership: false,
-                        visits: true,
-                        performance: false,
-                        teachers: false,
-                        reports: false,
-                        users: false,
-                        departments: {
-                            'اللغة العربية': false,
-                            'رياضيات وعلوم': false,
-                            'اللغة الإنجليزية': false,
-                            'تربية اسلامية': false,
-                            'المواد الاجتماعية': false,
-                            'نظام فصل': false,
-                            'المواد الإثرائية': false,
-                            'التربية الرياضية': false,
-                            'القيادة العليا': userRole === 'senior_leadership',
-                            'القيادة الوسطى': userRole === 'middle_leadership'
-                        }
-                    }
-                }
-            ];
-            
-            appData.users.push(...newUsers);
-            saveDataToStorage();
-            renderUserList();
             
             // إعادة تعيين حقل الملف
             e.target.value = '';
@@ -1471,8 +1529,8 @@
 
         // عرض بيانات الزيارات
         function renderVisits() {
-            // عرض الزيارات للقسم النشط افتراضياً (اللغة العربية)
-            renderVisitsByDepartment('اللغة العربية');
+            // عرض الزيارات للقسم النشط افتراضياً (القيادة العليا)
+            renderVisitsByDepartment('القيادة العليا');
         }
 
         // عرض الزيارات حسب القسم
@@ -1580,49 +1638,6 @@
                             userVisitsTable.appendChild(row);
                         });
                     }
-                });
-                
-            } else {
-                // عرض الزيارات العادية حسب القسم
-                const filteredVisits = appData.visits.filter(visit => visit.department === department);
-                
-                const table = document.createElement('table');
-                table.innerHTML = `
-                    <thead>
-                        <tr>
-                            <th>م</th>
-                            <th>اسم المعلم</th>
-                            <th>القسم</th>
-                            <th>تاريخ الزيارة</th>
-                            <th>تقييم الزيارة</th>
-                            <th>اسم الزائر</th>
-                            <th>الملاحظات</th>
-                            <th>الإجراءات</th>
-                        </tr>
-                    </thead>
-                    <tbody id="visitsTable">
-                    </tbody>
-                `;
-                visitsContent.appendChild(table);
-                
-                const visitsTable = document.getElementById('visitsTable');
-                filteredVisits.forEach((visit, index) => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${index + 1}</td>
-                        <td>${visit.teacher}</td>
-                        <td>${visit.department}</td>
-                        <td>${visit.date}</td>
-                        <td>${visit.evaluation}</td>
-                        <td>${visit.visitor}</td>
-                        <td>${visit.notes}</td>
-                        <td>
-                            <button class="btn btn-sm btn-warning view-visit" data-id="${visit.id}">معاينة</button>
-                            <button class="btn btn-sm btn-secondary edit-visit" data-id="${visit.id}">تعديل</button>
-                            <button class="btn btn-sm btn-danger delete-visit" data-id="${visit.id}">حذف</button>
-                        </td>
-                    `;
-                    visitsTable.appendChild(row);
                 });
             }
             
@@ -1884,91 +1899,56 @@
         }
 
         // عرض قائمة المستخدمين
-        function renderUserList(category = 'all') {
+        function renderUserList(category = 'senior_leadership') {
             const userList = document.getElementById('userList');
             userList.innerHTML = '';
             
-            let filteredUsers = appData.users;
+            let filteredUsers = appData.users.filter(user => user.role === category);
             
-            if (category !== 'all') {
-                filteredUsers = appData.users.filter(user => user.role === category);
-            }
+            // إنشاء جدول المستخدمين
+            const table = document.createElement('table');
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>الاسم</th>
+                        <th>الوظيفة</th>
+                        <th>اسم المستخدم</th>
+                        <th>الحالة</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTable">
+                </tbody>
+            `;
+            userList.appendChild(table);
             
+            const usersTable = document.getElementById('usersTable');
             filteredUsers.forEach(user => {
-                const userCard = document.createElement('div');
-                userCard.className = 'user-card';
-                userCard.innerHTML = `
-                    <div class="user-details">
-                        <div class="user-avatar">${user.avatar}</div>
-                        <div>
-                            <h3>${user.name}</h3>
-                            <p>اسم المستخدم: ${user.username} | الدور: ${getRoleName(user.role)}</p>
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.name}</td>
+                    <td>${user.position}</td>
+                    <td>${user.username}</td>
+                    <td>
+                        <span class="status-badge ${user.active ? 'status-active' : 'status-inactive'}">
+                            ${user.active ? 'مفعل' : 'غير مفعل'}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="user-actions">
+                            <button class="btn btn-xs btn-secondary edit-user" data-id="${user.id}">تعديل</button>
+                            <button class="btn btn-xs btn-warning permissions-user" data-id="${user.id}">صلاحيات</button>
+                            <button class="btn btn-xs btn-success preview-user" data-id="${user.id}">معاينة</button>
+                            ${user.id !== appData.currentUser.id ? `
+                                <button class="btn btn-xs btn-danger delete-user" data-id="${user.id}">حذف</button>
+                                <button class="btn btn-xs ${user.active ? 'btn-warning' : 'btn-success'} toggle-user" data-id="${user.id}">
+                                    ${user.active ? 'إلغاء التفعيل' : 'تفعيل'}
+                                </button>
+                            ` : ''}
                         </div>
-                    </div>
-                    <div class="user-actions">
-                        <button class="btn btn-secondary edit-user" data-id="${user.id}">تعديل</button>
-                        ${user.id !== appData.currentUser.id ? `<button class="btn btn-danger delete-user" data-id="${user.id}">حذف</button>` : ''}
-                    </div>
+                    </td>
                 `;
-                userList.appendChild(userCard);
-                
-                // قسم الصلاحيات الأساسية
-                const basicPermissionsSection = document.createElement('div');
-                basicPermissionsSection.className = 'permissions-section';
-                basicPermissionsSection.innerHTML = `
-                    <h4>الصلاحيات الأساسية:</h4>
-                    <div class="permissions-grid" id="basic-permissions-${user.id}">
-                        ${Object.keys(user.permissions).filter(p => !['departments'].includes(p)).map(permission => `
-                            <div class="permission-item">
-                                <span>${getPermissionName(permission)}</span>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" ${user.permissions[permission] ? 'checked' : ''} data-user="${user.id}" data-permission="${permission}">
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-                userList.appendChild(basicPermissionsSection);
-                
-                // قسم صلاحيات الأقسام
-                const departmentPermissionsSection = document.createElement('div');
-                departmentPermissionsSection.className = 'department-permissions';
-                departmentPermissionsSection.innerHTML = `
-                    <h4>صلاحيات الأقسام:</h4>
-                    ${Object.keys(user.permissions.departments || {}).map(department => `
-                        <div class="department-section">
-                            <div class="department-title">${department}</div>
-                            <div class="permissions-grid">
-                                <div class="permission-item">
-                                    <span>الوصول للقسم</span>
-                                    <label class="toggle-switch">
-                                        <input type="checkbox" ${user.permissions.departments[department] ? 'checked' : ''} data-user="${user.id}" data-type="department" data-department="${department}">
-                                        <span class="toggle-slider"></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    `).join('')}
-                `;
-                userList.appendChild(departmentPermissionsSection);
-                
-                // إضافة معالجي الأحداث لمفاتيح التبديل
-                document.querySelectorAll(`#basic-permissions-${user.id} input[type="checkbox"]`).forEach(checkbox => {
-                    checkbox.addEventListener('change', function() {
-                        const userId = parseInt(this.getAttribute('data-user'));
-                        const permission = this.getAttribute('data-permission');
-                        updateUserPermission(userId, permission, this.checked);
-                    });
-                });
-                
-                document.querySelectorAll(`.department-permissions input[type="checkbox"]`).forEach(checkbox => {
-                    checkbox.addEventListener('change', function() {
-                        const userId = parseInt(this.getAttribute('data-user'));
-                        const department = this.getAttribute('data-department');
-                        updateUserDepartmentPermission(userId, department, this.checked);
-                    });
-                });
+                usersTable.appendChild(row);
             });
             
             // إضافة معالجي الأحداث للأزرار
@@ -1979,10 +1959,31 @@
                 });
             });
             
+            document.querySelectorAll('.permissions-user').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const userId = parseInt(this.getAttribute('data-id'));
+                    showPermissionsModal(userId);
+                });
+            });
+            
+            document.querySelectorAll('.preview-user').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const userId = parseInt(this.getAttribute('data-id'));
+                    showPreviewModal(userId);
+                });
+            });
+            
             document.querySelectorAll('.delete-user').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const userId = parseInt(this.getAttribute('data-id'));
                     deleteUser(userId);
+                });
+            });
+            
+            document.querySelectorAll('.toggle-user').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const userId = parseInt(this.getAttribute('data-id'));
+                    toggleUser(userId);
                 });
             });
         }
@@ -2011,27 +2012,6 @@
                 'users': 'إدارة المستخدمين'
             };
             return permissions[permission] || permission;
-        }
-
-        // تحديث صلاحية المستخدم الأساسية
-        function updateUserPermission(userId, permission, value) {
-            const user = appData.users.find(u => u.id === userId);
-            if (user) {
-                user.permissions[permission] = value;
-                saveDataToStorage();
-            }
-        }
-
-        // تحديث صلاحية قسم للمستخدم
-        function updateUserDepartmentPermission(userId, department, value) {
-            const user = appData.users.find(u => u.id === userId);
-            if (user) {
-                if (!user.permissions.departments) {
-                    user.permissions.departments = {};
-                }
-                user.permissions.departments[department] = value;
-                saveDataToStorage();
-            }
         }
 
         // عرض نموذج إضافة زيارة
@@ -2173,6 +2153,7 @@
             
             const userId = document.getElementById('userId').value;
             const name = document.getElementById('userFullName').value;
+            const position = document.getElementById('userPosition').value;
             const username = document.getElementById('userUsername').value;
             const password = document.getElementById('userPassword').value;
             const role = document.getElementById('userRole').value;
@@ -2189,6 +2170,7 @@
                     }
                     
                     appData.users[userIndex].name = name;
+                    appData.users[userIndex].position = position;
                     appData.users[userIndex].username = username;
                     appData.users[userIndex].role = role;
                     appData.users[userIndex].avatar = avatar;
@@ -2214,14 +2196,6 @@
                     reports: role === 'admin' || role === 'supervisor',
                     users: role === 'admin',
                     departments: {
-                        'اللغة العربية': role === 'admin' || role === 'supervisor',
-                        'رياضيات وعلوم': role === 'admin' || role === 'supervisor',
-                        'اللغة الإنجليزية': role === 'admin' || role === 'supervisor',
-                        'تربية اسلامية': role === 'admin' || role === 'supervisor',
-                        'المواد الاجتماعية': role === 'admin' || role === 'supervisor',
-                        'نظام فصل': role === 'admin' || role === 'supervisor',
-                        'المواد الإثرائية': role === 'admin' || role === 'supervisor',
-                        'التربية الرياضية': role === 'admin' || role === 'supervisor',
                         'القيادة العليا': role === 'admin' || role === 'senior_leadership',
                         'القيادة الوسطى': role === 'admin' || role === 'middle_leadership'
                     }
@@ -2230,10 +2204,12 @@
                 const newUser = {
                     id: Math.max(...appData.users.map(u => u.id)) + 1,
                     name,
+                    position,
                     username,
                     password,
                     role,
                     avatar,
+                    active: true,
                     permissions: defaultPermissions
                 };
                 
@@ -2254,6 +2230,7 @@
             document.getElementById('userModalTitle').textContent = 'تعديل بيانات المستخدم';
             document.getElementById('userId').value = user.id;
             document.getElementById('userFullName').value = user.name;
+            document.getElementById('userPosition').value = user.position;
             document.getElementById('userUsername').value = user.username;
             document.getElementById('userRole').value = user.role;
             document.getElementById('userPassword').value = '';
@@ -2269,6 +2246,114 @@
                 renderUserList();
                 alert('تم حذف المستخدم بنجاح');
             }
+        }
+
+        // تفعيل/إلغاء تفعيل مستخدم
+        function toggleUser(userId) {
+            const user = appData.users.find(u => u.id === userId);
+            if (!user) return;
+            
+            user.active = !user.active;
+            saveDataToStorage();
+            renderUserList();
+            alert(`تم ${user.active ? 'تفعيل' : 'إلغاء تفعيل'} المستخدم بنجاح`);
+        }
+
+        // عرض نموذج الصلاحيات
+        function showPermissionsModal(userId) {
+            const user = appData.users.find(u => u.id === userId);
+            if (!user) return;
+            
+            const permissionsContent = document.getElementById('permissionsContent');
+            permissionsContent.innerHTML = `
+                <h4>صلاحيات ${user.name}</h4>
+                <div class="permissions-section">
+                    <h5>الصلاحيات الأساسية:</h5>
+                    <div class="permissions-grid" id="basic-permissions-modal">
+                        ${Object.keys(user.permissions).filter(p => !['departments'].includes(p)).map(permission => `
+                            <div class="permission-item">
+                                <span>${getPermissionName(permission)}</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" ${user.permissions[permission] ? 'checked' : ''} data-permission="${permission}">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                <input type="hidden" id="permissionsUserId" value="${user.id}">
+            `;
+            
+            document.getElementById('permissionsModal').style.display = 'flex';
+        }
+
+        // إغلاق نموذج الصلاحيات
+        function closePermissionsModal() {
+            document.getElementById('permissionsModal').style.display = 'none';
+        }
+
+        // حفظ الصلاحيات
+        function savePermissions() {
+            const userId = parseInt(document.getElementById('permissionsUserId').value);
+            const user = appData.users.find(u => u.id === userId);
+            if (!user) return;
+            
+            // تحديث الصلاحيات الأساسية
+            document.querySelectorAll('#basic-permissions-modal input[type="checkbox"]').forEach(checkbox => {
+                const permission = checkbox.getAttribute('data-permission');
+                user.permissions[permission] = checkbox.checked;
+            });
+            
+            saveDataToStorage();
+            closePermissionsModal();
+            alert('تم حفظ الصلاحيات بنجاح');
+        }
+
+        // عرض نموذج المعاينة
+        function showPreviewModal(userId) {
+            const user = appData.users.find(u => u.id === userId);
+            if (!user) return;
+            
+            const previewContent = document.getElementById('previewContent');
+            previewContent.innerHTML = `
+                <div class="user-details">
+                    <div class="user-avatar">${user.avatar}</div>
+                    <div>
+                        <h3>${user.name}</h3>
+                        <p>الوظيفة: ${user.position}</p>
+                        <p>اسم المستخدم: ${user.username}</p>
+                        <p>الدور: ${getRoleName(user.role)}</p>
+                        <p>الحالة: <span class="status-badge ${user.active ? 'status-active' : 'status-inactive'}">${user.active ? 'مفعل' : 'غير مفعل'}</span></p>
+                    </div>
+                </div>
+                <div class="permissions-section">
+                    <h4>الصلاحيات الممنوحة:</h4>
+                    <div class="permissions-grid">
+                        ${Object.keys(user.permissions).filter(p => !['departments'].includes(p) && user.permissions[p]).map(permission => `
+                            <div class="permission-item">
+                                <span>${getPermissionName(permission)}</span>
+                                <i class="fas fa-check text-success"></i>
+                            </div>
+                        `).join('')}
+                        ${Object.keys(user.permissions).filter(p => !['departments'].includes(p) && !user.permissions[p]).length > 0 ? `
+                            <h5>الصلاحيات غير الممنوحة:</h5>
+                            ${Object.keys(user.permissions).filter(p => !['departments'].includes(p) && !user.permissions[p]).map(permission => `
+                                <div class="permission-item">
+                                    <span>${getPermissionName(permission)}</span>
+                                    <i class="fas fa-times text-danger"></i>
+                                </div>
+                            `).join('')}
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('previewModal').style.display = 'flex';
+        }
+
+        // إغلاق نموذج المعاينة
+        function closePreviewModal() {
+            document.getElementById('previewModal').style.display = 'none';
         }
 
         // دوال الحفظ للبيانات المختلفة
