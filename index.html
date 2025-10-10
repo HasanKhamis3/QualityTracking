@@ -577,6 +577,11 @@
             padding: 1rem;
             background-color: #f8f9fa;
             border-radius: var(--border-radius);
+            display: none;
+        }
+
+        .excel-upload.active {
+            display: block;
         }
 
         .upload-area {
@@ -649,6 +654,73 @@
         .status-inactive {
             background-color: var(--danger);
             color: white;
+        }
+
+        /* تحسينات جديدة */
+        
+        /* تحسين تصميم زر التفعيل/إلغاء التفعيل */
+        .toggle-user {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 24px;
+            padding: 0;
+            font-size: 0.7rem;
+        }
+        
+        .toggle-user .toggle-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-weight: bold;
+            z-index: 1;
+        }
+        
+        .toggle-user .toggle-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+        
+        .toggle-user.active .toggle-bg {
+            background-color: var(--success);
+        }
+        
+        .toggle-user:not(.active) .toggle-bg {
+            background-color: var(--danger);
+        }
+        
+        /* تحسين عرض خيارات رفع وتنزيل الملفات */
+        .uploaded-data {
+            margin-top: 1.5rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        /* تحسين رسائل التنبيه */
+        .alert {
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .alert-success {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+        
+        .alert-danger {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--danger);
+            border: 1px solid var(--danger);
         }
 
         /* Responsive */
@@ -966,7 +1038,7 @@
                         <button class="category-btn" data-category="teacher">المعلمات</button>
                     </div>
                     
-                    <!-- قسم القيادة العليا -->
+                    <!-- قسم القيادة العليا - يظهر فقط عند اختيار هذا القسم -->
                     <div class="excel-upload" id="seniorLeadershipSection">
                         <div class="upload-info">
                             <h3>القيادة العليا</h3>
@@ -980,9 +1052,12 @@
                             <i class="fas fa-file-excel upload-icon"></i>
                             <p>اسحب وأفلت ملف Excel هنا أو انقر للاختيار</p>
                         </div>
+                        <div class="uploaded-data" id="seniorLeadershipData">
+                            <!-- سيتم ملؤها بالبيانات بعد رفع الملف -->
+                        </div>
                     </div>
                     
-                    <!-- قسم القيادة الوسطى -->
+                    <!-- قسم القيادة الوسطى - يظهر فقط عند اختيار هذا القسم -->
                     <div class="excel-upload" id="middleLeadershipSection">
                         <div class="upload-info">
                             <h3>القيادة الوسطى</h3>
@@ -996,9 +1071,12 @@
                             <i class="fas fa-file-excel upload-icon"></i>
                             <p>اسحب وأفلت ملف Excel هنا أو انقر للاختيار</p>
                         </div>
+                        <div class="uploaded-data" id="middleLeadershipData">
+                            <!-- سيتم ملؤها بالبيانات بعد رفع الملف -->
+                        </div>
                     </div>
                     
-                    <!-- قسم المعلمات -->
+                    <!-- قسم المعلمات - يظهر فقط عند اختيار هذا القسم -->
                     <div class="excel-upload" id="teachersSection">
                         <div class="upload-info">
                             <h3>المعلمات</h3>
@@ -1011,6 +1089,9 @@
                         <div class="upload-area" id="teachersUpload">
                             <i class="fas fa-file-excel upload-icon"></i>
                             <p>اسحب وأفلت ملف Excel هنا أو انقر للاختيار</p>
+                        </div>
+                        <div class="uploaded-data" id="teachersData">
+                            <!-- سيتم ملؤها بالبيانات بعد رفع الملف -->
                         </div>
                     </div>
                     
@@ -1182,7 +1263,13 @@
             performance: [],
             distinguishedTeachers: [],
             teachersNeedCare: [],
-            reports: []
+            reports: [],
+            // بيانات جديدة للملفات المرفوعة
+            uploadedFiles: {
+                senior_leadership: [],
+                middle_leadership: [],
+                teacher: []
+            }
         };
 
         // تهيئة التطبيق
@@ -1290,6 +1377,7 @@
             // إذا كان قسم المستخدمين، عرض قائمة المستخدمين
             if (sectionId === 'users') {
                 renderUserList();
+                showExcelUploadSection('senior_leadership');
             }
             
             // إذا كان قسم تقييم الأداء، عرض الرسم البياني
@@ -1395,7 +1483,7 @@
             document.querySelector('#userModal .close-modal').addEventListener('click', closeUserModal);
             document.getElementById('userForm').addEventListener('submit', saveUser);
             
-            // أزرار رفع ملفات Excel
+            // أزرار رفع ملفات Excel - تم التعديل
             document.getElementById('seniorLeadershipUploadBtn').addEventListener('click', function() {
                 document.getElementById('seniorLeadershipFile').click();
             });
@@ -1408,31 +1496,40 @@
                 document.getElementById('teachersFile').click();
             });
             
-            // أزرار تنزيل ملفات Excel
+            // أزرار تنزيل ملفات Excel - تم التعديل
             document.getElementById('downloadSeniorLeadership').addEventListener('click', function() {
-                alert('سيتم تنزيل ملف Excel للقيادة العليا');
+                downloadExcelFile('senior_leadership');
             });
             
             document.getElementById('downloadMiddleLeadership').addEventListener('click', function() {
-                alert('سيتم تنزيل ملف Excel للقيادة الوسطى');
+                downloadExcelFile('middle_leadership');
             });
             
             document.getElementById('downloadTeachers').addEventListener('click', function() {
-                alert('سيتم تنزيل ملف Excel للمعلمات');
+                downloadExcelFile('teacher');
             });
             
-            // معالجة اختيار الملفات
-            document.getElementById('seniorLeadershipFile').addEventListener('change', handleExcelUpload);
-            document.getElementById('middleLeadershipFile').addEventListener('change', handleExcelUpload);
-            document.getElementById('teachersFile').addEventListener('change', handleExcelUpload);
+            // معالجة اختيار الملفات - تم التعديل
+            document.getElementById('seniorLeadershipFile').addEventListener('change', function(e) {
+                handleExcelUpload(e, 'senior_leadership');
+            });
             
-            // أزرار التصنيف في قسم المستخدمين
+            document.getElementById('middleLeadershipFile').addEventListener('change', function(e) {
+                handleExcelUpload(e, 'middle_leadership');
+            });
+            
+            document.getElementById('teachersFile').addEventListener('change', function(e) {
+                handleExcelUpload(e, 'teacher');
+            });
+            
+            // أزرار التصنيف في قسم المستخدمين - تم التعديل
             document.querySelectorAll('.user-categories .category-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     document.querySelectorAll('.user-categories .category-btn').forEach(b => b.classList.remove('active'));
                     this.classList.add('active');
                     const category = this.getAttribute('data-category');
                     renderUserList(category);
+                    showExcelUploadSection(category);
                 });
             });
             
@@ -1445,27 +1542,729 @@
             document.querySelector('#previewModal .close-modal').addEventListener('click', closePreviewModal);
         }
 
-        // معالجة رفع ملفات Excel
-        function handleExcelUpload(e) {
+        // إظهار قسم رفع الملفات المناسب للقسم المختار
+        function showExcelUploadSection(category) {
+            // إخفاء جميع أقسام رفع الملفات
+            document.querySelectorAll('.excel-upload').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // إظهار القسم المناسب
+            if (category === 'senior_leadership') {
+                document.getElementById('seniorLeadershipSection').classList.add('active');
+            } else if (category === 'middle_leadership') {
+                document.getElementById('middleLeadershipSection').classList.add('active');
+            } else if (category === 'teacher') {
+                document.getElementById('teachersSection').classList.add('active');
+            }
+        }
+
+        // معالجة رفع ملفات Excel - تم التعديل
+        function handleExcelUpload(e, userRole) {
             const file = e.target.files[0];
             if (!file) return;
             
-            const fileType = e.target.id;
-            let userRole = '';
-            
-            if (fileType === 'seniorLeadershipFile') {
-                userRole = 'senior_leadership';
-            } else if (fileType === 'middleLeadershipFile') {
-                userRole = 'middle_leadership';
-            } else if (fileType === 'teachersFile') {
-                userRole = 'teacher';
-            }
-            
             // محاكاة معالجة ملف Excel
-            alert(`تم رفع ملف ${file.name} بنجاح. سيتم معالجة البيانات وإضافة المستخدمين الجدد.`);
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                // محاكاة استخراج البيانات من ملف Excel
+                const data = simulateExcelProcessing(file, userRole);
+                
+                // حفظ البيانات في التخزين المحلي
+                appData.uploadedFiles[userRole] = data;
+                saveDataToStorage();
+                
+                // عرض البيانات في الجدول
+                renderUploadedData(userRole, data);
+                
+                // إظهار رسالة نجاح
+                showAlert(`تم رفع ملف ${file.name} بنجاح ومعالجة البيانات`, 'success');
+            };
+            
+            reader.readAsArrayBuffer(file);
             
             // إعادة تعيين حقل الملف
             e.target.value = '';
+        }
+
+        // محاكاة معالجة ملف Excel
+        function simulateExcelProcessing(file, userRole) {
+            // في التطبيق الحقيقي، سيتم استخدام مكتبة مثل SheetJS لقراءة ملفات Excel
+            // هنا نقوم بمحاكاة البيانات المستخرجة
+            
+            const roleNames = {
+                'senior_leadership': 'القيادة العليا',
+                'middle_leadership': 'القيادة الوسطى',
+                'teacher': 'المعلمات'
+            };
+            
+            const roleName = roleNames[userRole];
+            
+            // إنشاء بيانات وهمية بناءً على نوع المستخدم
+            const data = [];
+            const numRows = Math.floor(Math.random() * 10) + 5; // 5-15 صف
+            
+            for (let i = 0; i < numRows; i++) {
+                if (userRole === 'teacher') {
+                    data.push({
+                        id: i + 1,
+                        name: `معلم ${i + 1}`,
+                        department: `القسم ${i + 1}`,
+                        subject: `المادة ${i + 1}`,
+                        experience: `${Math.floor(Math.random() * 20) + 1} سنة`
+                    });
+                } else {
+                    data.push({
+                        id: i + 1,
+                        name: `${roleName} ${i + 1}`,
+                        position: `المنصب ${i + 1}`,
+                        department: `القسم ${i + 1}`,
+                        phone: `05${Math.floor(Math.random() * 100000000)}`
+                    });
+                }
+            }
+            
+            return data;
+        }
+
+        // عرض البيانات المرفوعة
+        function renderUploadedData(userRole, data) {
+            const containerId = userRole === 'senior_leadership' ? 'seniorLeadershipData' : 
+                              userRole === 'middle_leadership' ? 'middleLeadershipData' : 
+                              'teachersData';
+            
+            const container = document.getElementById(containerId);
+            
+            if (data.length === 0) {
+                container.innerHTML = '<p class="alert alert-danger">لا توجد بيانات مرفوعة</p>';
+                return;
+            }
+            
+            // إنشاء جدول للبيانات
+            let tableHTML = `
+                <h4>البيانات المرفوعة:</h4>
+                <table>
+                    <thead>
+                        <tr>
+            `;
+            
+            // رؤوس الجدول بناءً على نوع البيانات
+            if (userRole === 'teacher') {
+                tableHTML += `
+                    <th>م</th>
+                    <th>اسم المعلم</th>
+                    <th>القسم</th>
+                    <th>المادة</th>
+                    <th>الخبرة</th>
+                `;
+            } else {
+                tableHTML += `
+                    <th>م</th>
+                    <th>الاسم</th>
+                    <th>المنصب</th>
+                    <th>القسم</th>
+                    <th>الهاتف</th>
+                `;
+            }
+            
+            tableHTML += `
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            // بيانات الجدول
+            data.forEach(item => {
+                tableHTML += '<tr>';
+                
+                if (userRole === 'teacher') {
+                    tableHTML += `
+                        <td>${item.id}</td>
+                        <td>${item.name}</td>
+                        <td>${item.department}</td>
+                        <td>${item.subject}</td>
+                        <td>${item.experience}</td>
+                    `;
+                } else {
+                    tableHTML += `
+                        <td>${item.id}</td>
+                        <td>${item.name}</td>
+                        <td>${item.position}</td>
+                        <td>${item.department}</td>
+                        <td>${item.phone}</td>
+                    `;
+                }
+                
+                tableHTML += '</tr>';
+            });
+            
+            tableHTML += `
+                    </tbody>
+                </table>
+            `;
+            
+            container.innerHTML = tableHTML;
+        }
+
+        // تنزيل ملف Excel - تم التعديل
+        function downloadExcelFile(userRole) {
+            // في التطبيق الحقيقي، سيتم استخدام مكتبة مثل SheetJS لإنشاء ملفات Excel
+            // هنا نقوم بمحاكاة إنشاء ملف وتنزيله
+            
+            const roleNames = {
+                'senior_leadership': 'القيادة العليا',
+                'middle_leadership': 'القيادة الوسطى',
+                'teacher': 'المعلمات'
+            };
+            
+            const roleName = roleNames[userRole];
+            const data = appData.uploadedFiles[userRole];
+            
+            // إنشاء محتوى CSV (بديل عن Excel في هذا المثال)
+            let csvContent = '';
+            
+            if (userRole === 'teacher') {
+                csvContent = "م,اسم المعلم,القسم,المادة,الخبرة\n";
+                data.forEach(item => {
+                    csvContent += `${item.id},${item.name},${item.department},${item.subject},${item.experience}\n`;
+                });
+            } else {
+                csvContent = "م,الاسم,المنصب,القسم,الهاتف\n";
+                data.forEach(item => {
+                    csvContent += `${item.id},${item.name},${item.position},${item.department},${item.phone}\n`;
+                });
+            }
+            
+            // إنشاء ملف وتنزيله
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', `${roleName}_data.csv`);
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // إظهار رسالة نجاح
+            showAlert(`تم تنزيل ملف ${roleName}_data.csv بنجاح`, 'success');
+        }
+
+        // عرض قائمة المستخدمين - تم التعديل
+        function renderUserList(category = 'senior_leadership') {
+            const userList = document.getElementById('userList');
+            userList.innerHTML = '';
+            
+            let filteredUsers = appData.users.filter(user => user.role === category);
+            
+            // إنشاء جدول المستخدمين
+            const table = document.createElement('table');
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>الاسم</th>
+                        <th>الوظيفة</th>
+                        <th>اسم المستخدم</th>
+                        <th>الحالة</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTable">
+                </tbody>
+            `;
+            userList.appendChild(table);
+            
+            const usersTable = document.getElementById('usersTable');
+            filteredUsers.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.name}</td>
+                    <td>${user.position}</td>
+                    <td>${user.username}</td>
+                    <td>
+                        <span class="status-badge ${user.active ? 'status-active' : 'status-inactive'}">
+                            ${user.active ? 'مفعل' : 'غير مفعل'}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="user-actions">
+                            <button class="btn btn-xs btn-secondary edit-user" data-id="${user.id}">تعديل</button>
+                            <button class="btn btn-xs btn-warning permissions-user" data-id="${user.id}">صلاحيات</button>
+                            <button class="btn btn-xs btn-success preview-user" data-id="${user.id}">معاينة</button>
+                            ${user.id !== appData.currentUser.id ? `
+                                <button class="btn btn-xs btn-danger delete-user" data-id="${user.id}">حذف</button>
+                                <button class="btn btn-xs toggle-user ${user.active ? 'active' : ''}" data-id="${user.id}">
+                                    <span class="toggle-bg"></span>
+                                    <span class="toggle-text">${user.active ? 'ON' : 'OFF'}</span>
+                                </button>
+                            ` : ''}
+                        </div>
+                    </td>
+                `;
+                usersTable.appendChild(row);
+            });
+            
+            // إضافة معالجي الأحداث للأزرار
+            document.querySelectorAll('.edit-user').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const userId = parseInt(this.getAttribute('data-id'));
+                    editUser(userId);
+                });
+            });
+            
+            document.querySelectorAll('.permissions-user').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const userId = parseInt(this.getAttribute('data-id'));
+                    showPermissionsModal(userId);
+                });
+            });
+            
+            document.querySelectorAll('.preview-user').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const userId = parseInt(this.getAttribute('data-id'));
+                    showPreviewModal(userId);
+                });
+            });
+            
+            document.querySelectorAll('.delete-user').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const userId = parseInt(this.getAttribute('data-id'));
+                    deleteUser(userId);
+                });
+            });
+            
+            document.querySelectorAll('.toggle-user').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const userId = parseInt(this.getAttribute('data-id'));
+                    toggleUser(userId);
+                });
+            });
+            
+            // عرض البيانات المرفوعة للقسم المختار
+            const data = appData.uploadedFiles[category] || [];
+            renderUploadedData(category, data);
+        }
+
+        // تفعيل/إلغاء تفعيل مستخدم - تم التعديل
+        function toggleUser(userId) {
+            const user = appData.users.find(u => u.id === userId);
+            if (!user) return;
+            
+            user.active = !user.active;
+            saveDataToStorage();
+            renderUserList();
+            
+            // إظهار رسالة نجاح
+            showAlert(`تم ${user.active ? 'تفعيل' : 'إلغاء تفعيل'} المستخدم بنجاح`, 'success');
+        }
+
+        // عرض رسالة تنبيه
+        function showAlert(message, type) {
+            // إزالة أي رسالة سابقة
+            const existingAlert = document.querySelector('.alert');
+            if (existingAlert) {
+                existingAlert.remove();
+            }
+            
+            // إنشاء رسالة جديدة
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            
+            // إضافة الرسالة أعلى الصفحة
+            const container = document.querySelector('.container');
+            container.insertBefore(alert, container.firstChild);
+            
+            // إزالة الرسالة بعد 5 ثوانٍ
+            setTimeout(() => {
+                if (alert.parentNode) {
+                    alert.remove();
+                }
+            }, 5000);
+        }
+
+        // الكود السابق يبقى كما هو
+        // ... (الوظائف الأخرى المتبقية)
+        
+        // الحصول على اسم الدور
+        function getRoleName(role) {
+            const roles = {
+                'admin': 'مدير النظام',
+                'supervisor': 'مشرف',
+                'teacher': 'معلم',
+                'senior_leadership': 'القيادة العليا',
+                'middle_leadership': 'القيادة الوسطى'
+            };
+            return roles[role] || role;
+        }
+
+        // الحصول على اسم الصلاحية
+        function getPermissionName(permission) {
+            const permissions = {
+                'dashboard': 'لوحة التحكم',
+                'middleLeadership': 'متابعة القيادة الوسطى',
+                'visits': 'الزيارات الصفية',
+                'performance': 'تقييم الأداء',
+                'teachers': 'المعلمين المتميزين',
+                'reports': 'التقارير النوعية',
+                'users': 'إدارة المستخدمين'
+            };
+            return permissions[permission] || permission;
+        }
+
+        // عرض نموذج إضافة زيارة
+        function showAddVisitModal() {
+            document.getElementById('visitModalTitle').textContent = 'إضافة زيارة صفية';
+            document.getElementById('visitForm').reset();
+            document.getElementById('visitId').value = '';
+            document.getElementById('visitorName').value = appData.currentUser.name;
+            
+            // تعيين القسم بناءً على القسم النشط
+            const activeDepartment = document.querySelector('#visitsSubSections .sub-section-btn.active').getAttribute('data-department');
+            document.getElementById('department').value = activeDepartment;
+            
+            document.getElementById('visitModal').style.display = 'flex';
+        }
+
+        // إغلاق نافذة الزيارة
+        function closeVisitModal() {
+            document.getElementById('visitModal').style.display = 'none';
+        }
+
+        // حفظ زيارة
+        function saveVisit(e) {
+            e.preventDefault();
+            
+            const visitId = document.getElementById('visitId').value;
+            const teacherName = document.getElementById('teacherName').value;
+            const department = document.getElementById('department').value;
+            const visitDate = document.getElementById('visitDate').value;
+            const evaluation = document.getElementById('evaluation').value;
+            const visitorName = document.getElementById('visitorName').value;
+            const notes = document.getElementById('notes').value;
+            
+            if (visitId) {
+                // تعديل زيارة موجودة
+                const visitIndex = appData.visits.findIndex(v => v.id === parseInt(visitId));
+                if (visitIndex !== -1) {
+                    appData.visits[visitIndex] = {
+                        id: parseInt(visitId),
+                        teacher: teacherName,
+                        department,
+                        date: visitDate,
+                        evaluation,
+                        visitor: visitorName,
+                        notes
+                    };
+                }
+            } else {
+                // إضافة زيارة جديدة
+                const newVisit = {
+                    id: Math.max(...appData.visits.map(v => v.id), 0) + 1,
+                    teacher: teacherName,
+                    department,
+                    date: visitDate,
+                    evaluation,
+                    visitor: visitorName,
+                    notes
+                };
+                appData.visits.push(newVisit);
+            }
+            
+            saveDataToStorage();
+            closeVisitModal();
+            
+            // إعادة عرض الزيارات للقسم النشط
+            const activeDepartment = document.querySelector('#visitsSubSections .sub-section-btn.active').getAttribute('data-department');
+            renderVisitsByDepartment(activeDepartment);
+            
+            // تحديث لوحة التحكم
+            renderDashboard();
+            
+            alert('تم حفظ الزيارة بنجاح');
+        }
+
+        // معاينة زيارة
+        function viewVisit(visitId) {
+            const visit = appData.visits.find(v => v.id === visitId);
+            if (!visit) return;
+            
+            alert(`معاينة الزيارة:
+المعلم: ${visit.teacher}
+القسم: ${visit.department}
+التاريخ: ${visit.date}
+التقييم: ${visit.evaluation}
+الزائر: ${visit.visitor}
+الملاحظات: ${visit.notes}`);
+        }
+
+        // تعديل زيارة
+        function editVisit(visitId) {
+            const visit = appData.visits.find(v => v.id === visitId);
+            if (!visit) return;
+            
+            document.getElementById('visitModalTitle').textContent = 'تعديل زيارة صفية';
+            document.getElementById('visitId').value = visit.id;
+            document.getElementById('teacherName').value = visit.teacher;
+            document.getElementById('department').value = visit.department;
+            document.getElementById('visitDate').value = visit.date;
+            document.getElementById('evaluation').value = visit.evaluation;
+            document.getElementById('visitorName').value = visit.visitor;
+            document.getElementById('notes').value = visit.notes;
+            
+            document.getElementById('visitModal').style.display = 'flex';
+        }
+
+        // حذف زيارة
+        function deleteVisit(visitId) {
+            if (confirm('هل أنت متأكد من حذف هذه الزيارة؟')) {
+                appData.visits = appData.visits.filter(v => v.id !== visitId);
+                saveDataToStorage();
+                
+                // إعادة عرض الزيارات للقسم النشط
+                const activeDepartment = document.querySelector('#visitsSubSections .sub-section-btn.active').getAttribute('data-department');
+                renderVisitsByDepartment(activeDepartment);
+                
+                // تحديث لوحة التحكم
+                renderDashboard();
+                
+                alert('تم حذف الزيارة بنجاح');
+            }
+        }
+
+        // عرض نموذج إضافة مستخدم
+        function showAddUserModal() {
+            document.getElementById('userModalTitle').textContent = 'إضافة مستخدم جديد';
+            document.getElementById('userForm').reset();
+            document.getElementById('userId').value = '';
+            document.getElementById('userModal').style.display = 'flex';
+        }
+
+        // إغلاق نافذة المستخدم
+        function closeUserModal() {
+            document.getElementById('userModal').style.display = 'none';
+        }
+
+        // حفظ مستخدم
+        function saveUser(e) {
+            e.preventDefault();
+            
+            const userId = document.getElementById('userId').value;
+            const name = document.getElementById('userFullName').value;
+            const position = document.getElementById('userPosition').value;
+            const username = document.getElementById('userUsername').value;
+            const password = document.getElementById('userPassword').value;
+            const role = document.getElementById('userRole').value;
+            const avatar = name.charAt(0);
+            
+            if (userId) {
+                // تعديل مستخدم موجود
+                const userIndex = appData.users.findIndex(u => u.id === parseInt(userId));
+                if (userIndex !== -1) {
+                    // التحقق من عدم تكرار اسم المستخدم (باستثناء المستخدم الحالي)
+                    if (appData.users.some(u => u.username === username && u.id !== parseInt(userId))) {
+                        alert('اسم المستخدم موجود مسبقاً');
+                        return;
+                    }
+                    
+                    appData.users[userIndex].name = name;
+                    appData.users[userIndex].position = position;
+                    appData.users[userIndex].username = username;
+                    appData.users[userIndex].role = role;
+                    appData.users[userIndex].avatar = avatar;
+                    
+                    if (password) {
+                        appData.users[userIndex].password = password;
+                    }
+                }
+            } else {
+                // التحقق من عدم تكرار اسم المستخدم
+                if (appData.users.some(u => u.username === username)) {
+                    alert('اسم المستخدم موجود مسبقاً');
+                    return;
+                }
+                
+                // إنشاء صلاحيات افتراضية بناءً على الدور
+                const defaultPermissions = {
+                    dashboard: true,
+                    middleLeadership: role === 'admin' || role === 'supervisor',
+                    visits: true,
+                    performance: role === 'admin' || role === 'supervisor',
+                    teachers: role === 'admin' || role === 'supervisor',
+                    reports: role === 'admin' || role === 'supervisor',
+                    users: role === 'admin',
+                    departments: {
+                        'القيادة العليا': role === 'admin' || role === 'senior_leadership',
+                        'القيادة الوسطى': role === 'admin' || role === 'middle_leadership'
+                    }
+                };
+                
+                const newUser = {
+                    id: Math.max(...appData.users.map(u => u.id)) + 1,
+                    name,
+                    position,
+                    username,
+                    password,
+                    role,
+                    avatar,
+                    active: true,
+                    permissions: defaultPermissions
+                };
+                
+                appData.users.push(newUser);
+            }
+            
+            saveDataToStorage();
+            closeUserModal();
+            renderUserList();
+            alert('تم حفظ المستخدم بنجاح');
+        }
+
+        // تعديل مستخدم
+        function editUser(userId) {
+            const user = appData.users.find(u => u.id === userId);
+            if (!user) return;
+            
+            document.getElementById('userModalTitle').textContent = 'تعديل بيانات المستخدم';
+            document.getElementById('userId').value = user.id;
+            document.getElementById('userFullName').value = user.name;
+            document.getElementById('userPosition').value = user.position;
+            document.getElementById('userUsername').value = user.username;
+            document.getElementById('userRole').value = user.role;
+            document.getElementById('userPassword').value = '';
+            
+            document.getElementById('userModal').style.display = 'flex';
+        }
+
+        // حذف مستخدم
+        function deleteUser(userId) {
+            if (confirm('هل أنت متأكد من حذف هذا المستخدم؟')) {
+                appData.users = appData.users.filter(u => u.id !== userId);
+                saveDataToStorage();
+                renderUserList();
+                alert('تم حذف المستخدم بنجاح');
+            }
+        }
+
+        // عرض نموذج الصلاحيات
+        function showPermissionsModal(userId) {
+            const user = appData.users.find(u => u.id === userId);
+            if (!user) return;
+            
+            const permissionsContent = document.getElementById('permissionsContent');
+            permissionsContent.innerHTML = `
+                <h4>صلاحيات ${user.name}</h4>
+                <div class="permissions-section">
+                    <h5>الصلاحيات الأساسية:</h5>
+                    <div class="permissions-grid" id="basic-permissions-modal">
+                        ${Object.keys(user.permissions).filter(p => !['departments'].includes(p)).map(permission => `
+                            <div class="permission-item">
+                                <span>${getPermissionName(permission)}</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" ${user.permissions[permission] ? 'checked' : ''} data-permission="${permission}">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                <input type="hidden" id="permissionsUserId" value="${user.id}">
+            `;
+            
+            document.getElementById('permissionsModal').style.display = 'flex';
+        }
+
+        // إغلاق نموذج الصلاحيات
+        function closePermissionsModal() {
+            document.getElementById('permissionsModal').style.display = 'none';
+        }
+
+        // حفظ الصلاحيات
+        function savePermissions() {
+            const userId = parseInt(document.getElementById('permissionsUserId').value);
+            const user = appData.users.find(u => u.id === userId);
+            if (!user) return;
+            
+            // تحديث الصلاحيات الأساسية
+            document.querySelectorAll('#basic-permissions-modal input[type="checkbox"]').forEach(checkbox => {
+                const permission = checkbox.getAttribute('data-permission');
+                user.permissions[permission] = checkbox.checked;
+            });
+            
+            saveDataToStorage();
+            closePermissionsModal();
+            alert('تم حفظ الصلاحيات بنجاح');
+        }
+
+        // عرض نموذج المعاينة
+        function showPreviewModal(userId) {
+            const user = appData.users.find(u => u.id === userId);
+            if (!user) return;
+            
+            const previewContent = document.getElementById('previewContent');
+            previewContent.innerHTML = `
+                <div class="user-details">
+                    <div class="user-avatar">${user.avatar}</div>
+                    <div>
+                        <h3>${user.name}</h3>
+                        <p>الوظيفة: ${user.position}</p>
+                        <p>اسم المستخدم: ${user.username}</p>
+                        <p>الدور: ${getRoleName(user.role)}</p>
+                        <p>الحالة: <span class="status-badge ${user.active ? 'status-active' : 'status-inactive'}">${user.active ? 'مفعل' : 'غير مفعل'}</span></p>
+                    </div>
+                </div>
+                <div class="permissions-section">
+                    <h4>الصلاحيات الممنوحة:</h4>
+                    <div class="permissions-grid">
+                        ${Object.keys(user.permissions).filter(p => !['departments'].includes(p) && user.permissions[p]).map(permission => `
+                            <div class="permission-item">
+                                <span>${getPermissionName(permission)}</span>
+                                <i class="fas fa-check text-success"></i>
+                            </div>
+                        `).join('')}
+                        ${Object.keys(user.permissions).filter(p => !['departments'].includes(p) && !user.permissions[p]).length > 0 ? `
+                            <h5>الصلاحيات غير الممنوحة:</h5>
+                            ${Object.keys(user.permissions).filter(p => !['departments'].includes(p) && !user.permissions[p]).map(permission => `
+                                <div class="permission-item">
+                                    <span>${getPermissionName(permission)}</span>
+                                    <i class="fas fa-times text-danger"></i>
+                                </div>
+                            `).join('')}
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('previewModal').style.display = 'flex';
+        }
+
+        // إغلاق نموذج المعاينة
+        function closePreviewModal() {
+            document.getElementById('previewModal').style.display = 'none';
+        }
+
+        // دوال الحفظ للبيانات المختلفة
+        function saveMiddleLeadership() {
+            saveDataToStorage();
+            alert('تم حفظ بيانات القيادة الوسطى بنجاح');
+        }
+
+        function savePerformance() {
+            saveDataToStorage();
+            alert('تم حفظ بيانات التقييم بنجاح');
+        }
+
+        function saveTeachers() {
+            saveDataToStorage();
+            alert('تم حفظ بيانات المعلمين بنجاح');
+        }
+
+        function saveReports() {
+            saveDataToStorage();
+            alert('تم حفظ بيانات التقارير بنجاح');
         }
 
         // عرض البيانات
@@ -1896,485 +2695,6 @@
                 `;
                 table.appendChild(row);
             });
-        }
-
-        // عرض قائمة المستخدمين
-        function renderUserList(category = 'senior_leadership') {
-            const userList = document.getElementById('userList');
-            userList.innerHTML = '';
-            
-            let filteredUsers = appData.users.filter(user => user.role === category);
-            
-            // إنشاء جدول المستخدمين
-            const table = document.createElement('table');
-            table.innerHTML = `
-                <thead>
-                    <tr>
-                        <th>الاسم</th>
-                        <th>الوظيفة</th>
-                        <th>اسم المستخدم</th>
-                        <th>الحالة</th>
-                        <th>الإجراءات</th>
-                    </tr>
-                </thead>
-                <tbody id="usersTable">
-                </tbody>
-            `;
-            userList.appendChild(table);
-            
-            const usersTable = document.getElementById('usersTable');
-            filteredUsers.forEach(user => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${user.name}</td>
-                    <td>${user.position}</td>
-                    <td>${user.username}</td>
-                    <td>
-                        <span class="status-badge ${user.active ? 'status-active' : 'status-inactive'}">
-                            ${user.active ? 'مفعل' : 'غير مفعل'}
-                        </span>
-                    </td>
-                    <td>
-                        <div class="user-actions">
-                            <button class="btn btn-xs btn-secondary edit-user" data-id="${user.id}">تعديل</button>
-                            <button class="btn btn-xs btn-warning permissions-user" data-id="${user.id}">صلاحيات</button>
-                            <button class="btn btn-xs btn-success preview-user" data-id="${user.id}">معاينة</button>
-                            ${user.id !== appData.currentUser.id ? `
-                                <button class="btn btn-xs btn-danger delete-user" data-id="${user.id}">حذف</button>
-                                <button class="btn btn-xs ${user.active ? 'btn-warning' : 'btn-success'} toggle-user" data-id="${user.id}">
-                                    ${user.active ? 'إلغاء التفعيل' : 'تفعيل'}
-                                </button>
-                            ` : ''}
-                        </div>
-                    </td>
-                `;
-                usersTable.appendChild(row);
-            });
-            
-            // إضافة معالجي الأحداث للأزرار
-            document.querySelectorAll('.edit-user').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const userId = parseInt(this.getAttribute('data-id'));
-                    editUser(userId);
-                });
-            });
-            
-            document.querySelectorAll('.permissions-user').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const userId = parseInt(this.getAttribute('data-id'));
-                    showPermissionsModal(userId);
-                });
-            });
-            
-            document.querySelectorAll('.preview-user').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const userId = parseInt(this.getAttribute('data-id'));
-                    showPreviewModal(userId);
-                });
-            });
-            
-            document.querySelectorAll('.delete-user').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const userId = parseInt(this.getAttribute('data-id'));
-                    deleteUser(userId);
-                });
-            });
-            
-            document.querySelectorAll('.toggle-user').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const userId = parseInt(this.getAttribute('data-id'));
-                    toggleUser(userId);
-                });
-            });
-        }
-
-        // الحصول على اسم الدور
-        function getRoleName(role) {
-            const roles = {
-                'admin': 'مدير النظام',
-                'supervisor': 'مشرف',
-                'teacher': 'معلم',
-                'senior_leadership': 'القيادة العليا',
-                'middle_leadership': 'القيادة الوسطى'
-            };
-            return roles[role] || role;
-        }
-
-        // الحصول على اسم الصلاحية
-        function getPermissionName(permission) {
-            const permissions = {
-                'dashboard': 'لوحة التحكم',
-                'middleLeadership': 'متابعة القيادة الوسطى',
-                'visits': 'الزيارات الصفية',
-                'performance': 'تقييم الأداء',
-                'teachers': 'المعلمين المتميزين',
-                'reports': 'التقارير النوعية',
-                'users': 'إدارة المستخدمين'
-            };
-            return permissions[permission] || permission;
-        }
-
-        // عرض نموذج إضافة زيارة
-        function showAddVisitModal() {
-            document.getElementById('visitModalTitle').textContent = 'إضافة زيارة صفية';
-            document.getElementById('visitForm').reset();
-            document.getElementById('visitId').value = '';
-            document.getElementById('visitorName').value = appData.currentUser.name;
-            
-            // تعيين القسم بناءً على القسم النشط
-            const activeDepartment = document.querySelector('#visitsSubSections .sub-section-btn.active').getAttribute('data-department');
-            document.getElementById('department').value = activeDepartment;
-            
-            document.getElementById('visitModal').style.display = 'flex';
-        }
-
-        // إغلاق نافذة الزيارة
-        function closeVisitModal() {
-            document.getElementById('visitModal').style.display = 'none';
-        }
-
-        // حفظ زيارة
-        function saveVisit(e) {
-            e.preventDefault();
-            
-            const visitId = document.getElementById('visitId').value;
-            const teacherName = document.getElementById('teacherName').value;
-            const department = document.getElementById('department').value;
-            const visitDate = document.getElementById('visitDate').value;
-            const evaluation = document.getElementById('evaluation').value;
-            const visitorName = document.getElementById('visitorName').value;
-            const notes = document.getElementById('notes').value;
-            
-            if (visitId) {
-                // تعديل زيارة موجودة
-                const visitIndex = appData.visits.findIndex(v => v.id === parseInt(visitId));
-                if (visitIndex !== -1) {
-                    appData.visits[visitIndex] = {
-                        id: parseInt(visitId),
-                        teacher: teacherName,
-                        department,
-                        date: visitDate,
-                        evaluation,
-                        visitor: visitorName,
-                        notes
-                    };
-                }
-            } else {
-                // إضافة زيارة جديدة
-                const newVisit = {
-                    id: Math.max(...appData.visits.map(v => v.id), 0) + 1,
-                    teacher: teacherName,
-                    department,
-                    date: visitDate,
-                    evaluation,
-                    visitor: visitorName,
-                    notes
-                };
-                appData.visits.push(newVisit);
-            }
-            
-            saveDataToStorage();
-            closeVisitModal();
-            
-            // إعادة عرض الزيارات للقسم النشط
-            const activeDepartment = document.querySelector('#visitsSubSections .sub-section-btn.active').getAttribute('data-department');
-            renderVisitsByDepartment(activeDepartment);
-            
-            // تحديث لوحة التحكم
-            renderDashboard();
-            
-            alert('تم حفظ الزيارة بنجاح');
-        }
-
-        // معاينة زيارة
-        function viewVisit(visitId) {
-            const visit = appData.visits.find(v => v.id === visitId);
-            if (!visit) return;
-            
-            alert(`معاينة الزيارة:
-المعلم: ${visit.teacher}
-القسم: ${visit.department}
-التاريخ: ${visit.date}
-التقييم: ${visit.evaluation}
-الزائر: ${visit.visitor}
-الملاحظات: ${visit.notes}`);
-        }
-
-        // تعديل زيارة
-        function editVisit(visitId) {
-            const visit = appData.visits.find(v => v.id === visitId);
-            if (!visit) return;
-            
-            document.getElementById('visitModalTitle').textContent = 'تعديل زيارة صفية';
-            document.getElementById('visitId').value = visit.id;
-            document.getElementById('teacherName').value = visit.teacher;
-            document.getElementById('department').value = visit.department;
-            document.getElementById('visitDate').value = visit.date;
-            document.getElementById('evaluation').value = visit.evaluation;
-            document.getElementById('visitorName').value = visit.visitor;
-            document.getElementById('notes').value = visit.notes;
-            
-            document.getElementById('visitModal').style.display = 'flex';
-        }
-
-        // حذف زيارة
-        function deleteVisit(visitId) {
-            if (confirm('هل أنت متأكد من حذف هذه الزيارة؟')) {
-                appData.visits = appData.visits.filter(v => v.id !== visitId);
-                saveDataToStorage();
-                
-                // إعادة عرض الزيارات للقسم النشط
-                const activeDepartment = document.querySelector('#visitsSubSections .sub-section-btn.active').getAttribute('data-department');
-                renderVisitsByDepartment(activeDepartment);
-                
-                // تحديث لوحة التحكم
-                renderDashboard();
-                
-                alert('تم حذف الزيارة بنجاح');
-            }
-        }
-
-        // عرض نموذج إضافة مستخدم
-        function showAddUserModal() {
-            document.getElementById('userModalTitle').textContent = 'إضافة مستخدم جديد';
-            document.getElementById('userForm').reset();
-            document.getElementById('userId').value = '';
-            document.getElementById('userModal').style.display = 'flex';
-        }
-
-        // إغلاق نافذة المستخدم
-        function closeUserModal() {
-            document.getElementById('userModal').style.display = 'none';
-        }
-
-        // حفظ مستخدم
-        function saveUser(e) {
-            e.preventDefault();
-            
-            const userId = document.getElementById('userId').value;
-            const name = document.getElementById('userFullName').value;
-            const position = document.getElementById('userPosition').value;
-            const username = document.getElementById('userUsername').value;
-            const password = document.getElementById('userPassword').value;
-            const role = document.getElementById('userRole').value;
-            const avatar = name.charAt(0);
-            
-            if (userId) {
-                // تعديل مستخدم موجود
-                const userIndex = appData.users.findIndex(u => u.id === parseInt(userId));
-                if (userIndex !== -1) {
-                    // التحقق من عدم تكرار اسم المستخدم (باستثناء المستخدم الحالي)
-                    if (appData.users.some(u => u.username === username && u.id !== parseInt(userId))) {
-                        alert('اسم المستخدم موجود مسبقاً');
-                        return;
-                    }
-                    
-                    appData.users[userIndex].name = name;
-                    appData.users[userIndex].position = position;
-                    appData.users[userIndex].username = username;
-                    appData.users[userIndex].role = role;
-                    appData.users[userIndex].avatar = avatar;
-                    
-                    if (password) {
-                        appData.users[userIndex].password = password;
-                    }
-                }
-            } else {
-                // التحقق من عدم تكرار اسم المستخدم
-                if (appData.users.some(u => u.username === username)) {
-                    alert('اسم المستخدم موجود مسبقاً');
-                    return;
-                }
-                
-                // إنشاء صلاحيات افتراضية بناءً على الدور
-                const defaultPermissions = {
-                    dashboard: true,
-                    middleLeadership: role === 'admin' || role === 'supervisor',
-                    visits: true,
-                    performance: role === 'admin' || role === 'supervisor',
-                    teachers: role === 'admin' || role === 'supervisor',
-                    reports: role === 'admin' || role === 'supervisor',
-                    users: role === 'admin',
-                    departments: {
-                        'القيادة العليا': role === 'admin' || role === 'senior_leadership',
-                        'القيادة الوسطى': role === 'admin' || role === 'middle_leadership'
-                    }
-                };
-                
-                const newUser = {
-                    id: Math.max(...appData.users.map(u => u.id)) + 1,
-                    name,
-                    position,
-                    username,
-                    password,
-                    role,
-                    avatar,
-                    active: true,
-                    permissions: defaultPermissions
-                };
-                
-                appData.users.push(newUser);
-            }
-            
-            saveDataToStorage();
-            closeUserModal();
-            renderUserList();
-            alert('تم حفظ المستخدم بنجاح');
-        }
-
-        // تعديل مستخدم
-        function editUser(userId) {
-            const user = appData.users.find(u => u.id === userId);
-            if (!user) return;
-            
-            document.getElementById('userModalTitle').textContent = 'تعديل بيانات المستخدم';
-            document.getElementById('userId').value = user.id;
-            document.getElementById('userFullName').value = user.name;
-            document.getElementById('userPosition').value = user.position;
-            document.getElementById('userUsername').value = user.username;
-            document.getElementById('userRole').value = user.role;
-            document.getElementById('userPassword').value = '';
-            
-            document.getElementById('userModal').style.display = 'flex';
-        }
-
-        // حذف مستخدم
-        function deleteUser(userId) {
-            if (confirm('هل أنت متأكد من حذف هذا المستخدم؟')) {
-                appData.users = appData.users.filter(u => u.id !== userId);
-                saveDataToStorage();
-                renderUserList();
-                alert('تم حذف المستخدم بنجاح');
-            }
-        }
-
-        // تفعيل/إلغاء تفعيل مستخدم
-        function toggleUser(userId) {
-            const user = appData.users.find(u => u.id === userId);
-            if (!user) return;
-            
-            user.active = !user.active;
-            saveDataToStorage();
-            renderUserList();
-            alert(`تم ${user.active ? 'تفعيل' : 'إلغاء تفعيل'} المستخدم بنجاح`);
-        }
-
-        // عرض نموذج الصلاحيات
-        function showPermissionsModal(userId) {
-            const user = appData.users.find(u => u.id === userId);
-            if (!user) return;
-            
-            const permissionsContent = document.getElementById('permissionsContent');
-            permissionsContent.innerHTML = `
-                <h4>صلاحيات ${user.name}</h4>
-                <div class="permissions-section">
-                    <h5>الصلاحيات الأساسية:</h5>
-                    <div class="permissions-grid" id="basic-permissions-modal">
-                        ${Object.keys(user.permissions).filter(p => !['departments'].includes(p)).map(permission => `
-                            <div class="permission-item">
-                                <span>${getPermissionName(permission)}</span>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" ${user.permissions[permission] ? 'checked' : ''} data-permission="${permission}">
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-                <input type="hidden" id="permissionsUserId" value="${user.id}">
-            `;
-            
-            document.getElementById('permissionsModal').style.display = 'flex';
-        }
-
-        // إغلاق نموذج الصلاحيات
-        function closePermissionsModal() {
-            document.getElementById('permissionsModal').style.display = 'none';
-        }
-
-        // حفظ الصلاحيات
-        function savePermissions() {
-            const userId = parseInt(document.getElementById('permissionsUserId').value);
-            const user = appData.users.find(u => u.id === userId);
-            if (!user) return;
-            
-            // تحديث الصلاحيات الأساسية
-            document.querySelectorAll('#basic-permissions-modal input[type="checkbox"]').forEach(checkbox => {
-                const permission = checkbox.getAttribute('data-permission');
-                user.permissions[permission] = checkbox.checked;
-            });
-            
-            saveDataToStorage();
-            closePermissionsModal();
-            alert('تم حفظ الصلاحيات بنجاح');
-        }
-
-        // عرض نموذج المعاينة
-        function showPreviewModal(userId) {
-            const user = appData.users.find(u => u.id === userId);
-            if (!user) return;
-            
-            const previewContent = document.getElementById('previewContent');
-            previewContent.innerHTML = `
-                <div class="user-details">
-                    <div class="user-avatar">${user.avatar}</div>
-                    <div>
-                        <h3>${user.name}</h3>
-                        <p>الوظيفة: ${user.position}</p>
-                        <p>اسم المستخدم: ${user.username}</p>
-                        <p>الدور: ${getRoleName(user.role)}</p>
-                        <p>الحالة: <span class="status-badge ${user.active ? 'status-active' : 'status-inactive'}">${user.active ? 'مفعل' : 'غير مفعل'}</span></p>
-                    </div>
-                </div>
-                <div class="permissions-section">
-                    <h4>الصلاحيات الممنوحة:</h4>
-                    <div class="permissions-grid">
-                        ${Object.keys(user.permissions).filter(p => !['departments'].includes(p) && user.permissions[p]).map(permission => `
-                            <div class="permission-item">
-                                <span>${getPermissionName(permission)}</span>
-                                <i class="fas fa-check text-success"></i>
-                            </div>
-                        `).join('')}
-                        ${Object.keys(user.permissions).filter(p => !['departments'].includes(p) && !user.permissions[p]).length > 0 ? `
-                            <h5>الصلاحيات غير الممنوحة:</h5>
-                            ${Object.keys(user.permissions).filter(p => !['departments'].includes(p) && !user.permissions[p]).map(permission => `
-                                <div class="permission-item">
-                                    <span>${getPermissionName(permission)}</span>
-                                    <i class="fas fa-times text-danger"></i>
-                                </div>
-                            `).join('')}
-                        ` : ''}
-                    </div>
-                </div>
-            `;
-            
-            document.getElementById('previewModal').style.display = 'flex';
-        }
-
-        // إغلاق نموذج المعاينة
-        function closePreviewModal() {
-            document.getElementById('previewModal').style.display = 'none';
-        }
-
-        // دوال الحفظ للبيانات المختلفة
-        function saveMiddleLeadership() {
-            saveDataToStorage();
-            alert('تم حفظ بيانات القيادة الوسطى بنجاح');
-        }
-
-        function savePerformance() {
-            saveDataToStorage();
-            alert('تم حفظ بيانات التقييم بنجاح');
-        }
-
-        function saveTeachers() {
-            saveDataToStorage();
-            alert('تم حفظ بيانات المعلمين بنجاح');
-        }
-
-        function saveReports() {
-            saveDataToStorage();
-            alert('تم حفظ بيانات التقارير بنجاح');
         }
     </script>
 </body>
