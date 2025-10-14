@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         :root {
             --primary: #2c5aa0;
@@ -1410,15 +1411,15 @@
             
             // أزرار تنزيل ملفات Excel
             document.getElementById('downloadSeniorLeadership').addEventListener('click', function() {
-                alert('سيتم تنزيل ملف Excel للقيادة العليا');
+                downloadExcel('senior_leadership', 'القيادة العليا');
             });
             
             document.getElementById('downloadMiddleLeadership').addEventListener('click', function() {
-                alert('سيتم تنزيل ملف Excel للقيادة الوسطى');
+                downloadExcel('middle_leadership', 'القيادة الوسطى');
             });
             
             document.getElementById('downloadTeachers').addEventListener('click', function() {
-                alert('سيتم تنزيل ملف Excel للمعلمات');
+                downloadExcel('teacher', 'المعلمات');
             });
             
             // معالجة اختيار الملفات
@@ -1461,11 +1462,119 @@
                 userRole = 'teacher';
             }
             
-            // محاكاة معالجة ملف Excel
-            alert(`تم رفع ملف ${file.name} بنجاح. سيتم معالجة البيانات وإضافة المستخدمين الجدد.`);
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    
+                    // افتراض أن الورقة الأولى تحتوي على البيانات
+                    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet);
+                    
+                    // معالجة البيانات وإضافة المستخدمين
+                    processExcelData(jsonData, userRole);
+                    
+                    alert(`تم رفع ملف ${file.name} بنجاح. تمت إضافة ${jsonData.length} مستخدم جديد.`);
+                    
+                    // تحديث قائمة المستخدمين
+                    renderUserList(userRole);
+                } catch (error) {
+                    console.error('خطأ في معالجة ملف Excel:', error);
+                    alert('حدث خطأ أثناء معالجة ملف Excel. يرجى التحقق من تنسيق الملف.');
+                }
+            };
+            
+            reader.readAsArrayBuffer(file);
             
             // إعادة تعيين حقل الملف
             e.target.value = '';
+        }
+
+        // معالجة بيانات Excel وإضافة المستخدمين
+        function processExcelData(data, role) {
+            data.forEach((row, index) => {
+                // توقع أن الملف يحتوي على أعمدة: الاسم، الوظيفة، اسم المستخدم، كلمة المرور
+                const name = row['الاسم'] || row['name'] || `مستخدم ${index + 1}`;
+                const position = row['الوظيفة'] || row['position'] || role === 'teacher' ? 'معلم' : 'موظف';
+                const username = row['اسم المستخدم'] || row['username'] || generateUsername(name);
+                const password = row['كلمة المرور'] || row['password'] || '123456';
+                
+                // التحقق من عدم تكرار اسم المستخدم
+                if (!appData.users.some(u => u.username === username)) {
+                    const newUser = {
+                        id: Math.max(...appData.users.map(u => u.id), 0) + 1,
+                        name,
+                        position,
+                        username,
+                        password,
+                        role,
+                        avatar: name.charAt(0),
+                        active: true,
+                        permissions: createDefaultPermissions(role)
+                    };
+                    
+                    appData.users.push(newUser);
+                }
+            });
+            
+            saveDataToStorage();
+        }
+
+        // إنشاء اسم مستخدم تلقائي
+        function generateUsername(name) {
+            const baseUsername = name.replace(/\s+/g, '').toLowerCase();
+            let username = baseUsername;
+            let counter = 1;
+            
+            while (appData.users.some(u => u.username === username)) {
+                username = `${baseUsername}${counter}`;
+                counter++;
+            }
+            
+            return username;
+        }
+
+        // إنشاء صلاحيات افتراضية بناءً على الدور
+        function createDefaultPermissions(role) {
+            return {
+                dashboard: true,
+                middleLeadership: role === 'admin' || role === 'supervisor',
+                visits: true,
+                performance: role === 'admin' || role === 'supervisor',
+                teachers: role === 'admin' || role === 'supervisor',
+                reports: role === 'admin' || role === 'supervisor',
+                users: role === 'admin',
+                departments: {
+                    'القيادة العليا': role === 'admin' || role === 'senior_leadership',
+                    'القيادة الوسطى': role === 'admin' || role === 'middle_leadership'
+                }
+            };
+        }
+
+        // تنزيل ملف Excel
+        function downloadExcel(role, roleName) {
+            // تصفية المستخدمين حسب الدور
+            const users = appData.users.filter(user => user.role === role);
+            
+            // إعداد البيانات للتصدير
+            const data = users.map(user => ({
+                'الاسم': user.name,
+                'الوظيفة': user.position,
+                'اسم المستخدم': user.username,
+                'كلمة المرور': user.password,
+                'الحالة': user.active ? 'مفعل' : 'غير مفعل'
+            }));
+            
+            // إنشاء ورقة عمل
+            const worksheet = XLSX.utils.json_to_sheet(data);
+            
+            // إنشاء مصنف وإضافة الورقة
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, roleName);
+            
+            // تصدير الملف
+            XLSX.writeFile(workbook, `${roleName}.xlsx`);
         }
 
         // عرض البيانات
@@ -1939,7 +2048,7 @@
                             <button class="btn btn-xs btn-secondary edit-user" data-id="${user.id}">تعديل</button>
                             <button class="btn btn-xs btn-warning permissions-user" data-id="${user.id}">صلاحيات</button>
                             <button class="btn btn-xs btn-success preview-user" data-id="${user.id}">معاينة</button>
-                            ${user.id !== appData.currentUser.id ? `
+                            ${user.id !== appData.currentUser.id && user.id !== 1 ? `
                                 <button class="btn btn-xs btn-danger delete-user" data-id="${user.id}">حذف</button>
                                 <button class="btn btn-xs ${user.active ? 'btn-warning' : 'btn-success'} toggle-user" data-id="${user.id}">
                                     ${user.active ? 'إلغاء التفعيل' : 'تفعيل'}
@@ -2187,19 +2296,7 @@
                 }
                 
                 // إنشاء صلاحيات افتراضية بناءً على الدور
-                const defaultPermissions = {
-                    dashboard: true,
-                    middleLeadership: role === 'admin' || role === 'supervisor',
-                    visits: true,
-                    performance: role === 'admin' || role === 'supervisor',
-                    teachers: role === 'admin' || role === 'supervisor',
-                    reports: role === 'admin' || role === 'supervisor',
-                    users: role === 'admin',
-                    departments: {
-                        'القيادة العليا': role === 'admin' || role === 'senior_leadership',
-                        'القيادة الوسطى': role === 'admin' || role === 'middle_leadership'
-                    }
-                };
+                const defaultPermissions = createDefaultPermissions(role);
                 
                 const newUser = {
                     id: Math.max(...appData.users.map(u => u.id)) + 1,
@@ -2240,6 +2337,12 @@
 
         // حذف مستخدم
         function deleteUser(userId) {
+            // منع حذف المستخدم الرئيسي
+            if (userId === 1) {
+                alert('لا يمكن حذف المستخدم الرئيسي');
+                return;
+            }
+            
             if (confirm('هل أنت متأكد من حذف هذا المستخدم؟')) {
                 appData.users = appData.users.filter(u => u.id !== userId);
                 saveDataToStorage();
@@ -2250,6 +2353,12 @@
 
         // تفعيل/إلغاء تفعيل مستخدم
         function toggleUser(userId) {
+            // منع إلغاء تفعيل المستخدم الرئيسي
+            if (userId === 1) {
+                alert('لا يمكن إلغاء تفعيل المستخدم الرئيسي');
+                return;
+            }
+            
             const user = appData.users.find(u => u.id === userId);
             if (!user) return;
             
