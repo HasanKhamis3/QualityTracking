@@ -1066,9 +1066,6 @@
             // إعداد الأزرار والإجراءات
             setupButtons();
             
-            // إعداد الروابط حسب الهاش
-            setupHashRouting();
-            
             // تهيئة قسم المستخدمين
             showCategory('senior_leadership');
         });
@@ -1092,20 +1089,7 @@
             localStorage.setItem('educationQualityData', JSON.stringify(appData));
         }
 
-        // إعداد التوجيه حسب الهاش
-        function setupHashRouting() {
-            // تحديث الرابط عند تغيير القسم
-            window.addEventListener('hashchange', function() {
-                const hash = window.location.hash.substring(1) || 'dashboard';
-                navigateToSection(hash);
-            });
-            
-            // التعامل مع الرابط الأولي عند التحميل
-            const initialHash = window.location.hash.substring(1) || 'dashboard';
-            navigateToSection(initialHash);
-        }
-
-        // التنقل إلى قسم معين
+        // التنقل إلى قسم معين - الدالة المصححة
         function navigateToSection(sectionId) {
             // حفظ القسم الحالي
             localStorage.setItem('currentSection', sectionId);
@@ -1125,9 +1109,6 @@
                     section.classList.add('active');
                 }
             });
-            
-            // تحديث الهاش في الرابط
-            window.location.hash = sectionId;
             
             // إذا كان قسم المستخدمين، عرض قائمة المستخدمين
             if (sectionId === 'users') {
