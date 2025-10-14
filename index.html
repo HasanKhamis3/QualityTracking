@@ -1114,6 +1114,49 @@
             if (sectionId === 'users') {
                 renderUserList(currentCategory);
             }
+            
+            // إعادة تحميل البيانات للقسم النشط
+            renderDataForSection(sectionId);
+        }
+
+        // دالة مساعدة لإعادة تحميل البيانات للقسم النشط
+        function renderDataForSection(sectionId) {
+            switch(sectionId) {
+                case 'dashboard':
+                    renderDashboard();
+                    break;
+                case 'middleLeadership':
+                    renderMiddleLeadership();
+                    break;
+                case 'visits':
+                    renderVisits();
+                    break;
+                case 'performance':
+                    renderPerformance();
+                    break;
+                case 'teachers':
+                    renderTeachers();
+                    break;
+                case 'reports':
+                    renderReports();
+                    break;
+                case 'users':
+                    renderUserList(currentCategory);
+                    break;
+            }
+        }
+
+        // إعداد التنقل بين الأقسام
+        function setupNavigation() {
+            const navTabs = document.querySelectorAll('.nav-tabs a');
+            
+            navTabs.forEach(tab => {
+                tab.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const sectionId = this.getAttribute('data-section');
+                    navigateToSection(sectionId);
+                });
+            });
         }
 
         // معالج تسجيل الدخول
@@ -1161,19 +1204,6 @@
             document.getElementById('loginPage').style.display = 'flex';
             document.getElementById('app').style.display = 'none';
             document.getElementById('loginForm').reset();
-        }
-
-        // إعداد التنقل بين الأقسام
-        function setupNavigation() {
-            const navTabs = document.querySelectorAll('.nav-tabs a');
-            
-            navTabs.forEach(tab => {
-                tab.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const sectionId = this.getAttribute('data-section');
-                    navigateToSection(sectionId);
-                });
-            });
         }
 
         // إعداد الأزرار والإجراءات
