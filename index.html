@@ -1411,15 +1411,15 @@
             
             // أزرار تنزيل ملفات Excel
             document.getElementById('downloadSeniorLeadership').addEventListener('click', function() {
-                downloadExcel('senior_leadership', 'القيادة العليا');
+                downloadExcel('senior_leadership', 'قائمة القيادة العليا');
             });
             
             document.getElementById('downloadMiddleLeadership').addEventListener('click', function() {
-                downloadExcel('middle_leadership', 'القيادة الوسطى');
+                downloadExcel('middle_leadership', 'قائمة القيادة الوسطى');
             });
             
             document.getElementById('downloadTeachers').addEventListener('click', function() {
-                downloadExcel('teacher', 'المعلمات');
+                downloadExcel('teacher', 'قائمة المعلمات');
             });
             
             // معالجة اختيار الملفات
@@ -1496,9 +1496,22 @@
             data.forEach((row, index) => {
                 // توقع أن الملف يحتوي على أعمدة: الاسم، الوظيفة، اسم المستخدم، كلمة المرور
                 const name = row['الاسم'] || row['name'] || `مستخدم ${index + 1}`;
-                const position = row['الوظيفة'] || row['position'] || role === 'teacher' ? 'معلم' : 'موظف';
-                const username = row['اسم المستخدم'] || row['username'] || generateUsername(name);
-                const password = row['كلمة المرور'] || row['password'] || '123456';
+                let position = '';
+                let phone = '';
+                
+                // معالجة البيانات حسب نوع القائمة
+                if (role === 'senior_leadership') {
+                    position = row['الوظيفة'] || row['position'] || 'موظف';
+                    phone = row['رقم الهاتف'] || row['phone'] || '';
+                } else if (role === 'middle_leadership') {
+                    position = row['الوظيفة - مادة التدريس'] || row['position'] || 'معلم';
+                    phone = row['رقم الهاتف'] || row['phone'] || '';
+                } else if (role === 'teacher') {
+                    position = row['القسم'] || row['department'] || 'معلم';
+                }
+                
+                const username = generateUsername(name);
+                const password = '123456'; // كلمة مرور افتراضية
                 
                 // التحقق من عدم تكرار اسم المستخدم
                 if (!appData.users.some(u => u.username === username)) {
@@ -1511,6 +1524,7 @@
                         role,
                         avatar: name.charAt(0),
                         active: true,
+                        phone: phone,
                         permissions: createDefaultPermissions(role)
                     };
                     
@@ -1553,28 +1567,47 @@
         }
 
         // تنزيل ملف Excel
-        function downloadExcel(role, roleName) {
+        function downloadExcel(role, fileName) {
             // تصفية المستخدمين حسب الدور
             const users = appData.users.filter(user => user.role === role);
             
-            // إعداد البيانات للتصدير
-            const data = users.map(user => ({
-                'الاسم': user.name,
-                'الوظيفة': user.position,
-                'اسم المستخدم': user.username,
-                'كلمة المرور': user.password,
-                'الحالة': user.active ? 'مفعل' : 'غير مفعل'
-            }));
+            // إعداد البيانات للتصدير حسب نوع القائمة
+            let data = [];
+            
+            if (role === 'senior_leadership') {
+                // قائمة القيادة العليا
+                data = users.map((user, index) => ({
+                    'ت': index + 1,
+                    'الاسم': user.name,
+                    'الوظيفة': user.position,
+                    'رقم الهاتف': user.phone || ''
+                }));
+            } else if (role === 'middle_leadership') {
+                // قائمة القيادة الوسطى
+                data = users.map((user, index) => ({
+                    'ت': index + 1,
+                    'الاسم': user.name,
+                    'الوظيفة - مادة التدريس': user.position,
+                    'رقم الهاتف': user.phone || ''
+                }));
+            } else if (role === 'teacher') {
+                // قائمة المعلمات
+                data = users.map((user, index) => ({
+                    'ت': index + 1,
+                    'الاسم': user.name,
+                    'القسم': user.position
+                }));
+            }
             
             // إنشاء ورقة عمل
             const worksheet = XLSX.utils.json_to_sheet(data);
             
             // إنشاء مصنف وإضافة الورقة
             const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, roleName);
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
             
             // تصدير الملف
-            XLSX.writeFile(workbook, `${roleName}.xlsx`);
+            XLSX.writeFile(workbook, `${fileName}.xlsx`);
         }
 
         // عرض البيانات
