@@ -501,7 +501,7 @@
             background-color: white;
             border-radius: var(--border-radius);
             width: 90%;
-            max-width: 600px;
+            max-width: 800px;
             max-height: 90vh;
             overflow-y: auto;
             padding: 1.5rem;
@@ -774,6 +774,102 @@
             width: 350px; /* الإجراءات */
         }
 
+        /* الأنماط الجديدة */
+        .table-header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .bulk-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .select-all-checkbox {
+            margin-left: 10px;
+        }
+
+        .sortable-header {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .sortable-header:hover {
+            background-color: var(--primary-light);
+        }
+
+        .sort-icons {
+            display: inline-flex;
+            flex-direction: column;
+            margin-right: 5px;
+        }
+
+        .sort-icon {
+            font-size: 0.7rem;
+            line-height: 0.5;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .sort-icon.active {
+            color: white;
+        }
+
+        .permission-modal-content {
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .permission-category {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+        }
+
+        .permission-category-title {
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .permission-options {
+            display: flex;
+            gap: 15px;
+            margin-top: 0.5rem;
+        }
+
+        .permission-option {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .permission-option input {
+            width: auto;
+        }
+
+        .sub-permissions {
+            margin-top: 0.5rem;
+            padding-right: 1rem;
+        }
+
+        .sub-permission-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .sub-permission-options {
+            display: flex;
+            gap: 10px;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .header-content {
@@ -853,6 +949,21 @@
             .btn-xs {
                 padding: 2px 5px;
                 font-size: 0.7rem;
+            }
+
+            .table-header-actions {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+
+            .bulk-actions {
+                flex-wrap: wrap;
+            }
+
+            .permission-options {
+                flex-direction: column;
+                gap: 5px;
             }
         }
     </style>
@@ -1145,12 +1256,40 @@
                                 <input type="file" id="seniorLeadershipFile" accept=".csv" style="display: none;">
                             </div>
                         </div>
+
+                        <!-- إجراءات جماعية -->
+                        <div class="table-header-actions">
+                            <div class="bulk-actions">
+                                <button class="btn btn-xs btn-danger" id="bulkDelete">حذف المحددين</button>
+                                <button class="btn btn-xs btn-success" id="bulkActivate">تفعيل المحددين</button>
+                                <button class="btn btn-xs btn-warning" id="bulkDeactivate">إلغاء تفعيل المحددين</button>
+                                <label class="select-all-checkbox">
+                                    <input type="checkbox" id="selectAllUsers"> تحديد الكل
+                                </label>
+                            </div>
+                        </div>
                         
                         <table class="user-table">
                             <thead>
                                 <tr>
-                                    <th>الترتيب</th>
-                                    <th>الاسم</th>
+                                    <th>
+                                        <div class="sortable-header" data-sort="order">
+                                            <div class="sort-icons">
+                                                <span class="sort-icon" data-direction="asc">▲</span>
+                                                <span class="sort-icon" data-direction="desc">▼</span>
+                                            </div>
+                                            الترتيب
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="sortable-header" data-sort="name">
+                                            <div class="sort-icons">
+                                                <span class="sort-icon" data-direction="asc">▲</span>
+                                                <span class="sort-icon" data-direction="desc">▼</span>
+                                            </div>
+                                            الاسم
+                                        </div>
+                                    </th>
                                     <th>الوظيفة</th>
                                     <th>رقم الهاتف</th>
                                     <th>الإجراءات</th>
@@ -1173,12 +1312,40 @@
                                 <input type="file" id="middleLeadershipFile" accept=".csv" style="display: none;">
                             </div>
                         </div>
+
+                        <!-- إجراءات جماعية -->
+                        <div class="table-header-actions">
+                            <div class="bulk-actions">
+                                <button class="btn btn-xs btn-danger" id="bulkDeleteMiddle">حذف المحددين</button>
+                                <button class="btn btn-xs btn-success" id="bulkActivateMiddle">تفعيل المحددين</button>
+                                <button class="btn btn-xs btn-warning" id="bulkDeactivateMiddle">إلغاء تفعيل المحددين</button>
+                                <label class="select-all-checkbox">
+                                    <input type="checkbox" id="selectAllUsersMiddle"> تحديد الكل
+                                </label>
+                            </div>
+                        </div>
                         
                         <table class="user-table">
                             <thead>
                                 <tr>
-                                    <th>الترتيب</th>
-                                    <th>الاسم</th>
+                                    <th>
+                                        <div class="sortable-header" data-sort="order">
+                                            <div class="sort-icons">
+                                                <span class="sort-icon" data-direction="asc">▲</span>
+                                                <span class="sort-icon" data-direction="desc">▼</span>
+                                            </div>
+                                            الترتيب
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="sortable-header" data-sort="name">
+                                            <div class="sort-icons">
+                                                <span class="sort-icon" data-direction="asc">▲</span>
+                                                <span class="sort-icon" data-direction="desc">▼</span>
+                                            </div>
+                                            الاسم
+                                        </div>
+                                    </th>
                                     <th>الوظيفة</th>
                                     <th>رقم الهاتف</th>
                                     <th>الإجراءات</th>
@@ -1201,12 +1368,40 @@
                                 <input type="file" id="teachersFile" accept=".csv" style="display: none;">
                             </div>
                         </div>
+
+                        <!-- إجراءات جماعية -->
+                        <div class="table-header-actions">
+                            <div class="bulk-actions">
+                                <button class="btn btn-xs btn-danger" id="bulkDeleteTeachers">حذف المحددين</button>
+                                <button class="btn btn-xs btn-success" id="bulkActivateTeachers">تفعيل المحددين</button>
+                                <button class="btn btn-xs btn-warning" id="bulkDeactivateTeachers">إلغاء تفعيل المحددين</button>
+                                <label class="select-all-checkbox">
+                                    <input type="checkbox" id="selectAllUsersTeachers"> تحديد الكل
+                                </label>
+                            </div>
+                        </div>
                         
                         <table class="user-table">
                             <thead>
                                 <tr>
-                                    <th>الترتيب</th>
-                                    <th>الاسم</th>
+                                    <th>
+                                        <div class="sortable-header" data-sort="order">
+                                            <div class="sort-icons">
+                                                <span class="sort-icon" data-direction="asc">▲</span>
+                                                <span class="sort-icon" data-direction="desc">▼</span>
+                                            </div>
+                                            الترتيب
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="sortable-header" data-sort="name">
+                                            <div class="sort-icons">
+                                                <span class="sort-icon" data-direction="asc">▲</span>
+                                                <span class="sort-icon" data-direction="desc">▼</span>
+                                            </div>
+                                            الاسم
+                                        </div>
+                                    </th>
                                     <th>القسم</th>
                                     <th>رقم الهاتف</th>
                                     <th>الإجراءات</th>
@@ -1315,6 +1510,23 @@
         </div>
     </div>
 
+    <!-- Modal for User Permissions -->
+    <div id="permissionsModal" class="modal">
+        <div class="modal-content permission-modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">إدارة صلاحيات المستخدم</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div id="permissionsContent">
+                <!-- سيتم ملؤها بالبيانات -->
+            </div>
+            <div class="btn-group">
+                <button class="btn" id="savePermissions">حفظ الصلاحيات</button>
+                <button class="btn btn-secondary" id="cancelPermissions">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal for User Preview -->
     <div id="previewModal" class="modal">
         <div class="modal-content">
@@ -1347,16 +1559,16 @@
                     active: true,
                     hasAccess: true,
                     permissions: {
-                        dashboard: true,
-                        middleLeadership: true,
-                        visits: true,
-                        performance: true,
-                        teachers: true,
-                        reports: true,
-                        users: true,
+                        dashboard: { view: true, edit: true },
+                        middleLeadership: { view: true, edit: true },
+                        visits: { view: true, edit: true },
+                        performance: { view: true, edit: true },
+                        teachers: { view: true, edit: true },
+                        reports: { view: true, edit: true },
+                        users: { view: true, edit: true },
                         departments: {
-                            'القيادة العليا': true,
-                            'القيادة الوسطى': true
+                            'القيادة العليا': { view: true, edit: true },
+                            'القيادة الوسطى': { view: true, edit: true }
                         }
                     }
                 },
@@ -1372,16 +1584,16 @@
                     hasAccess: true,
                     phone: '0551234567',
                     permissions: {
-                        dashboard: true,
-                        middleLeadership: true,
-                        visits: true,
-                        performance: true,
-                        teachers: true,
-                        reports: true,
-                        users: false,
+                        dashboard: { view: true, edit: false },
+                        middleLeadership: { view: true, edit: false },
+                        visits: { view: true, edit: true },
+                        performance: { view: true, edit: false },
+                        teachers: { view: true, edit: false },
+                        reports: { view: true, edit: false },
+                        users: { view: false, edit: false },
                         departments: {
-                            'القيادة العليا': true,
-                            'القيادة الوسطى': false
+                            'القيادة العليا': { view: true, edit: true },
+                            'القيادة الوسطى': { view: false, edit: false }
                         }
                     }
                 },
@@ -1398,16 +1610,16 @@
                     phone: '0557654321',
                     department: 'اللغة العربية',
                     permissions: {
-                        dashboard: true,
-                        middleLeadership: false,
-                        visits: false,
-                        performance: false,
-                        teachers: false,
-                        reports: false,
-                        users: false,
+                        dashboard: { view: true, edit: false },
+                        middleLeadership: { view: false, edit: false },
+                        visits: { view: false, edit: false },
+                        performance: { view: false, edit: false },
+                        teachers: { view: false, edit: false },
+                        reports: { view: false, edit: false },
+                        users: { view: false, edit: false },
                         departments: {
-                            'القيادة العليا': false,
-                            'القيادة الوسطى': false
+                            'القيادة العليا': { view: false, edit: false },
+                            'القيادة الوسطى': { view: false, edit: false }
                         }
                     }
                 }
@@ -1417,7 +1629,13 @@
             performance: [],
             distinguishedTeachers: [],
             teachersNeedCare: [],
-            reports: []
+            reports: [],
+            // إعدادات الترتيب
+            sortSettings: {
+                senior_leadership: { field: 'order', direction: 'asc' },
+                middle_leadership: { field: 'order', direction: 'asc' },
+                teacher: { field: 'order', direction: 'asc' }
+            }
         };
 
         // تهيئة التطبيق
@@ -1628,6 +1846,10 @@
             document.getElementById('saveReports').addEventListener('click', saveReports);
             
             // إعداد أزرار النماذج الإضافية
+            document.getElementById('savePermissions').addEventListener('click', savePermissions);
+            document.getElementById('cancelPermissions').addEventListener('click', closePermissionsModal);
+            document.querySelector('#permissionsModal .close-modal').addEventListener('click', closePermissionsModal);
+            
             document.getElementById('closePreview').addEventListener('click', closePreviewModal);
             document.querySelector('#previewModal .close-modal').addEventListener('click', closePreviewModal);
         }
@@ -1706,6 +1928,57 @@
             document.querySelector('#userModal .close-modal').addEventListener('click', closeUserModal);
             document.getElementById('userForm').addEventListener('submit', saveUser);
             
+            // إعداد أزرار الإجراءات الجماعية
+            document.getElementById('bulkDelete').addEventListener('click', function() {
+                bulkAction('senior_leadership', 'delete');
+            });
+            document.getElementById('bulkActivate').addEventListener('click', function() {
+                bulkAction('senior_leadership', 'activate');
+            });
+            document.getElementById('bulkDeactivate').addEventListener('click', function() {
+                bulkAction('senior_leadership', 'deactivate');
+            });
+            
+            document.getElementById('bulkDeleteMiddle').addEventListener('click', function() {
+                bulkAction('middle_leadership', 'delete');
+            });
+            document.getElementById('bulkActivateMiddle').addEventListener('click', function() {
+                bulkAction('middle_leadership', 'activate');
+            });
+            document.getElementById('bulkDeactivateMiddle').addEventListener('click', function() {
+                bulkAction('middle_leadership', 'deactivate');
+            });
+            
+            document.getElementById('bulkDeleteTeachers').addEventListener('click', function() {
+                bulkAction('teacher', 'delete');
+            });
+            document.getElementById('bulkActivateTeachers').addEventListener('click', function() {
+                bulkAction('teacher', 'activate');
+            });
+            document.getElementById('bulkDeactivateTeachers').addEventListener('click', function() {
+                bulkAction('teacher', 'deactivate');
+            });
+            
+            // إعداد تحديد الكل
+            document.getElementById('selectAllUsers').addEventListener('change', function() {
+                toggleSelectAll('senior_leadership', this.checked);
+            });
+            document.getElementById('selectAllUsersMiddle').addEventListener('change', function() {
+                toggleSelectAll('middle_leadership', this.checked);
+            });
+            document.getElementById('selectAllUsersTeachers').addEventListener('change', function() {
+                toggleSelectAll('teacher', this.checked);
+            });
+            
+            // إعداد الترتيب
+            document.querySelectorAll('.sortable-header').forEach(header => {
+                header.addEventListener('click', function() {
+                    const sortField = this.getAttribute('data-sort');
+                    const currentSection = document.querySelector('#userSubTabs a.active').getAttribute('data-user-section');
+                    toggleSort(currentSection, sortField);
+                });
+            });
+            
             // عرض القسم الافتراضي (القيادة العليا)
             renderUserManagementTable('senior_leadership');
         }
@@ -1726,6 +1999,26 @@
                 users = appData.users.filter(user => user.role === 'teacher');
             }
             
+            // تطبيق الترتيب
+            const sortSettings = appData.sortSettings[role];
+            users.sort((a, b) => {
+                let aValue, bValue;
+                
+                if (sortSettings.field === 'name') {
+                    aValue = a.name;
+                    bValue = b.name;
+                } else {
+                    aValue = appData.users.indexOf(a);
+                    bValue = appData.users.indexOf(b);
+                }
+                
+                if (sortSettings.direction === 'asc') {
+                    return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+                } else {
+                    return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+                }
+            });
+            
             const table = document.getElementById(tableId);
             table.innerHTML = '';
             
@@ -1741,7 +2034,10 @@
                 }
                 
                 row.innerHTML = `
-                    <td>${index + 1}</td>
+                    <td>
+                        <input type="checkbox" class="user-checkbox" data-id="${user.id}">
+                        ${index + 1}
+                    </td>
                     <td>${user.name}</td>
                     <td>${thirdColumn}</td>
                     <td>${user.phone || ''}</td>
@@ -1763,6 +2059,9 @@
                 `;
                 table.appendChild(row);
             });
+            
+            // تحديث أيقونات الترتيب
+            updateSortIcons(role);
             
             // إضافة معالجي الأحداث للأزرار
             document.querySelectorAll(`#${tableId} .preview-user`).forEach(btn => {
@@ -1796,9 +2095,157 @@
             document.querySelectorAll(`#${tableId} .access-user`).forEach(btn => {
                 btn.addEventListener('click', function() {
                     const userId = parseInt(this.getAttribute('data-id'));
-                    toggleAccess(userId);
+                    showPermissionsModal(userId);
                 });
             });
+            
+            // إضافة معالجي الأحداث لخانات الاختيار
+            document.querySelectorAll(`#${tableId} .user-checkbox`).forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    updateBulkActionsState(role);
+                });
+            });
+        }
+
+        // تحديث أيقونات الترتيب
+        function updateSortIcons(role) {
+            const sortSettings = appData.sortSettings[role];
+            
+            document.querySelectorAll(`#${role} .sortable-header`).forEach(header => {
+                const sortField = header.getAttribute('data-sort');
+                const icons = header.querySelectorAll('.sort-icon');
+                
+                icons.forEach(icon => {
+                    icon.classList.remove('active');
+                });
+                
+                if (sortField === sortSettings.field) {
+                    const activeIcon = header.querySelector(`.sort-icon[data-direction="${sortSettings.direction}"]`);
+                    if (activeIcon) {
+                        activeIcon.classList.add('active');
+                    }
+                }
+            });
+        }
+
+        // تبديل الترتيب
+        function toggleSort(role, field) {
+            const currentSettings = appData.sortSettings[role];
+            
+            if (currentSettings.field === field) {
+                // عكس الاتجاه إذا كان نفس الحقل
+                currentSettings.direction = currentSettings.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                // تغيير الحقل وضبط الاتجاه الافتراضي
+                currentSettings.field = field;
+                currentSettings.direction = 'asc';
+            }
+            
+            renderUserManagementTable(role);
+        }
+
+        // تحديد/إلغاء تحديد الكل
+        function toggleSelectAll(role, checked) {
+            let tableId = '';
+            
+            if (role === 'senior_leadership') {
+                tableId = 'seniorLeadershipTable';
+            } else if (role === 'middle_leadership') {
+                tableId = 'middleLeadershipTable';
+            } else if (role === 'teacher') {
+                tableId = 'teachersTable';
+            }
+            
+            document.querySelectorAll(`#${tableId} .user-checkbox`).forEach(checkbox => {
+                checkbox.checked = checked;
+            });
+            
+            updateBulkActionsState(role);
+        }
+
+        // تحديث حالة أزرار الإجراءات الجماعية
+        function updateBulkActionsState(role) {
+            let tableId = '';
+            
+            if (role === 'senior_leadership') {
+                tableId = 'seniorLeadershipTable';
+            } else if (role === 'middle_leadership') {
+                tableId = 'middleLeadershipTable';
+            } else if (role === 'teacher') {
+                tableId = 'teachersTable';
+            }
+            
+            const checkedBoxes = document.querySelectorAll(`#${tableId} .user-checkbox:checked`);
+            const hasSelected = checkedBoxes.length > 0;
+            
+            // تمكين/تعطيل أزرار الإجراءات الجماعية بناءً على التحديد
+            const bulkButtons = document.querySelectorAll(`#${role} .bulk-actions button`);
+            bulkButtons.forEach(button => {
+                if (button.id !== 'selectAllUsers' && button.id !== 'selectAllUsersMiddle' && button.id !== 'selectAllUsersTeachers') {
+                    button.disabled = !hasSelected;
+                }
+            });
+        }
+
+        // تنفيذ الإجراءات الجماعية
+        function bulkAction(role, action) {
+            let tableId = '';
+            
+            if (role === 'senior_leadership') {
+                tableId = 'seniorLeadershipTable';
+            } else if (role === 'middle_leadership') {
+                tableId = 'middleLeadershipTable';
+            } else if (role === 'teacher') {
+                tableId = 'teachersTable';
+            }
+            
+            const checkedBoxes = document.querySelectorAll(`#${tableId} .user-checkbox:checked`);
+            
+            if (checkedBoxes.length === 0) {
+                alert('يرجى تحديد مستخدمين على الأقل');
+                return;
+            }
+            
+            const userIds = Array.from(checkedBoxes).map(checkbox => parseInt(checkbox.getAttribute('data-id')));
+            
+            if (action === 'delete') {
+                if (confirm(`هل أنت متأكد من حذف ${userIds.length} مستخدم؟`)) {
+                    userIds.forEach(userId => {
+                        if (userId !== 1) { // منع حذف المستخدم الرئيسي
+                            appData.users = appData.users.filter(u => u.id !== userId);
+                        }
+                    });
+                    saveDataToStorage();
+                    renderUserManagementTable(role);
+                    alert(`تم حذف ${userIds.length} مستخدم بنجاح`);
+                }
+            } else if (action === 'activate') {
+                userIds.forEach(userId => {
+                    const user = appData.users.find(u => u.id === userId);
+                    if (user && userId !== 1) { // منع إلغاء تفعيل المستخدم الرئيسي
+                        user.active = true;
+                    }
+                });
+                saveDataToStorage();
+                renderUserManagementTable(role);
+                alert(`تم تفعيل ${userIds.length} مستخدم بنجاح`);
+            } else if (action === 'deactivate') {
+                userIds.forEach(userId => {
+                    const user = appData.users.find(u => u.id === userId);
+                    if (user && userId !== 1) { // منع إلغاء تفعيل المستخدم الرئيسي
+                        user.active = false;
+                    }
+                });
+                saveDataToStorage();
+                renderUserManagementTable(role);
+                alert(`تم إلغاء تفعيل ${userIds.length} مستخدم بنجاح`);
+            }
+            
+            // إعادة تعيين تحديد الكل
+            const selectAllCheckbox = document.querySelector(`#${role} .select-all-checkbox input`);
+            if (selectAllCheckbox) {
+                selectAllCheckbox.checked = false;
+            }
         }
 
         // عرض نموذج إضافة مستخدم
@@ -1959,26 +2406,95 @@
             alert(`تم ${user.active ? 'تفعيل' : 'إلغاء تفعيل'} المستخدم بنجاح`);
         }
 
-        // تفعيل/إلغاء إذن الوصول
-        function toggleAccess(userId) {
+        // عرض نموذج الصلاحيات
+        function showPermissionsModal(userId) {
             const user = appData.users.find(u => u.id === userId);
             if (!user) return;
             
-            user.hasAccess = !user.hasAccess;
+            const permissionsContent = document.getElementById('permissionsContent');
+            permissionsContent.innerHTML = `
+                <h4>إدارة صلاحيات ${user.name}</h4>
+                <input type="hidden" id="permissionsUserId" value="${user.id}">
+                
+                <div class="permission-category">
+                    <h5 class="permission-category-title">الصلاحيات الأساسية</h5>
+                    ${Object.keys(user.permissions).filter(p => !['departments'].includes(p)).map(permission => `
+                        <div class="permission-item">
+                            <span>${getPermissionName(permission)}</span>
+                            <div class="permission-options">
+                                <label class="permission-option">
+                                    <input type="checkbox" ${user.permissions[permission].view ? 'checked' : ''} 
+                                           data-permission="${permission}" data-type="view">
+                                    معاينة
+                                </label>
+                                <label class="permission-option">
+                                    <input type="checkbox" ${user.permissions[permission].edit ? 'checked' : ''} 
+                                           data-permission="${permission}" data-type="edit">
+                                    تعديل
+                                </label>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div class="permission-category">
+                    <h5 class="permission-category-title">الصلاحيات حسب الأقسام</h5>
+                    ${Object.keys(user.permissions.departments).map(department => `
+                        <div class="permission-item">
+                            <span>${department}</span>
+                            <div class="permission-options">
+                                <label class="permission-option">
+                                    <input type="checkbox" ${user.permissions.departments[department].view ? 'checked' : ''} 
+                                           data-department="${department}" data-type="view">
+                                    معاينة
+                                </label>
+                                <label class="permission-option">
+                                    <input type="checkbox" ${user.permissions.departments[department].edit ? 'checked' : ''} 
+                                           data-department="${department}" data-type="edit">
+                                    تعديل
+                                </label>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
             
-            // إذا تم منح حق الوصول وإنشاء بيانات اعتماد للمرة الأولى
-            if (user.hasAccess && !user.username) {
-                user.username = generateUsername(user.name);
-                user.password = '123456';
-            }
+            document.getElementById('permissionsModal').style.display = 'flex';
+        }
+
+        // حفظ الصلاحيات
+        function savePermissions() {
+            const userId = parseInt(document.getElementById('permissionsUserId').value);
+            const user = appData.users.find(u => u.id === userId);
+            if (!user) return;
+            
+            // تحديث الصلاحيات الأساسية
+            document.querySelectorAll('#permissionsContent input[type="checkbox"][data-permission]').forEach(checkbox => {
+                const permission = checkbox.getAttribute('data-permission');
+                const type = checkbox.getAttribute('data-type');
+                user.permissions[permission][type] = checkbox.checked;
+            });
+            
+            // تحديث صلاحيات الأقسام
+            document.querySelectorAll('#permissionsContent input[type="checkbox"][data-department]').forEach(checkbox => {
+                const department = checkbox.getAttribute('data-department');
+                const type = checkbox.getAttribute('data-type');
+                user.permissions.departments[department][type] = checkbox.checked;
+            });
             
             saveDataToStorage();
+            closePermissionsModal();
+            
+            // تحديث حالة إذن الوصول
+            user.hasAccess = Object.values(user.permissions).some(permission => 
+                typeof permission === 'object' && (permission.view || permission.edit)
+            );
             
             // تحديث الجدول الحالي
             const activeSection = document.querySelector('#userSubTabs a.active').getAttribute('data-user-section');
             renderUserManagementTable(activeSection);
             
-            alert(`تم ${user.hasAccess ? 'منح' : 'إلغاء'} إذن الوصول بنجاح`);
+            alert('تم حفظ الصلاحيات بنجاح');
         }
 
         // معالجة رفع ملفات CSV
@@ -2000,7 +2516,10 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
-                    const csvData = e.target.result;
+                    // استخدام TextDecoder لفك ترميز UTF-8 مع BOM
+                    const decoder = new TextDecoder('utf-8');
+                    const csvData = decoder.decode(new Uint8Array(e.target.result));
+                    
                     const rows = csvData.split('\n');
                     const headers = rows[0].split(',');
                     
@@ -2065,7 +2584,7 @@
                 }
             };
             
-            reader.readAsText(file, 'UTF-8');
+            reader.readAsArrayBuffer(file);
             
             // إعادة تعيين حقل الملف
             e.target.value = '';
@@ -2078,14 +2597,17 @@
             let csvContent = '';
             let fileName = '';
             
+            // إضافة BOM للدعم الكامل للغة العربية
+            const BOM = '\uFEFF';
+            
             if (role === 'senior_leadership') {
-                csvContent = 'الترتيب,الاسم,الوظيفة,رقم الهاتف\n';
+                csvContent = BOM + 'الترتيب,الاسم,الوظيفة,رقم الهاتف\n';
                 fileName = 'قائمة_القيادة_العليا.csv';
             } else if (role === 'middle_leadership') {
-                csvContent = 'الترتيب,الاسم,الوظيفة,رقم الهاتف\n';
+                csvContent = BOM + 'الترتيب,الاسم,الوظيفة,رقم الهاتف\n';
                 fileName = 'قائمة_القيادة_الوسطى.csv';
             } else if (role === 'teacher') {
-                csvContent = 'الترتيب,الاسم,القسم,رقم الهاتف\n';
+                csvContent = BOM + 'الترتيب,الاسم,القسم,رقم الهاتف\n';
                 fileName = 'قائمة_المعلمات.csv';
             }
             
@@ -2098,10 +2620,12 @@
             });
             
             // إنشاء رابط تنزيل
-            const encodedUri = encodeURI('data:text/csv;charset=utf-8,' + csvContent);
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
-            link.setAttribute('href', encodedUri);
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
             link.setAttribute('download', fileName);
+            link.style.visibility = 'hidden';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -2133,21 +2657,55 @@
             return roles[role] || role;
         }
 
+        // الحصول على اسم الصلاحية
+        function getPermissionName(permission) {
+            const permissions = {
+                'dashboard': 'لوحة التحكم',
+                'middleLeadership': 'متابعة القيادة الوسطى',
+                'visits': 'الزيارات الصفية',
+                'performance': 'تقييم الأداء',
+                'teachers': 'المعلمين المتميزين',
+                'reports': 'التقارير النوعية',
+                'users': 'إدارة المستخدمين'
+            };
+            return permissions[permission] || permission;
+        }
+
         // إنشاء صلاحيات افتراضية بناءً على الدور
         function createDefaultPermissions(role) {
-            return {
-                dashboard: true,
-                middleLeadership: role === 'admin' || role === 'supervisor',
-                visits: true,
-                performance: role === 'admin' || role === 'supervisor',
-                teachers: role === 'admin' || role === 'supervisor',
-                reports: role === 'admin' || role === 'supervisor',
-                users: role === 'admin',
+            const basePermissions = {
+                dashboard: { view: true, edit: false },
+                middleLeadership: { view: false, edit: false },
+                visits: { view: false, edit: false },
+                performance: { view: false, edit: false },
+                teachers: { view: false, edit: false },
+                reports: { view: false, edit: false },
+                users: { view: false, edit: false },
                 departments: {
-                    'القيادة العليا': role === 'admin' || role === 'senior_leadership',
-                    'القيادة الوسطى': role === 'admin' || role === 'middle_leadership'
+                    'القيادة العليا': { view: false, edit: false },
+                    'القيادة الوسطى': { view: false, edit: false }
                 }
             };
+            
+            if (role === 'admin') {
+                // مدير النظام لديه جميع الصلاحيات
+                Object.keys(basePermissions).forEach(key => {
+                    if (key !== 'departments') {
+                        basePermissions[key] = { view: true, edit: true };
+                    } else {
+                        Object.keys(basePermissions.departments).forEach(dept => {
+                            basePermissions.departments[dept] = { view: true, edit: true };
+                        });
+                    }
+                });
+            } else if (role === 'senior_leadership') {
+                // القيادة العليا لديها صلاحيات محدودة
+                basePermissions.dashboard = { view: true, edit: false };
+                basePermissions.visits = { view: true, edit: true };
+                basePermissions.departments['القيادة العليا'] = { view: true, edit: true };
+            }
+            
+            return basePermissions;
         }
 
         // عرض نموذج المعاينة
@@ -2191,23 +2749,6 @@
         // إغلاق نموذج الصلاحيات
         function closePermissionsModal() {
             document.getElementById('permissionsModal').style.display = 'none';
-        }
-
-        // حفظ الصلاحيات
-        function savePermissions() {
-            const userId = parseInt(document.getElementById('permissionsUserId').value);
-            const user = appData.users.find(u => u.id === userId);
-            if (!user) return;
-            
-            // تحديث الصلاحيات الأساسية
-            document.querySelectorAll('#basic-permissions-modal input[type="checkbox"]').forEach(checkbox => {
-                const permission = checkbox.getAttribute('data-permission');
-                user.permissions[permission] = checkbox.checked;
-            });
-            
-            saveDataToStorage();
-            closePermissionsModal();
-            alert('تم حفظ الصلاحيات بنجاح');
         }
 
         // دوال الحفظ للبيانات المختلفة
