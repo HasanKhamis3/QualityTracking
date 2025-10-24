@@ -1206,9 +1206,7 @@
                     <li><a href="#" data-section="performance">تقييم الأداء</a></li>
                     <li><a href="#" data-section="teachers">المعلمين المتميزين</a></li>
                     <li><a href="#" data-section="reports">التقارير النوعية</a></li>
-                    <li><a href="#" data-section="users" id="usersTab" style="display: none;">إدارة المستخدمين</a></li>
-                    <li><a href="#" data-section="settings" id="settingsTab" style="display: none;">الإعدادات</a></li>
-                    <li><a href="#" data-section="systemLogs" id="systemLogsTab" style="display: none;">سجل النظام</a></li>
+                    <li><a href="#" data-section="settings" id="settingsTab">الإعدادات</a></li>
                 </ul>
             </div>
         </nav>
@@ -1426,672 +1424,630 @@
                     </div>
                 </section>
 
-                <!-- Users Management Section - المحدث -->
-                <section id="users" class="section">
-                    <div class="section-header">
-                        <h2 class="section-title">إدارة المستخدمين</h2>
-                    </div>
-                    
-                    <!-- علامات التبويب الفرعية -->
-                    <ul class="user-sub-tabs" id="userSubTabs">
-                        <li><a href="#" data-user-section="senior_leadership" class="active">القيادة العليا</a></li>
-                        <li><a href="#" data-user-section="middle_leadership">القيادة الوسطى</a></li>
-                        <li><a href="#" data-user-section="teacher">المعلمات</a></li>
-                        <li><a href="#" data-user-section="departments">أقسام المواد</a></li>
-                    </ul>
-                    
-                    <!-- قسم القيادة العليا -->
-                    <div id="senior_leadership" class="user-management-section active">
-                        <div class="user-management-header">
-                            <h3 class="user-management-title">إدارة القيادة العليا</h3>
-                            <div class="user-management-actions">
-                                <button class="btn" id="addSeniorLeadership">إضافة اسم جديد</button>
-                                <button class="btn btn-secondary" id="exportSeniorLeadership">تصدير CSV</button>
-                                <button class="btn btn-secondary" id="importSeniorLeadership">استيراد CSV</button>
-                                <input type="file" id="seniorLeadershipFile" accept=".csv" style="display: none;">
-                            </div>
-                        </div>
-
-                        <!-- إجراءات جماعية -->
-                        <div class="table-header-actions">
-                            <div class="bulk-actions">
-                                <button class="btn btn-xs btn-danger" id="bulkDelete">حذف المحددين</button>
-                                <button class="btn btn-xs btn-success" id="bulkActivate">تفعيل المحددين</button>
-                                <button class="btn btn-xs btn-warning" id="bulkDeactivate">إلغاء تفعيل المحددين</button>
-                                <label class="select-all-checkbox">
-                                    <input type="checkbox" id="selectAllUsers"> تحديد الكل
-                                </label>
-                            </div>
-                        </div>
-                        
-                        <table class="user-table">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        <div class="sortable-header" data-sort="order">
-                                            <div class="sort-icons">
-                                                <span class="sort-icon" data-direction="asc">▲</span>
-                                                <span class="sort-icon" data-direction="desc">▼</span>
-                                            </div>
-                                            الترتيب
-                                        </div>
-                                    </th>
-                                    <th>التصنيف</th>
-                                    <th>
-                                        <div class="sortable-header" data-sort="name">
-                                            <div class="sort-icons">
-                                                <span class="sort-icon" data-direction="asc">▲</span>
-                                                <span class="sort-icon" data-direction="desc">▼</span>
-                                            </div>
-                                            الاسم
-                                        </div>
-                                    </th>
-                                    <th>الوظيفة</th>
-                                    <th>رقم الهاتف</th>
-                                    <th>الإجراءات</th>
-                                </tr>
-                            </thead>
-                            <tbody id="seniorLeadershipTable">
-                                <!-- سيتم ملؤها بالبيانات -->
-                            </tbody>
-                        </table>
-                        <div id="seniorLeadershipEmpty" class="empty-state" style="display: none;">
-                            <i class="fas fa-users"></i>
-                            <h3>لا توجد بيانات</h3>
-                            <p>لم يتم إضافة أي مستخدمين في القيادة العليا بعد</p>
-                            <button class="btn" id="addSeniorLeadershipEmpty">إضافة اسم جديد</button>
-                        </div>
-                    </div>
-                    
-                    <!-- قسم القيادة الوسطى -->
-                    <div id="middle_leadership" class="user-management-section">
-                        <div class="user-management-header">
-                            <h3 class="user-management-title">إدارة القيادة الوسطى</h3>
-                            <div class="user-management-actions">
-                                <button class="btn" id="addMiddleLeadership">إضافة اسم جديد</button>
-                                <button class="btn btn-secondary" id="exportMiddleLeadership">تصدير CSV</button>
-                                <button class="btn btn-secondary" id="importMiddleLeadership">استيراد CSV</button>
-                                <input type="file" id="middleLeadershipFile" accept=".csv" style="display: none;">
-                            </div>
-                        </div>
-
-                        <!-- إجراءات جماعية -->
-                        <div class="table-header-actions">
-                            <div class="bulk-actions">
-                                <button class="btn btn-xs btn-danger" id="bulkDeleteMiddle">حذف المحددين</button>
-                                <button class="btn btn-xs btn-success" id="bulkActivateMiddle">تفعيل المحددين</button>
-                                <button class="btn btn-xs btn-warning" id="bulkDeactivateMiddle">إلغاء تفعيل المحددين</button>
-                                <label class="select-all-checkbox">
-                                    <input type="checkbox" id="selectAllUsersMiddle"> تحديد الكل
-                                </label>
-                            </div>
-                        </div>
-                        
-                        <table class="user-table">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        <div class="sortable-header" data-sort="order">
-                                            <div class="sort-icons">
-                                                <span class="sort-icon" data-direction="asc">▲</span>
-                                                <span class="sort-icon" data-direction="desc">▼</span>
-                                            </div>
-                                            الترتيب
-                                        </div>
-                                    </th>
-                                    <th>التصنيف</th>
-                                    <th>
-                                        <div class="sortable-header" data-sort="name">
-                                            <div class="sort-icons">
-                                                <span class="sort-icon" data-direction="asc">▲</span>
-                                                <span class="sort-icon" data-direction="desc">▼</span>
-                                            </div>
-                                            الاسم
-                                        </div>
-                                    </th>
-                                    <th>الوظيفة</th>
-                                    <th>رقم الهاتف</th>
-                                    <th>الإجراءات</th>
-                                </tr>
-                            </thead>
-                            <tbody id="middleLeadershipTable">
-                                <!-- سيتم ملؤها بالبيانات -->
-                            </tbody>
-                        </table>
-                        <div id="middleLeadershipEmpty" class="empty-state" style="display: none;">
-                            <i class="fas fa-users"></i>
-                            <h3>لا توجد بيانات</h3>
-                            <p>لم يتم إضافة أي مستخدمين في القيادة الوسطى بعد</p>
-                            <button class="btn" id="addMiddleLeadershipEmpty">إضافة اسم جديد</button>
-                        </div>
-                    </div>
-                    
-                    <!-- قسم المعلمات -->
-                    <div id="teacher" class="user-management-section">
-                        <div class="user-management-header">
-                            <h3 class="user-management-title">إدارة المعلمات</h3>
-                            <div class="user-management-actions">
-                                <button class="btn" id="addTeacher">إضافة معلم جديد</button>
-                                <button class="btn btn-secondary" id="exportTeachers">تصدير CSV</button>
-                                <button class="btn btn-secondary" id="importTeachers">استيراد CSV</button>
-                                <input type="file" id="teachersFile" accept=".csv" style="display: none;">
-                            </div>
-                        </div>
-
-                        <!-- إجراءات جماعية -->
-                        <div class="table-header-actions">
-                            <div class="bulk-actions">
-                                <button class="btn btn-xs btn-danger" id="bulkDeleteTeachers">حذف المحددين</button>
-                                <button class="btn btn-xs btn-success" id="bulkActivateTeachers">تفعيل المحددين</button>
-                                <button class="btn btn-xs btn-warning" id="bulkDeactivateTeachers">إلغاء تفعيل المحددين</button>
-                                <label class="select-all-checkbox">
-                                    <input type="checkbox" id="selectAllUsersTeachers"> تحديد الكل
-                                </label>
-                            </div>
-                        </div>
-                        
-                        <table class="user-table">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        <div class="sortable-header" data-sort="order">
-                                            <div class="sort-icons">
-                                                <span class="sort-icon" data-direction="asc">▲</span>
-                                                <span class="sort-icon" data-direction="desc">▼</span>
-                                            </div>
-                                            الترتيب
-                                        </div>
-                                    </th>
-                                    <th>التصنيف</th>
-                                    <th>
-                                        <div class="sortable-header" data-sort="name">
-                                            <div class="sort-icons">
-                                                <span class="sort-icon" data-direction="asc">▲</span>
-                                                <span class="sort-icon" data-direction="desc">▼</span>
-                                            </div>
-                                            الاسم
-                                        </div>
-                                    </th>
-                                    <th>القسم</th>
-                                    <th>الإجراءات</th>
-                                </tr>
-                            </thead>
-                            <tbody id="teachersTable">
-                                <!-- سيتم ملؤها بالبيانات -->
-                            </tbody>
-                        </table>
-                        <div id="teachersEmpty" class="empty-state" style="display: none;">
-                            <i class="fas fa-users"></i>
-                            <h3>لا توجد بيانات</h3>
-                            <p>لم يتم إضافة أي معلمات بعد</p>
-                            <button class="btn" id="addTeacherEmpty">إضافة معلم جديد</button>
-                        </div>
-                    </div>
-                    
-                    <!-- قسم أقسام المواد -->
-                    <div id="departments" class="user-management-section">
-                        <div class="departments-header">
-                            <h3 class="departments-title">إدارة أقسام المواد</h3>
-                            <div class="user-management-actions">
-                                <button class="btn" id="addDepartment">إضافة قسم جديد</button>
-                            </div>
-                        </div>
-                        
-                        <table class="departments-table">
-                            <thead>
-                                <tr>
-                                    <th>الترتيب</th>
-                                    <th>اسم القسم / المادة</th>
-                                    <th>الحالة</th>
-                                    <th>الإجراءات</th>
-                                </tr>
-                            </thead>
-                            <tbody id="departmentsTable">
-                                <!-- سيتم ملؤها بالبيانات -->
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
-
-                <!-- Settings Section -->
+                <!-- Settings Section - المدمجة -->
                 <section id="settings" class="section">
                     <div class="section-header">
                         <h2 class="section-title">الإعدادات</h2>
                     </div>
                     
-                    <div class="settings-grid">
-                        <div class="settings-card">
-                            <h3 class="settings-card-title">شعار وزارة التربية والتعليم</h3>
-                            <div class="logo-upload" id="ministryLogoUpload">
-                                <i class="fas fa-cloud-upload-alt upload-icon"></i>
-                                <p>انقر لرفع شعار الوزارة</p>
-                                <input type="file" id="ministryLogoFile" accept="image/*" style="display: none;">
+                    <!-- علامات التبويب الفرعية للإعدادات -->
+                    <ul class="user-sub-tabs" id="settingsSubTabs">
+                        <li><a href="#" data-settings-section="general_settings" class="active">الإعدادات العامة</a></li>
+                        <li><a href="#" data-settings-section="user_management">إدارة المستخدمين</a></li>
+                        <li><a href="#" data-settings-section="system_logs">سجل النظام</a></li>
+                    </ul>
+                    
+                    <!-- الإعدادات العامة -->
+                    <div id="general_settings" class="user-management-section active">
+                        <div class="settings-grid">
+                            <div class="settings-card">
+                                <h3 class="settings-card-title">شعار وزارة التربية والتعليم</h3>
+                                <div class="logo-upload" id="ministryLogoUpload">
+                                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                                    <p>انقر لرفع شعار الوزارة</p>
+                                    <input type="file" id="ministryLogoFile" accept="image/*" style="display: none;">
+                                </div>
+                                <div id="ministryLogoPreview" style="display: none;">
+                                    <img src="" alt="شعار الوزارة" class="logo-preview">
+                                    <button class="btn btn-danger btn-sm" id="removeMinistryLogo">إزالة</button>
+                                </div>
                             </div>
-                            <div id="ministryLogoPreview" style="display: none;">
-                                <img src="" alt="شعار الوزارة" class="logo-preview">
-                                <button class="btn btn-danger btn-sm" id="removeMinistryLogo">إزالة</button>
+                            
+                            <div class="settings-card">
+                                <h3 class="settings-card-title">شعار المدرسة</h3>
+                                <div class="logo-upload" id="schoolLogoUpload">
+                                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                                    <p>انقر لرفع شعار المدرسة</p>
+                                    <input type="file" id="schoolLogoFile" accept="image/*" style="display: none;">
+                                </div>
+                                <div id="schoolLogoPreview" style="display: none;">
+                                    <img src="" alt="شعار المدرسة" class="logo-preview">
+                                    <button class="btn btn-danger btn-sm" id="removeSchoolLogo">إزالة</button>
+                                </div>
+                            </div>
+                            
+                            <div class="settings-card">
+                                <h3 class="settings-card-title">اسم المدرسة</h3>
+                                <div class="form-group">
+                                    <input type="text" id="schoolName" placeholder="أدخل اسم المدرسة">
+                                </div>
+                                <button class="btn" id="saveSchoolName">حفظ</button>
                             </div>
                         </div>
                         
-                        <div class="settings-card">
-                            <h3 class="settings-card-title">شعار المدرسة</h3>
-                            <div class="logo-upload" id="schoolLogoUpload">
-                                <i class="fas fa-cloud-upload-alt upload-icon"></i>
-                                <p>انقر لرفع شعار المدرسة</p>
-                                <input type="file" id="schoolLogoFile" accept="image/*" style="display: none;">
+                        <div class="settings-section">
+                            <h3 class="settings-card-title">صلاحيات المستخدمين</h3>
+                            
+                            <div class="permission-category">
+                                <h4 class="permission-category-title">المشرف</h4>
+                                <div class="permissions-grid">
+                                    <div class="permission-item">
+                                        <span>لوحة التحكم</span>
+                                        <div class="permission-options">
+                                            <label class="permission-option">
+                                                <input type="checkbox" checked disabled>
+                                                معاينة
+                                            </label>
+                                            <label class="permission-option">
+                                                <input type="checkbox" checked disabled>
+                                                تعديل
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="permission-item">
+                                        <span>متابعة القيادة الوسطى</span>
+                                        <div class="permission-options">
+                                            <label class="permission-option">
+                                                <input type="checkbox" checked disabled>
+                                                معاينة
+                                            </label>
+                                            <label class="permission-option">
+                                                <input type="checkbox" checked disabled>
+                                                تعديل
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="permission-item">
+                                        <span>الزيارات الصفية</span>
+                                        <div class="permission-options">
+                                            <label class="permission-option">
+                                                <input type="checkbox" checked disabled>
+                                                معاينة
+                                            </label>
+                                            <label class="permission-option">
+                                                <input type="checkbox" checked disabled>
+                                                تعديل
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="permission-item">
+                                        <span>تقييم الأداء</span>
+                                        <div class="permission-options">
+                                            <label class="permission-option">
+                                                <input type="checkbox" checked disabled>
+                                                معاينة
+                                            </label>
+                                            <label class="permission-option">
+                                                <input type="checkbox" checked disabled>
+                                                تعديل
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="permission-item">
+                                        <span>المعلمين المتميزين</span>
+                                        <div class="permission-options">
+                                            <label class="permission-option">
+                                                <input type="checkbox" checked disabled>
+                                                معاينة
+                                            </label>
+                                            <label class="permission-option">
+                                                <input type="checkbox" checked disabled>
+                                                تعديل
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="permission-item">
+                                        <span>التقارير النوعية</span>
+                                        <div class="permission-options">
+                                            <label class="permission-option">
+                                                <input type="checkbox" checked disabled>
+                                                معاينة
+                                            </label>
+                                            <label class="permission-option">
+                                                <input type="checkbox" checked disabled>
+                                                تعديل
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="permission-item">
+                                        <span>إدارة المستخدمين</span>
+                                        <div class="permission-options">
+                                            <label class="permission-option">
+                                                <input type="checkbox" checked disabled>
+                                                معاينة
+                                            </label>
+                                            <label class="permission-option">
+                                                <input type="checkbox" checked disabled>
+                                                تعديل
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="permission-item">
+                                        <span>الإعدادات</span>
+                                        <div class="permission-options">
+                                            <label class="permission-option">
+                                                <input type="checkbox" checked disabled>
+                                                معاينة
+                                            </label>
+                                            <label class="permission-option">
+                                                <input type="checkbox" checked disabled>
+                                                تعديل
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="permission-item">
+                                        <span>سجل النظام</span>
+                                        <div class="permission-options">
+                                            <label class="permission-option">
+                                                <input type="checkbox" checked disabled>
+                                                معاينة
+                                            </label>
+                                            <label class="permission-option">
+                                                <input type="checkbox" checked disabled>
+                                                تعديل
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div id="schoolLogoPreview" style="display: none;">
-                                <img src="" alt="شعار المدرسة" class="logo-preview">
-                                <button class="btn btn-danger btn-sm" id="removeSchoolLogo">إزالة</button>
+                            
+                            <div class="permission-category">
+                                <h4 class="permission-category-title">إدارة القيادة العليا</h4>
+                                <div class="permissions-grid">
+                                    <div class="permission-item">
+                                        <span>لوحة التحكم</span>
+                                        <div class="permission-options">
+                                            <label class="permission-option">
+                                                <input type="checkbox" checked>
+                                                معاينة
+                                            </label>
+                                            <label class="permission-option">
+                                                <input type="checkbox">
+                                                تعديل
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="permission-item">
+                                        <span>متابعة القيادة الوسطى</span>
+                                        <div class="permission-options">
+                                            <label class="permission-option">
+                                                <input type="checkbox" checked>
+                                                معاينة
+                                            </label>
+                                            <label class="permission-option">
+                                                <input type="checkbox">
+                                                تعديل
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="permission-item">
+                                        <span>الزيارات الصفية</span>
+                                        <div class="permission-options">
+                                            <label class="permission-option">
+                                                <input type="checkbox" checked>
+                                                معاينة
+                                            </label>
+                                            <label class="permission-option">
+                                                <input type="checkbox" checked>
+                                                تعديل
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="permission-item">
+                                        <span>تقييم الأداء</span>
+                                        <div class="permission-options">
+                                            <label class="permission-option">
+                                                <input type="checkbox" checked>
+                                                معاينة
+                                            </label>
+                                            <label class="permission-option">
+                                                <input type="checkbox">
+                                                تعديل
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="permission-item">
+                                        <span>المعلمين المتميزين</span>
+                                        <div class="permission-options">
+                                            <label class="permission-option">
+                                                <input type="checkbox" checked>
+                                                معاينة
+                                            </label>
+                                            <label class="permission-option">
+                                                <input type="checkbox">
+                                                تعديل
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="permission-item">
+                                        <span>التقارير النوعية</span>
+                                        <div class="permission-options">
+                                            <label class="permission-option">
+                                                <input type="checkbox" checked>
+                                                معاينة
+                                            </label>
+                                            <label class="permission-option">
+                                                <input type="checkbox">
+                                                تعديل
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="permission-item">
+                                        <span>إدارة المستخدمين</span>
+                                        <div class="permission-options">
+                                            <label class="permission-option">
+                                                <input type="checkbox">
+                                                معاينة
+                                            </label>
+                                            <label class="permission-option">
+                                                <input type="checkbox">
+                                                تعديل
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="permission-item">
+                                        <span>الإعدادات</span>
+                                        <div class="permission-options">
+                                            <label class="permission-option">
+                                                <input type="checkbox">
+                                                معاينة
+                                            </label>
+                                            <label class="permission-option">
+                                                <input type="checkbox">
+                                                تعديل
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="permission-item">
+                                        <span>سجل النظام</span>
+                                        <div class="permission-options">
+                                            <label class="permission-option">
+                                                <input type="checkbox">
+                                                معاينة
+                                            </label>
+                                            <label class="permission-option">
+                                                <input type="checkbox">
+                                                تعديل
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="permission-category">
+                                <h4 class="permission-category-title">إدارة القيادة الوسطى</h4>
+                                <div class="permissions-grid">
+                                    <div class="permission-item">
+                                        <span>لوحة التحكم</span>
+                                        <div class="permission-options">
+                                            <label class="permission-option">
+                                                <input type="checkbox" checked>
+                                                معاينة
+                                            </label>
+                                            <label class="permission-option">
+                                                <input type="checkbox">
+                                                تعديل
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="permission-item">
+                                        <span>متابعة القيادة الوسطى</span>
+                                        <div class="permission-options">
+                                            <label class="permission-option">
+                                                <input type="checkbox" checked>
+                                                معاينة
+                                            </label>
+                                            <label class="permission-option">
+                                                <input type="checkbox" checked>
+                                                تعديل
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="permission-item">
+                                        <span>الزيارات الصفية</span>
+                                        <div class="permission-options">
+                                            <label class="permission-option">
+                                                <input type="checkbox" checked>
+                                                معاينة
+                                            </label>
+                                            <label class="permission-option">
+                                                <input type="checkbox" checked>
+                                                تعديل
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="permission-item">
+                                        <span>تقييم الأداء</span>
+                                        <div class="permission-options">
+                                            <label class="permission-option">
+                                                <input type="checkbox" checked>
+                                                معاينة
+                                            </label>
+                                            <label class="permission-option">
+                                                <input type="checkbox">
+                                                تعديل
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="permission-item">
+                                        <span>المعلمين المتميزين</span>
+                                        <div class="permission-options">
+                                            <label class="permission-option">
+                                                <input type="checkbox" checked>
+                                                معاينة
+                                            </label>
+                                            <label class="permission-option">
+                                                <input type="checkbox">
+                                                تعديل
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="permission-item">
+                                        <span>التقارير النوعية</span>
+                                        <div class="permission-options">
+                                            <label class="permission-option">
+                                                <input type="checkbox" checked>
+                                                معاينة
+                                            </label>
+                                            <label class="permission-option">
+                                                <input type="checkbox">
+                                                تعديل
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="permission-item">
+                                        <span>إدارة المستخدمين</span>
+                                        <div class="permission-options">
+                                            <label class="permission-option">
+                                                <input type="checkbox">
+                                                معاينة
+                                            </label>
+                                            <label class="permission-option">
+                                                <input type="checkbox">
+                                                تعديل
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="permission-item">
+                                        <span>الإعدادات</span>
+                                        <div class="permission-options">
+                                            <label class="permission-option">
+                                                <input type="checkbox">
+                                                معاينة
+                                            </label>
+                                            <label class="permission-option">
+                                                <input type="checkbox">
+                                                تعديل
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="permission-item">
+                                        <span>سجل النظام</span>
+                                        <div class="permission-options">
+                                            <label class="permission-option">
+                                                <input type="checkbox">
+                                                معاينة
+                                            </label>
+                                            <label class="permission-option">
+                                                <input type="checkbox">
+                                                تعديل
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         
-                        <div class="settings-card">
-                            <h3 class="settings-card-title">اسم المدرسة</h3>
-                            <div class="form-group">
-                                <input type="text" id="schoolName" placeholder="أدخل اسم المدرسة">
-                            </div>
-                            <button class="btn" id="saveSchoolName">حفظ</button>
+                        <div class="btn-group">
+                            <button class="btn" id="savePermissionsSettings">حفظ الإعدادات</button>
                         </div>
                     </div>
                     
-                    <div class="settings-section">
-                        <h3 class="settings-card-title">صلاحيات المستخدمين</h3>
+                    <!-- إدارة المستخدمين -->
+                    <div id="user_management" class="user-management-section">
+                        <!-- علامات التبويب الفرعية -->
+                        <ul class="user-sub-tabs" id="userSubTabs">
+                            <li><a href="#" data-user-section="senior_leadership" class="active">القيادة العليا</a></li>
+                            <li><a href="#" data-user-section="middle_leadership">القيادة الوسطى</a></li>
+                            <li><a href="#" data-user-section="teacher">المعلمات</a></li>
+                            <li><a href="#" data-user-section="departments">أقسام المواد</a></li>
+                        </ul>
                         
-                        <div class="permission-category">
-                            <h4 class="permission-category-title">المشرف</h4>
-                            <div class="permissions-grid">
-                                <div class="permission-item">
-                                    <span>لوحة التحكم</span>
-                                    <div class="permission-options">
-                                        <label class="permission-option">
-                                            <input type="checkbox" checked disabled>
-                                            معاينة
-                                        </label>
-                                        <label class="permission-option">
-                                            <input type="checkbox" checked disabled>
-                                            تعديل
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="permission-item">
-                                    <span>متابعة القيادة الوسطى</span>
-                                    <div class="permission-options">
-                                        <label class="permission-option">
-                                            <input type="checkbox" checked disabled>
-                                            معاينة
-                                        </label>
-                                        <label class="permission-option">
-                                            <input type="checkbox" checked disabled>
-                                            تعديل
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="permission-item">
-                                    <span>الزيارات الصفية</span>
-                                    <div class="permission-options">
-                                        <label class="permission-option">
-                                            <input type="checkbox" checked disabled>
-                                            معاينة
-                                        </label>
-                                        <label class="permission-option">
-                                            <input type="checkbox" checked disabled>
-                                            تعديل
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="permission-item">
-                                    <span>تقييم الأداء</span>
-                                    <div class="permission-options">
-                                        <label class="permission-option">
-                                            <input type="checkbox" checked disabled>
-                                            معاينة
-                                        </label>
-                                        <label class="permission-option">
-                                            <input type="checkbox" checked disabled>
-                                            تعديل
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="permission-item">
-                                    <span>المعلمين المتميزين</span>
-                                    <div class="permission-options">
-                                        <label class="permission-option">
-                                            <input type="checkbox" checked disabled>
-                                            معاينة
-                                        </label>
-                                        <label class="permission-option">
-                                            <input type="checkbox" checked disabled>
-                                            تعديل
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="permission-item">
-                                    <span>التقارير النوعية</span>
-                                    <div class="permission-options">
-                                        <label class="permission-option">
-                                            <input type="checkbox" checked disabled>
-                                            معاينة
-                                        </label>
-                                        <label class="permission-option">
-                                            <input type="checkbox" checked disabled>
-                                            تعديل
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="permission-item">
-                                    <span>إدارة المستخدمين</span>
-                                    <div class="permission-options">
-                                        <label class="permission-option">
-                                            <input type="checkbox" checked disabled>
-                                            معاينة
-                                        </label>
-                                        <label class="permission-option">
-                                            <input type="checkbox" checked disabled>
-                                            تعديل
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="permission-item">
-                                    <span>الإعدادات</span>
-                                    <div class="permission-options">
-                                        <label class="permission-option">
-                                            <input type="checkbox" checked disabled>
-                                            معاينة
-                                        </label>
-                                        <label class="permission-option">
-                                            <input type="checkbox" checked disabled>
-                                            تعديل
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="permission-item">
-                                    <span>سجل النظام</span>
-                                    <div class="permission-options">
-                                        <label class="permission-option">
-                                            <input type="checkbox" checked disabled>
-                                            معاينة
-                                        </label>
-                                        <label class="permission-option">
-                                            <input type="checkbox" checked disabled>
-                                            تعديل
-                                        </label>
-                                    </div>
+                        <!-- قسم القيادة العليا -->
+                        <div id="senior_leadership" class="user-management-section active">
+                            <div class="user-management-header">
+                                <h3 class="user-management-title">إدارة القيادة العليا</h3>
+                                <div class="user-management-actions">
+                                    <button class="btn" id="addSeniorLeadership">إضافة اسم جديد</button>
+                                    <button class="btn btn-secondary" id="exportSeniorLeadership">تصدير CSV</button>
+                                    <button class="btn btn-secondary" id="importSeniorLeadership">استيراد CSV</button>
+                                    <input type="file" id="seniorLeadershipFile" accept=".csv" style="display: none;">
                                 </div>
                             </div>
-                        </div>
-                        
-                        <div class="permission-category">
-                            <h4 class="permission-category-title">إدارة القيادة العليا</h4>
-                            <div class="permissions-grid">
-                                <div class="permission-item">
-                                    <span>لوحة التحكم</span>
-                                    <div class="permission-options">
-                                        <label class="permission-option">
-                                            <input type="checkbox" checked>
-                                            معاينة
-                                        </label>
-                                        <label class="permission-option">
-                                            <input type="checkbox">
-                                            تعديل
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="permission-item">
-                                    <span>متابعة القيادة الوسطى</span>
-                                    <div class="permission-options">
-                                        <label class="permission-option">
-                                            <input type="checkbox" checked>
-                                            معاينة
-                                        </label>
-                                        <label class="permission-option">
-                                            <input type="checkbox">
-                                            تعديل
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="permission-item">
-                                    <span>الزيارات الصفية</span>
-                                    <div class="permission-options">
-                                        <label class="permission-option">
-                                            <input type="checkbox" checked>
-                                            معاينة
-                                        </label>
-                                        <label class="permission-option">
-                                            <input type="checkbox" checked>
-                                            تعديل
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="permission-item">
-                                    <span>تقييم الأداء</span>
-                                    <div class="permission-options">
-                                        <label class="permission-option">
-                                            <input type="checkbox" checked>
-                                            معاينة
-                                        </label>
-                                        <label class="permission-option">
-                                            <input type="checkbox">
-                                            تعديل
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="permission-item">
-                                    <span>المعلمين المتميزين</span>
-                                    <div class="permission-options">
-                                        <label class="permission-option">
-                                            <input type="checkbox" checked>
-                                            معاينة
-                                        </label>
-                                        <label class="permission-option">
-                                            <input type="checkbox">
-                                            تعديل
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="permission-item">
-                                    <span>التقارير النوعية</span>
-                                    <div class="permission-options">
-                                        <label class="permission-option">
-                                            <input type="checkbox" checked>
-                                            معاينة
-                                        </label>
-                                        <label class="permission-option">
-                                            <input type="checkbox">
-                                            تعديل
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="permission-item">
-                                    <span>إدارة المستخدمين</span>
-                                    <div class="permission-options">
-                                        <label class="permission-option">
-                                            <input type="checkbox">
-                                            معاينة
-                                        </label>
-                                        <label class="permission-option">
-                                            <input type="checkbox">
-                                            تعديل
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="permission-item">
-                                    <span>الإعدادات</span>
-                                    <div class="permission-options">
-                                        <label class="permission-option">
-                                            <input type="checkbox">
-                                            معاينة
-                                        </label>
-                                        <label class="permission-option">
-                                            <input type="checkbox">
-                                            تعديل
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="permission-item">
-                                    <span>سجل النظام</span>
-                                    <div class="permission-options">
-                                        <label class="permission-option">
-                                            <input type="checkbox">
-                                            معاينة
-                                        </label>
-                                        <label class="permission-option">
-                                            <input type="checkbox">
-                                            تعديل
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="permission-category">
-                            <h4 class="permission-category-title">إدارة القيادة الوسطى</h4>
-                            <div class="permissions-grid">
-                                <div class="permission-item">
-                                    <span>لوحة التحكم</span>
-                                    <div class="permission-options">
-                                        <label class="permission-option">
-                                            <input type="checkbox" checked>
-                                            معاينة
-                                        </label>
-                                        <label class="permission-option">
-                                            <input type="checkbox">
-                                            تعديل
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="permission-item">
-                                    <span>متابعة القيادة الوسطى</span>
-                                    <div class="permission-options">
-                                        <label class="permission-option">
-                                            <input type="checkbox" checked>
-                                            معاينة
-                                        </label>
-                                        <label class="permission-option">
-                                            <input type="checkbox" checked>
-                                            تعديل
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="permission-item">
-                                    <span>الزيارات الصفية</span>
-                                    <div class="permission-options">
-                                        <label class="permission-option">
-                                            <input type="checkbox" checked>
-                                            معاينة
-                                        </label>
-                                        <label class="permission-option">
-                                            <input type="checkbox" checked>
-                                            تعديل
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="permission-item">
-                                    <span>تقييم الأداء</span>
-                                    <div class="permission-options">
-                                        <label class="permission-option">
-                                            <input type="checkbox" checked>
-                                            معاينة
-                                        </label>
-                                        <label class="permission-option">
-                                            <input type="checkbox">
-                                            تعديل
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="permission-item">
-                                    <span>المعلمين المتميزين</span>
-                                    <div class="permission-options">
-                                        <label class="permission-option">
-                                            <input type="checkbox" checked>
-                                            معاينة
-                                        </label>
-                                        <label class="permission-option">
-                                            <input type="checkbox">
-                                            تعديل
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="permission-item">
-                                    <span>التقارير النوعية</span>
-                                    <div class="permission-options">
-                                        <label class="permission-option">
-                                            <input type="checkbox" checked>
-                                            معاينة
-                                        </label>
-                                        <label class="permission-option">
-                                            <input type="checkbox">
-                                            تعديل
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="permission-item">
-                                    <span>إدارة المستخدمين</span>
-                                    <div class="permission-options">
-                                        <label class="permission-option">
-                                            <input type="checkbox">
-                                            معاينة
-                                        </label>
-                                        <label class="permission-option">
-                                            <input type="checkbox">
-                                            تعديل
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="permission-item">
-                                    <span>الإعدادات</span>
-                                    <div class="permission-options">
-                                        <label class="permission-option">
-                                            <input type="checkbox">
-                                            معاينة
-                                        </label>
-                                        <label class="permission-option">
-                                            <input type="checkbox">
-                                            تعديل
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="permission-item">
-                                    <span>سجل النظام</span>
-                                    <div class="permission-options">
-                                        <label class="permission-option">
-                                            <input type="checkbox">
-                                            معاينة
-                                        </label>
-                                        <label class="permission-option">
-                                            <input type="checkbox">
-                                            تعديل
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="btn-group">
-                        <button class="btn" id="savePermissionsSettings">حفظ الإعدادات</button>
-                    </div>
-                </section>
 
-                <!-- System Logs Section -->
-                <section id="systemLogs" class="section">
-                    <div class="section-header">
-                        <h2 class="section-title">سجل النظام</h2>
+                            <!-- إجراءات جماعية -->
+                            <div class="table-header-actions">
+                                <div class="bulk-actions">
+                                    <button class="btn btn-xs btn-danger" id="bulkDelete">حذف المحددين</button>
+                                    <button class="btn btn-xs btn-success" id="bulkActivate">تفعيل المحددين</button>
+                                    <button class="btn btn-xs btn-warning" id="bulkDeactivate">إلغاء تفعيل المحددين</button>
+                                    <label class="select-all-checkbox">
+                                        <input type="checkbox" id="selectAllUsers"> تحديد الكل
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <table class="user-table">
+                                <thead>
+                                    <tr>
+                                        <th>الترتيب</th>
+                                        <th>التصنيف</th>
+                                        <th>الاسم</th>
+                                        <th>الوظيفة</th>
+                                        <th>رقم الهاتف</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="seniorLeadershipTable">
+                                    <!-- سيتم ملؤها بالبيانات -->
+                                </tbody>
+                            </table>
+                            <div id="seniorLeadershipEmpty" class="empty-state" style="display: none;">
+                                <i class="fas fa-users"></i>
+                                <h3>لا توجد بيانات</h3>
+                                <p>لم يتم إضافة أي مستخدمين في القيادة العليا بعد</p>
+                                <button class="btn" id="addSeniorLeadershipEmpty">إضافة اسم جديد</button>
+                            </div>
+                        </div>
+                        
+                        <!-- قسم القيادة الوسطى -->
+                        <div id="middle_leadership" class="user-management-section">
+                            <div class="user-management-header">
+                                <h3 class="user-management-title">إدارة القيادة الوسطى</h3>
+                                <div class="user-management-actions">
+                                    <button class="btn" id="addMiddleLeadership">إضافة اسم جديد</button>
+                                    <button class="btn btn-secondary" id="exportMiddleLeadership">تصدير CSV</button>
+                                    <button class="btn btn-secondary" id="importMiddleLeadership">استيراد CSV</button>
+                                    <input type="file" id="middleLeadershipFile" accept=".csv" style="display: none;">
+                                </div>
+                            </div>
+
+                            <!-- إجراءات جماعية -->
+                            <div class="table-header-actions">
+                                <div class="bulk-actions">
+                                    <button class="btn btn-xs btn-danger" id="bulkDeleteMiddle">حذف المحددين</button>
+                                    <button class="btn btn-xs btn-success" id="bulkActivateMiddle">تفعيل المحددين</button>
+                                    <button class="btn btn-xs btn-warning" id="bulkDeactivateMiddle">إلغاء تفعيل المحددين</button>
+                                    <label class="select-all-checkbox">
+                                        <input type="checkbox" id="selectAllUsersMiddle"> تحديد الكل
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <table class="user-table">
+                                <thead>
+                                    <tr>
+                                        <th>الترتيب</th>
+                                        <th>التصنيف</th>
+                                        <th>الاسم</th>
+                                        <th>الوظيفة</th>
+                                        <th>رقم الهاتف</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="middleLeadershipTable">
+                                    <!-- سيتم ملؤها بالبيانات -->
+                                </tbody>
+                            </table>
+                            <div id="middleLeadershipEmpty" class="empty-state" style="display: none;">
+                                <i class="fas fa-users"></i>
+                                <h3>لا توجد بيانات</h3>
+                                <p>لم يتم إضافة أي مستخدمين في القيادة الوسطى بعد</p>
+                                <button class="btn" id="addMiddleLeadershipEmpty">إضافة اسم جديد</button>
+                            </div>
+                        </div>
+                        
+                        <!-- قسم المعلمات -->
+                        <div id="teacher" class="user-management-section">
+                            <div class="user-management-header">
+                                <h3 class="user-management-title">إدارة المعلمات</h3>
+                                <div class="user-management-actions">
+                                    <button class="btn" id="addTeacher">إضافة معلم جديد</button>
+                                    <button class="btn btn-secondary" id="exportTeachers">تصدير CSV</button>
+                                    <button class="btn btn-secondary" id="importTeachers">استيراد CSV</button>
+                                    <input type="file" id="teachersFile" accept=".csv" style="display: none;">
+                                </div>
+                            </div>
+
+                            <!-- إجراءات جماعية -->
+                            <div class="table-header-actions">
+                                <div class="bulk-actions">
+                                    <button class="btn btn-xs btn-danger" id="bulkDeleteTeachers">حذف المحددين</button>
+                                    <button class="btn btn-xs btn-success" id="bulkActivateTeachers">تفعيل المحددين</button>
+                                    <button class="btn btn-xs btn-warning" id="bulkDeactivateTeachers">إلغاء تفعيل المحددين</button>
+                                    <label class="select-all-checkbox">
+                                        <input type="checkbox" id="selectAllUsersTeachers"> تحديد الكل
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <table class="user-table">
+                                <thead>
+                                    <tr>
+                                        <th>الترتيب</th>
+                                        <th>التصنيف</th>
+                                        <th>الاسم</th>
+                                        <th>القسم</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="teachersTable">
+                                    <!-- سيتم ملؤها بالبيانات -->
+                                </tbody>
+                            </table>
+                            <div id="teachersEmpty" class="empty-state" style="display: none;">
+                                <i class="fas fa-users"></i>
+                                <h3>لا توجد بيانات</h3>
+                                <p>لم يتم إضافة أي معلمات بعد</p>
+                                <button class="btn" id="addTeacherEmpty">إضافة معلم جديد</button>
+                            </div>
+                        </div>
+                        
+                        <!-- قسم أقسام المواد -->
+                        <div id="departments" class="user-management-section">
+                            <div class="departments-header">
+                                <h3 class="departments-title">إدارة أقسام المواد</h3>
+                                <div class="user-management-actions">
+                                    <button class="btn" id="addDepartment">إضافة قسم جديد</button>
+                                </div>
+                            </div>
+                            
+                            <table class="departments-table">
+                                <thead>
+                                    <tr>
+                                        <th>الترتيب</th>
+                                        <th>اسم القسم / المادة</th>
+                                        <th>الحالة</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="departmentsTable">
+                                    <!-- سيتم ملؤها بالبيانات -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     
-                    <table class="logs-table">
-                        <thead>
-                            <tr>
-                                <th>اسم المستخدم</th>
-                                <th>التاريخ</th>
-                                <th>الوقت</th>
-                                <th>الملخص</th>
-                            </tr>
-                        </thead>
-                        <tbody id="systemLogsTable">
-                            <!-- سيتم ملؤها بالبيانات -->
-                        </tbody>
-                    </table>
+                    <!-- سجل النظام -->
+                    <div id="system_logs" class="user-management-section">
+                        <div class="user-management-header">
+                            <h3 class="user-management-title">سجل النظام</h3>
+                        </div>
+                        
+                        <table class="logs-table">
+                            <thead>
+                                <tr>
+                                    <th>اسم المستخدم</th>
+                                    <th>التاريخ</th>
+                                    <th>الوقت</th>
+                                    <th>الملخص</th>
+                                </tr>
+                            </thead>
+                            <tbody id="systemLogsTable">
+                                <!-- سيتم ملؤها بالبيانات -->
+                            </tbody>
+                        </table>
+                    </div>
                 </section>
             </div>
         </main>
@@ -2387,13 +2343,7 @@
             performance: [],
             distinguishedTeachers: [],
             teachersNeedCare: [],
-            reports: [],
-            // إعدادات الترتيب
-            sortSettings: {
-                senior_leadership: { field: 'order', direction: 'asc' },
-                middle_leadership: { field: 'order', direction: 'asc' },
-                teacher: { field: 'order', direction: 'asc' }
-            }
+            reports: []
         };
 
         // تهيئة التطبيق
@@ -2409,21 +2359,6 @@
                     document.getElementById('app').style.display = 'block';
                     document.getElementById('userName').textContent = user.name;
                     document.getElementById('userAvatar').textContent = user.avatar;
-                    
-                    // إظهار أو إخفاء تبويب إدارة المستخدمين بناءً على الصلاحية
-                    if (user.permissions.users && user.permissions.users.view) {
-                        document.getElementById('usersTab').style.display = 'block';
-                    }
-                    
-                    // إظهار أو إخفاء تبويب الإعدادات بناءً على الصلاحية
-                    if (user.permissions.settings && user.permissions.settings.view) {
-                        document.getElementById('settingsTab').style.display = 'block';
-                    }
-                    
-                    // إظهار أو إخفاء تبويب سجل النظام بناءً على الصلاحية
-                    if (user.permissions.systemLogs && user.permissions.systemLogs.view) {
-                        document.getElementById('systemLogsTab').style.display = 'block';
-                    }
                     
                     renderData();
                     
@@ -2451,10 +2386,7 @@
             // إعداد الروابط حسب الهاش
             setupHashRouting();
             
-            // إعداد أقسام إدارة المستخدمين
-            setupUserManagement();
-            
-            // إعداد الإعدادات
+            // إعداد أقسام الإعدادات
             setupSettings();
             
             // إعداد سجل النظام
@@ -2537,20 +2469,17 @@
             // تحديث الهاش في الرابط
             window.location.hash = sectionId;
             
-            // إذا كان قسم المستخدمين، عرض قائمة المستخدمين
-            if (sectionId === 'users') {
+            // إذا كان قسم الإعدادات، عرض الإعدادات العامة
+            if (sectionId === 'settings') {
+                renderSettingsSection('general_settings');
                 renderUserManagementTable('senior_leadership');
                 renderDepartmentsTable();
+                renderSystemLogs();
             }
             
             // إذا كان قسم تقييم الأداء، عرض الرسم البياني
             if (sectionId === 'performance') {
                 renderPerformanceChart();
-            }
-            
-            // إذا كان قسم سجل النظام، عرض السجل
-            if (sectionId === 'systemLogs') {
-                renderSystemLogs();
             }
         }
 
@@ -2582,21 +2511,6 @@
                 document.getElementById('app').style.display = 'block';
                 document.getElementById('userName').textContent = user.name;
                 document.getElementById('userAvatar').textContent = user.avatar;
-                
-                // إظهار أو إخفاء تبويب إدارة المستخدمين بناءً على الصلاحية
-                if (user.permissions.users && user.permissions.users.view) {
-                    document.getElementById('usersTab').style.display = 'block';
-                }
-                
-                // إظهار أو إخفاء تبويب الإعدادات بناءً على الصلاحية
-                if (user.permissions.settings && user.permissions.settings.view) {
-                    document.getElementById('settingsTab').style.display = 'block';
-                }
-                
-                // إظهار أو إخفاء تبويب سجل النظام بناءً على الصلاحية
-                if (user.permissions.systemLogs && user.permissions.systemLogs.view) {
-                    document.getElementById('systemLogsTab').style.display = 'block';
-                }
                 
                 renderData();
                 
@@ -2675,9 +2589,37 @@
             document.querySelector('#previewModal .close-modal').addEventListener('click', closePreviewModal);
         }
 
-        // إعداد أقسام إدارة المستخدمين
-        function setupUserManagement() {
-            // إعداد علامات التبويب الفرعية
+        // إعداد أقسام الإعدادات
+        function setupSettings() {
+            // إعداد علامات التبويب الفرعية للإعدادات
+            document.querySelectorAll('#settingsSubTabs a').forEach(tab => {
+                tab.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const sectionId = this.getAttribute('data-settings-section');
+                    
+                    // تحديث علامات التبويب النشطة
+                    document.querySelectorAll('#settingsSubTabs a').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // إظهار القسم المطلوب
+                    document.querySelectorAll('#settings .user-management-section').forEach(section => {
+                        section.classList.remove('active');
+                        if (section.id === sectionId) {
+                            section.classList.add('active');
+                        }
+                    });
+                    
+                    // عرض المحتوى المناسب
+                    if (sectionId === 'user_management') {
+                        renderUserManagementTable('senior_leadership');
+                        renderDepartmentsTable();
+                    } else if (sectionId === 'system_logs') {
+                        renderSystemLogs();
+                    }
+                });
+            });
+            
+            // إعداد علامات التبويب الفرعية لإدارة المستخدمين
             document.querySelectorAll('#userSubTabs a').forEach(tab => {
                 tab.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -2688,7 +2630,7 @@
                     this.classList.add('active');
                     
                     // إظهار القسم المطلوب
-                    document.querySelectorAll('.user-management-section').forEach(section => {
+                    document.querySelectorAll('#user_management .user-management-section').forEach(section => {
                         section.classList.remove('active');
                         if (section.id === sectionId) {
                             section.classList.add('active');
@@ -2808,27 +2750,12 @@
                 toggleSelectAll('teacher', this.checked);
             });
             
-            // إعداد الترتيب
-            document.querySelectorAll('.sortable-header').forEach(header => {
-                header.addEventListener('click', function() {
-                    const sortField = this.getAttribute('data-sort');
-                    const currentSection = document.querySelector('#userSubTabs a.active').getAttribute('data-user-section');
-                    toggleSort(currentSection, sortField);
-                });
-            });
-            
             // إعداد قسم أقسام المواد
             document.getElementById('addDepartment').addEventListener('click', showAddDepartmentModal);
             document.getElementById('cancelDepartment').addEventListener('click', closeDepartmentModal);
             document.querySelector('#departmentModal .close-modal').addEventListener('click', closeDepartmentModal);
             document.getElementById('departmentForm').addEventListener('submit', saveDepartment);
             
-            // عرض القسم الافتراضي (القيادة العليا)
-            renderUserManagementTable('senior_leadership');
-        }
-
-        // إعداد الإعدادات
-        function setupSettings() {
             // تحميل اسم المدرسة
             document.getElementById('schoolName').value = appData.settings.schoolName || '';
             
@@ -2923,6 +2850,26 @@
                 addSystemLog('تم تحديث إعدادات صلاحيات المستخدمين');
                 alert('تم حفظ إعدادات الصلاحيات بنجاح');
             });
+            
+            // عرض القسم الافتراضي (الإعدادات العامة)
+            renderSettingsSection('general_settings');
+        }
+
+        // عرض قسم الإعدادات
+        function renderSettingsSection(sectionId) {
+            document.querySelectorAll('#settings .user-management-section').forEach(section => {
+                section.classList.remove('active');
+                if (section.id === sectionId) {
+                    section.classList.add('active');
+                }
+            });
+            
+            document.querySelectorAll('#settingsSubTabs a').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.getAttribute('data-settings-section') === sectionId) {
+                    tab.classList.add('active');
+                }
+            });
         }
 
         // عرض جدول إدارة المستخدمين
@@ -2957,26 +2904,6 @@
                 table.style.display = 'table';
                 emptyState.style.display = 'none';
             }
-            
-            // تطبيق الترتيب
-            const sortSettings = appData.sortSettings[role];
-            users.sort((a, b) => {
-                let aValue, bValue;
-                
-                if (sortSettings.field === 'name') {
-                    aValue = a.name;
-                    bValue = b.name;
-                } else {
-                    aValue = appData.users.indexOf(a);
-                    bValue = appData.users.indexOf(b);
-                }
-                
-                if (sortSettings.direction === 'asc') {
-                    return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
-                } else {
-                    return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
-                }
-            });
             
             table.innerHTML = '';
             
@@ -3026,9 +2953,6 @@
                 `;
                 table.appendChild(row);
             });
-            
-            // تحديث أيقونات الترتيب
-            updateSortIcons(role);
             
             // إضافة معالجي الأحداث للأزرار
             document.querySelectorAll(`#${tableId} .preview-user`).forEach(btn => {
@@ -3258,43 +3182,6 @@
                 renderDepartmentsTable();
                 addSystemLog(`تم نقل قسم ${department.name} لأسفل`);
             }
-        }
-
-        // تحديث أيقونات الترتيب
-        function updateSortIcons(role) {
-            const sortSettings = appData.sortSettings[role];
-            
-            document.querySelectorAll(`#${role} .sortable-header`).forEach(header => {
-                const sortField = header.getAttribute('data-sort');
-                const icons = header.querySelectorAll('.sort-icon');
-                
-                icons.forEach(icon => {
-                    icon.classList.remove('active');
-                });
-                
-                if (sortField === sortSettings.field) {
-                    const activeIcon = header.querySelector(`.sort-icon[data-direction="${sortSettings.direction}"]`);
-                    if (activeIcon) {
-                        activeIcon.classList.add('active');
-                    }
-                }
-            });
-        }
-
-        // تبديل الترتيب
-        function toggleSort(role, field) {
-            const currentSettings = appData.sortSettings[role];
-            
-            if (currentSettings.field === field) {
-                // عكس الاتجاه إذا كان نفس الحقل
-                currentSettings.direction = currentSettings.direction === 'asc' ? 'desc' : 'asc';
-            } else {
-                // تغيير الحقل وضبط الاتجاه الافتراضي
-                currentSettings.field = field;
-                currentSettings.direction = 'asc';
-            }
-            
-            renderUserManagementTable(role);
         }
 
         // تحديد/إلغاء تحديد الكل
