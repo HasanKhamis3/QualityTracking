@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         :root {
             --primary: #2c5aa0;
@@ -359,92 +360,87 @@
         }
 
         /* User Management */
-        .user-management-controls {
+        .user-list {
+            margin-top: 1.5rem;
+        }
+
+        .user-card {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
             padding: 1rem;
-            background-color: #f8f9fa;
-            border-radius: 8px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+            background-color: white;
         }
 
-        .bulk-actions {
+        .user-details {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-actions {
             display: flex;
             gap: 10px;
-            align-items: center;
         }
 
-        .select-all-container {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-right: 15px;
-        }
-
-        .user-checkbox {
-            width: 18px;
-            height: 18px;
-        }
-
-        .bulk-action-btn {
-            padding: 8px 15px;
-            font-size: 0.875rem;
-        }
-
-        .user-table {
-            width: 100%;
-            border-collapse: collapse;
+        /* Permissions */
+        .permissions-section {
             margin-top: 1rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
         }
 
-        .user-table th {
-            background-color: var(--primary);
-            color: white;
-            padding: 12px;
-            text-align: right;
+        .permissions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
         }
 
-        .user-table td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
-            text-align: right;
+        .permission-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            border: 1px solid #ddd;
         }
 
-        .user-table tr:hover {
-            background-color: #f5f5f5;
-        }
-
-        .toggle-switch-enhanced {
+        .toggle-switch {
             position: relative;
             display: inline-block;
-            width: 60px;
-            height: 30px;
+            width: 50px;
+            height: 24px;
         }
 
-        .toggle-switch-enhanced input {
+        .toggle-switch input {
             opacity: 0;
             width: 0;
             height: 0;
         }
 
-        .toggle-slider-enhanced {
+        .toggle-slider {
             position: absolute;
             cursor: pointer;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: #dc3545;
+            background-color: #ccc;
             transition: .4s;
-            border-radius: 30px;
+            border-radius: 24px;
         }
 
-        .toggle-slider-enhanced:before {
+        .toggle-slider:before {
             position: absolute;
             content: "";
-            height: 22px;
-            width: 22px;
+            height: 16px;
+            width: 16px;
             left: 4px;
             bottom: 4px;
             background-color: white;
@@ -452,47 +448,24 @@
             border-radius: 50%;
         }
 
-        input:checked + .toggle-slider-enhanced {
-            background-color: #28a745;
+        input:checked + .toggle-slider {
+            background-color: var(--success);
         }
 
-        input:checked + .toggle-slider-enhanced:before {
-            transform: translateX(30px);
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
         }
 
-        .no-users-message {
-            text-align: center;
-            padding: 2rem;
-            color: #6c757d;
-            font-size: 1.1rem;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            margin: 1rem 0;
-        }
-
-        .category-header {
+        /* Sub-sections */
+        .sub-sections {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            padding: 1rem;
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            color: white;
-            border-radius: 8px;
-        }
-
-        .category-section {
-            display: none;
-        }
-
-        .user-categories {
-            display: flex;
+            flex-wrap: wrap;
             gap: 10px;
             margin-bottom: 1.5rem;
         }
 
-        .category-btn {
-            padding: 10px 20px;
+        .sub-section-btn {
+            padding: 8px 16px;
             background-color: #e9ecef;
             border: none;
             border-radius: var(--border-radius);
@@ -501,31 +474,12 @@
             font-weight: 600;
         }
 
-        .category-btn:hover {
+        .sub-section-btn:hover {
             background-color: #dee2e6;
         }
 
-        .category-btn.active {
+        .sub-section-btn.active {
             background-color: var(--primary);
-            color: white;
-        }
-
-        /* Status Badge */
-        .status-badge {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .status-active {
-            background-color: var(--success);
-            color: white;
-        }
-
-        .status-inactive {
-            background-color: var(--danger);
             color: white;
         }
 
@@ -588,6 +542,116 @@
             box-shadow: var(--box-shadow);
         }
 
+        /* Month Selector */
+        .month-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+            padding: 10px 15px;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+        }
+
+        /* Department Permissions */
+        .department-permissions {
+            margin-top: 1rem;
+        }
+
+        .department-section {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+        }
+
+        .department-title {
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        /* Excel Upload */
+        .excel-upload {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+        }
+
+        .upload-area {
+            border: 2px dashed #ddd;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            text-align: center;
+            margin-top: 1rem;
+            background-color: white;
+        }
+
+        .upload-area.active {
+            border-color: var(--primary);
+            background-color: rgba(44, 90, 160, 0.05);
+        }
+
+        .upload-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        /* User Categories */
+        .user-categories {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .category-btn {
+            padding: 10px 20px;
+            background-color: #e9ecef;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .category-btn:hover {
+            background-color: #dee2e6;
+        }
+
+        .category-btn.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .status-inactive {
+            background-color: var(--danger);
+            color: white;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .header-content {
@@ -603,13 +667,23 @@
                 grid-template-columns: 1fr;
             }
             
-            .user-management-controls {
+            .user-card {
                 flex-direction: column;
+                align-items: flex-start;
                 gap: 15px;
             }
             
-            .bulk-actions {
-                flex-wrap: wrap;
+            .user-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+            
+            .permissions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart-container {
+                height: 300px;
             }
         }
     </style>
@@ -878,10 +952,13 @@
                     </div>
                 </section>
 
-                <!-- Users Management Section - المحدثة -->
+                <!-- Users Management Section -->
                 <section id="users" class="section">
                     <div class="section-header">
                         <h2 class="section-title">إدارة المستخدمين</h2>
+                        <div class="btn-group">
+                            <button class="btn" id="addUserBtn">إضافة مستخدم</button>
+                        </div>
                     </div>
                     
                     <div class="user-categories">
@@ -891,40 +968,109 @@
                     </div>
                     
                     <!-- قسم القيادة العليا -->
-                    <div class="category-section" id="seniorLeadershipSection">
-                        <div class="category-header">
+                    <div class="excel-upload" id="seniorLeadershipSection">
+                        <div class="upload-info">
                             <h3>القيادة العليا</h3>
-                            <button class="btn btn-sm" onclick="showAddUserModal('senior_leadership')">إضافة مستخدم</button>
+                            <div class="btn-group">
+                                <button class="btn btn-xs" id="downloadSeniorLeadership">تنزيل ملف Excel</button>
+                                <button class="btn btn-xs" id="seniorLeadershipUploadBtn">رفع ملف Excel</button>
+                                <input type="file" id="seniorLeadershipFile" accept=".xlsx, .xls" style="display: none;">
+                            </div>
                         </div>
-                        <div class="user-list" id="seniorLeadershipList">
-                            <!-- سيتم ملؤها بالبيانات -->
+                        <div class="upload-area" id="seniorLeadershipUpload">
+                            <i class="fas fa-file-excel upload-icon"></i>
+                            <p>اسحب وأفلت ملف Excel هنا أو انقر للاختيار</p>
                         </div>
                     </div>
                     
                     <!-- قسم القيادة الوسطى -->
-                    <div class="category-section" id="middleLeadershipSection">
-                        <div class="category-header">
+                    <div class="excel-upload" id="middleLeadershipSection">
+                        <div class="upload-info">
                             <h3>القيادة الوسطى</h3>
-                            <button class="btn btn-sm" onclick="showAddUserModal('middle_leadership')">إضافة مستخدم</button>
+                            <div class="btn-group">
+                                <button class="btn btn-xs" id="downloadMiddleLeadership">تنزيل ملف Excel</button>
+                                <button class="btn btn-xs" id="middleLeadershipUploadBtn">رفع ملف Excel</button>
+                                <input type="file" id="middleLeadershipFile" accept=".xlsx, .xls" style="display: none;">
+                            </div>
                         </div>
-                        <div class="user-list" id="middleLeadershipList">
-                            <!-- سيتم ملؤها بالبيانات -->
+                        <div class="upload-area" id="middleLeadershipUpload">
+                            <i class="fas fa-file-excel upload-icon"></i>
+                            <p>اسحب وأفلت ملف Excel هنا أو انقر للاختيار</p>
                         </div>
                     </div>
                     
                     <!-- قسم المعلمات -->
-                    <div class="category-section" id="teachersSection">
-                        <div class="category-header">
+                    <div class="excel-upload" id="teachersSection">
+                        <div class="upload-info">
                             <h3>المعلمات</h3>
-                            <button class="btn btn-sm" onclick="showAddUserModal('teacher')">إضافة معلمة</button>
+                            <div class="btn-group">
+                                <button class="btn btn-xs" id="downloadTeachers">تنزيل ملف Excel</button>
+                                <button class="btn btn-xs" id="teachersUploadBtn">رفع ملف Excel</button>
+                                <input type="file" id="teachersFile" accept=".xlsx, .xls" style="display: none;">
+                            </div>
                         </div>
-                        <div class="user-list" id="teachersList">
-                            <!-- سيتم ملؤها بالبيانات -->
+                        <div class="upload-area" id="teachersUpload">
+                            <i class="fas fa-file-excel upload-icon"></i>
+                            <p>اسحب وأفلت ملف Excel هنا أو انقر للاختيار</p>
                         </div>
+                    </div>
+                    
+                    <div class="user-list" id="userList">
+                        <!-- سيتم ملؤها بالبيانات -->
                     </div>
                 </section>
             </div>
         </main>
+    </div>
+
+    <!-- Modal for Adding/Editing Visit -->
+    <div id="visitModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="visitModalTitle">إضافة زيارة صفية</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="visitForm">
+                <input type="hidden" id="visitId">
+                <div class="form-group">
+                    <label for="teacherName">اسم المعلم</label>
+                    <input type="text" id="teacherName" required>
+                </div>
+                <div class="form-group">
+                    <label for="department">القسم</label>
+                    <select id="department" required>
+                        <option value="القيادة العليا">القيادة العليا</option>
+                        <option value="القيادة الوسطى">القيادة الوسطى</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="visitDate">تاريخ الزيارة</label>
+                    <input type="date" id="visitDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="evaluation">تقييم الزيارة</label>
+                    <select id="evaluation" required>
+                        <option value="ممتاز">ممتاز</option>
+                        <option value="جيد جداً">جيد جداً</option>
+                        <option value="جيد">جيد</option>
+                        <option value="مقبول">مقبول</option>
+                        <option value="ضعيف">ضعيف</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="visitorName">اسم الزائر</label>
+                    <input type="text" id="visitorName" required>
+                </div>
+                <div class="form-group">
+                    <label for="notes">الملاحظات</label>
+                    <textarea id="notes" rows="3"></textarea>
+                </div>
+                <div class="btn-group">
+                    <button type="submit" class="btn">حفظ</button>
+                    <button type="button" class="btn btn-secondary" id="cancelVisit">إلغاء</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- Modal for Adding/Editing User -->
@@ -987,6 +1133,22 @@
         </div>
     </div>
 
+    <!-- Modal for User Preview -->
+    <div id="previewModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">معاينة بيانات المستخدم</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div id="previewContent">
+                <!-- سيتم ملؤها بالبيانات -->
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-secondary" id="closePreview">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // بيانات التطبيق
         const appData = {
@@ -1008,7 +1170,11 @@
                         performance: true,
                         teachers: true,
                         reports: true,
-                        users: true
+                        users: true,
+                        departments: {
+                            'القيادة العليا': true,
+                            'القيادة الوسطى': true
+                        }
                     }
                 }
             ],
@@ -1019,10 +1185,6 @@
             teachersNeedCare: [],
             reports: []
         };
-
-        // متغيرات جديدة لإدارة المستخدمين
-        let selectedUsers = new Set();
-        let currentCategory = 'senior_leadership';
 
         // تهيئة التطبيق
         document.addEventListener('DOMContentLoaded', function() {
@@ -1066,8 +1228,8 @@
             // إعداد الأزرار والإجراءات
             setupButtons();
             
-            // تهيئة قسم المستخدمين
-            showCategory('senior_leadership');
+            // إعداد الروابط حسب الهاش
+            setupHashRouting();
         });
 
         // تحميل البيانات من localStorage
@@ -1089,7 +1251,20 @@
             localStorage.setItem('educationQualityData', JSON.stringify(appData));
         }
 
-        // التنقل إلى قسم معين - الدالة المصححة
+        // إعداد التوجيه حسب الهاش
+        function setupHashRouting() {
+            // تحديث الرابط عند تغيير القسم
+            window.addEventListener('hashchange', function() {
+                const hash = window.location.hash.substring(1) || 'dashboard';
+                navigateToSection(hash);
+            });
+            
+            // التعامل مع الرابط الأولي عند التحميل
+            const initialHash = window.location.hash.substring(1) || 'dashboard';
+            navigateToSection(initialHash);
+        }
+
+        // التنقل إلى قسم معين
         function navigateToSection(sectionId) {
             // حفظ القسم الحالي
             localStorage.setItem('currentSection', sectionId);
@@ -1110,53 +1285,18 @@
                 }
             });
             
+            // تحديث الهاش في الرابط
+            window.location.hash = sectionId;
+            
             // إذا كان قسم المستخدمين، عرض قائمة المستخدمين
             if (sectionId === 'users') {
-                renderUserList(currentCategory);
+                renderUserList();
             }
             
-            // إعادة تحميل البيانات للقسم النشط
-            renderDataForSection(sectionId);
-        }
-
-        // دالة مساعدة لإعادة تحميل البيانات للقسم النشط
-        function renderDataForSection(sectionId) {
-            switch(sectionId) {
-                case 'dashboard':
-                    renderDashboard();
-                    break;
-                case 'middleLeadership':
-                    renderMiddleLeadership();
-                    break;
-                case 'visits':
-                    renderVisits();
-                    break;
-                case 'performance':
-                    renderPerformance();
-                    break;
-                case 'teachers':
-                    renderTeachers();
-                    break;
-                case 'reports':
-                    renderReports();
-                    break;
-                case 'users':
-                    renderUserList(currentCategory);
-                    break;
+            // إذا كان قسم تقييم الأداء، عرض الرسم البياني
+            if (sectionId === 'performance') {
+                renderPerformanceChart();
             }
-        }
-
-        // إعداد التنقل بين الأقسام
-        function setupNavigation() {
-            const navTabs = document.querySelectorAll('.nav-tabs a');
-            
-            navTabs.forEach(tab => {
-                tab.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const sectionId = this.getAttribute('data-section');
-                    navigateToSection(sectionId);
-                });
-            });
         }
 
         // معالج تسجيل الدخول
@@ -1206,6 +1346,19 @@
             document.getElementById('loginForm').reset();
         }
 
+        // إعداد التنقل بين الأقسام
+        function setupNavigation() {
+            const navTabs = document.querySelectorAll('.nav-tabs a');
+            
+            navTabs.forEach(tab => {
+                tab.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const sectionId = this.getAttribute('data-section');
+                    navigateToSection(sectionId);
+                });
+            });
+        }
+
         // إعداد الأزرار والإجراءات
         function setupButtons() {
             // أزرار القيادة الوسطى
@@ -1213,6 +1366,9 @@
             
             // أزرار الزيارات
             document.getElementById('addVisitBtn').addEventListener('click', showAddVisitModal);
+            document.getElementById('cancelVisit').addEventListener('click', closeVisitModal);
+            document.querySelector('#visitModal .close-modal').addEventListener('click', closeVisitModal);
+            document.getElementById('visitForm').addEventListener('submit', saveVisit);
             
             // أزرار الأقسام الفرعية للزيارات
             document.querySelectorAll('#visitsSubSections .sub-section-btn').forEach(btn => {
@@ -1226,6 +1382,7 @@
             
             // أزرار التقييم
             document.getElementById('savePerformance').addEventListener('click', savePerformance);
+            document.getElementById('performanceMonth').addEventListener('change', renderPerformanceChart);
             
             // أزرار المعلمين
             document.getElementById('saveTeachers').addEventListener('click', saveTeachers);
@@ -1234,9 +1391,41 @@
             document.getElementById('saveReports').addEventListener('click', saveReports);
             
             // أزرار إدارة المستخدمين
+            document.getElementById('addUserBtn').addEventListener('click', showAddUserModal);
             document.getElementById('cancelUser').addEventListener('click', closeUserModal);
             document.querySelector('#userModal .close-modal').addEventListener('click', closeUserModal);
             document.getElementById('userForm').addEventListener('submit', saveUser);
+            
+            // أزرار رفع ملفات Excel
+            document.getElementById('seniorLeadershipUploadBtn').addEventListener('click', function() {
+                document.getElementById('seniorLeadershipFile').click();
+            });
+            
+            document.getElementById('middleLeadershipUploadBtn').addEventListener('click', function() {
+                document.getElementById('middleLeadershipFile').click();
+            });
+            
+            document.getElementById('teachersUploadBtn').addEventListener('click', function() {
+                document.getElementById('teachersFile').click();
+            });
+            
+            // أزرار تنزيل ملفات Excel
+            document.getElementById('downloadSeniorLeadership').addEventListener('click', function() {
+                downloadExcel('senior_leadership', 'قائمة القيادة العليا');
+            });
+            
+            document.getElementById('downloadMiddleLeadership').addEventListener('click', function() {
+                downloadExcel('middle_leadership', 'قائمة القيادة الوسطى');
+            });
+            
+            document.getElementById('downloadTeachers').addEventListener('click', function() {
+                downloadExcel('teacher', 'قائمة المعلمات');
+            });
+            
+            // معالجة اختيار الملفات
+            document.getElementById('seniorLeadershipFile').addEventListener('change', handleExcelUpload);
+            document.getElementById('middleLeadershipFile').addEventListener('change', handleExcelUpload);
+            document.getElementById('teachersFile').addEventListener('change', handleExcelUpload);
             
             // أزرار التصنيف في قسم المستخدمين
             document.querySelectorAll('.user-categories .category-btn').forEach(btn => {
@@ -1244,8 +1433,7 @@
                     document.querySelectorAll('.user-categories .category-btn').forEach(b => b.classList.remove('active'));
                     this.classList.add('active');
                     const category = this.getAttribute('data-category');
-                    currentCategory = category;
-                    showCategory(category);
+                    renderUserList(category);
                 });
             });
             
@@ -1253,20 +1441,173 @@
             document.getElementById('savePermissions').addEventListener('click', savePermissions);
             document.getElementById('cancelPermissions').addEventListener('click', closePermissionsModal);
             document.querySelector('#permissionsModal .close-modal').addEventListener('click', closePermissionsModal);
+            
+            document.getElementById('closePreview').addEventListener('click', closePreviewModal);
+            document.querySelector('#previewModal .close-modal').addEventListener('click', closePreviewModal);
         }
 
-        // عرض القسم المحدد
-        function showCategory(category) {
-            // إخفاء جميع الأقسام
-            document.querySelectorAll('.category-section').forEach(section => {
-                section.style.display = 'none';
+        // معالجة رفع ملفات Excel
+        function handleExcelUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const fileType = e.target.id;
+            let userRole = '';
+            
+            if (fileType === 'seniorLeadershipFile') {
+                userRole = 'senior_leadership';
+            } else if (fileType === 'middleLeadershipFile') {
+                userRole = 'middle_leadership';
+            } else if (fileType === 'teachersFile') {
+                userRole = 'teacher';
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    
+                    // افتراض أن الورقة الأولى تحتوي على البيانات
+                    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet);
+                    
+                    // معالجة البيانات وإضافة المستخدمين
+                    processExcelData(jsonData, userRole);
+                    
+                    alert(`تم رفع ملف ${file.name} بنجاح. تمت إضافة ${jsonData.length} مستخدم جديد.`);
+                    
+                    // تحديث قائمة المستخدمين
+                    renderUserList(userRole);
+                } catch (error) {
+                    console.error('خطأ في معالجة ملف Excel:', error);
+                    alert('حدث خطأ أثناء معالجة ملف Excel. يرجى التحقق من تنسيق الملف.');
+                }
+            };
+            
+            reader.readAsArrayBuffer(file);
+            
+            // إعادة تعيين حقل الملف
+            e.target.value = '';
+        }
+
+        // معالجة بيانات Excel وإضافة المستخدمين
+        function processExcelData(data, role) {
+            data.forEach((row, index) => {
+                // توقع أن الملف يحتوي على أعمدة: الاسم، الوظيفة، اسم المستخدم، كلمة المرور
+                const name = row['الاسم'] || row['name'] || `مستخدم ${index + 1}`;
+                let position = '';
+                let phone = '';
+                
+                // معالجة البيانات حسب نوع القائمة
+                if (role === 'senior_leadership') {
+                    position = row['الوظيفة'] || row['position'] || 'موظف';
+                    phone = row['رقم الهاتف'] || row['phone'] || '';
+                } else if (role === 'middle_leadership') {
+                    position = row['الوظيفة - مادة التدريس'] || row['position'] || 'معلم';
+                    phone = row['رقم الهاتف'] || row['phone'] || '';
+                } else if (role === 'teacher') {
+                    position = row['القسم'] || row['department'] || 'معلم';
+                }
+                
+                const username = generateUsername(name);
+                const password = '123456'; // كلمة مرور افتراضية
+                
+                // التحقق من عدم تكرار اسم المستخدم
+                if (!appData.users.some(u => u.username === username)) {
+                    const newUser = {
+                        id: Math.max(...appData.users.map(u => u.id), 0) + 1,
+                        name,
+                        position,
+                        username,
+                        password,
+                        role,
+                        avatar: name.charAt(0),
+                        active: true,
+                        phone: phone,
+                        permissions: createDefaultPermissions(role)
+                    };
+                    
+                    appData.users.push(newUser);
+                }
             });
             
-            // إظهار القسم المطلوب
-            document.getElementById(`${category}Section`).style.display = 'block';
+            saveDataToStorage();
+        }
+
+        // إنشاء اسم مستخدم تلقائي
+        function generateUsername(name) {
+            const baseUsername = name.replace(/\s+/g, '').toLowerCase();
+            let username = baseUsername;
+            let counter = 1;
             
-            // عرض المستخدمين في هذا القسم
-            renderUserList(category);
+            while (appData.users.some(u => u.username === username)) {
+                username = `${baseUsername}${counter}`;
+                counter++;
+            }
+            
+            return username;
+        }
+
+        // إنشاء صلاحيات افتراضية بناءً على الدور
+        function createDefaultPermissions(role) {
+            return {
+                dashboard: true,
+                middleLeadership: role === 'admin' || role === 'supervisor',
+                visits: true,
+                performance: role === 'admin' || role === 'supervisor',
+                teachers: role === 'admin' || role === 'supervisor',
+                reports: role === 'admin' || role === 'supervisor',
+                users: role === 'admin',
+                departments: {
+                    'القيادة العليا': role === 'admin' || role === 'senior_leadership',
+                    'القيادة الوسطى': role === 'admin' || role === 'middle_leadership'
+                }
+            };
+        }
+
+        // تنزيل ملف Excel
+        function downloadExcel(role, fileName) {
+            // تصفية المستخدمين حسب الدور
+            const users = appData.users.filter(user => user.role === role);
+            
+            // إعداد البيانات للتصدير حسب نوع القائمة
+            let data = [];
+            
+            if (role === 'senior_leadership') {
+                // قائمة القيادة العليا
+                data = users.map((user, index) => ({
+                    'ت': index + 1,
+                    'الاسم': user.name,
+                    'الوظيفة': user.position,
+                    'رقم الهاتف': user.phone || ''
+                }));
+            } else if (role === 'middle_leadership') {
+                // قائمة القيادة الوسطى
+                data = users.map((user, index) => ({
+                    'ت': index + 1,
+                    'الاسم': user.name,
+                    'الوظيفة - مادة التدريس': user.position,
+                    'رقم الهاتف': user.phone || ''
+                }));
+            } else if (role === 'teacher') {
+                // قائمة المعلمات
+                data = users.map((user, index) => ({
+                    'ت': index + 1,
+                    'الاسم': user.name,
+                    'القسم': user.position
+                }));
+            }
+            
+            // إنشاء ورقة عمل
+            const worksheet = XLSX.utils.json_to_sheet(data);
+            
+            // إنشاء مصنف وإضافة الورقة
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+            
+            // تصدير الملف
+            XLSX.writeFile(workbook, `${fileName}.xlsx`);
         }
 
         // عرض البيانات
@@ -1380,9 +1721,60 @@
                                 <td>${visit.evaluation}</td>
                                 <td>${visit.notes}</td>
                                 <td>
-                                    <button class="btn btn-sm btn-warning" onclick="viewVisit(${visit.id})">معاينة</button>
-                                    <button class="btn btn-sm btn-secondary" onclick="editVisit(${visit.id})">تعديل</button>
-                                    <button class="btn btn-sm btn-danger" onclick="deleteVisit(${visit.id})">حذف</button>
+                                    <button class="btn btn-sm btn-warning view-visit" data-id="${visit.id}">معاينة</button>
+                                    <button class="btn btn-sm btn-secondary edit-visit" data-id="${visit.id}">تعديل</button>
+                                    <button class="btn btn-sm btn-danger delete-visit" data-id="${visit.id}">حذف</button>
+                                </td>
+                            `;
+                            userVisitsTable.appendChild(row);
+                        });
+                    }
+                });
+                
+            } else if (department === 'القيادة الوسطى') {
+                // عرض زيارات القيادة الوسطى حسب المستخدمين
+                const middleLeadershipUsers = appData.users.filter(u => u.role === 'middle_leadership');
+                
+                middleLeadershipUsers.forEach(user => {
+                    const userVisits = appData.visits.filter(visit => visit.visitor === user.name);
+                    
+                    if (userVisits.length > 0) {
+                        const userSection = document.createElement('div');
+                        userSection.className = 'department-section';
+                        userSection.innerHTML = `
+                            <h3 class="department-title">${user.name}</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>م</th>
+                                        <th>اسم المعلم</th>
+                                        <th>القسم</th>
+                                        <th>تاريخ الزيارة</th>
+                                        <th>تقييم الزيارة</th>
+                                        <th>الملاحظات</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="visits-${user.id}">
+                                </tbody>
+                            </table>
+                        `;
+                        visitsContent.appendChild(userSection);
+                        
+                        const userVisitsTable = document.getElementById(`visits-${user.id}`);
+                        userVisits.forEach((visit, index) => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${index + 1}</td>
+                                <td>${visit.teacher}</td>
+                                <td>${visit.department}</td>
+                                <td>${visit.date}</td>
+                                <td>${visit.evaluation}</td>
+                                <td>${visit.notes}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning view-visit" data-id="${visit.id}">معاينة</button>
+                                    <button class="btn btn-sm btn-secondary edit-visit" data-id="${visit.id}">تعديل</button>
+                                    <button class="btn btn-sm btn-danger delete-visit" data-id="${visit.id}">حذف</button>
                                 </td>
                             `;
                             userVisitsTable.appendChild(row);
@@ -1390,6 +1782,28 @@
                     }
                 });
             }
+            
+            // إضافة معالجي الأحداث للأزرار
+            document.querySelectorAll('.view-visit').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const visitId = parseInt(this.getAttribute('data-id'));
+                    viewVisit(visitId);
+                });
+            });
+            
+            document.querySelectorAll('.edit-visit').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const visitId = parseInt(this.getAttribute('data-id'));
+                    editVisit(visitId);
+                });
+            });
+            
+            document.querySelectorAll('.delete-visit').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const visitId = parseInt(this.getAttribute('data-id'));
+                    deleteVisit(visitId);
+                });
+            });
         }
 
         // عرض بيانات التقييم
@@ -1409,6 +1823,169 @@
                     <td>${item.fair}</td>
                 `;
                 table.appendChild(row);
+            });
+            
+            // عرض الرسم البياني
+            renderPerformanceChart();
+        }
+
+        // عرض الرسم البياني لتقييم الأداء
+        function renderPerformanceChart() {
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            
+            // إذا كان هناك رسم بياني موجود، قم بتدميره أولاً
+            if (window.performanceChartInstance) {
+                window.performanceChartInstance.destroy();
+            }
+            
+            const departments = appData.performance.map(item => item.department);
+            const excellentData = appData.performance.map(item => item.excellent);
+            const veryGoodData = appData.performance.map(item => item.veryGood);
+            const goodData = appData.performance.map(item => item.good);
+            const fairData = appData.performance.map(item => item.fair);
+            
+            // ألوان أكثر جمالية
+            const colors = {
+                excellent: 'rgba(40, 167, 69, 0.8)',
+                veryGood: 'rgba(23, 162, 184, 0.8)',
+                good: 'rgba(255, 193, 7, 0.8)',
+                fair: 'rgba(220, 53, 69, 0.8)'
+            };
+            
+            window.performanceChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: departments,
+                    datasets: [
+                        {
+                            label: 'يفوق التوقعات بكثير',
+                            data: excellentData,
+                            backgroundColor: colors.excellent,
+                            borderColor: colors.excellent.replace('0.8', '1'),
+                            borderWidth: 2,
+                            borderRadius: 5,
+                            borderSkipped: false,
+                        },
+                        {
+                            label: 'يفوق التوقعات',
+                            data: veryGoodData,
+                            backgroundColor: colors.veryGood,
+                            borderColor: colors.veryGood.replace('0.8', '1'),
+                            borderWidth: 2,
+                            borderRadius: 5,
+                            borderSkipped: false,
+                        },
+                        {
+                            label: 'يفي بالتوقعات',
+                            data: goodData,
+                            backgroundColor: colors.good,
+                            borderColor: colors.good.replace('0.8', '1'),
+                            borderWidth: 2,
+                            borderRadius: 5,
+                            borderSkipped: false,
+                        },
+                        {
+                            label: 'يفي بالتوقعات جزئياً',
+                            data: fairData,
+                            backgroundColor: colors.fair,
+                            borderColor: colors.fair.replace('0.8', '1'),
+                            borderWidth: 2,
+                            borderRadius: 5,
+                            borderSkipped: false,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            rtl: true,
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20,
+                                font: {
+                                    size: 14,
+                                    family: 'Cairo'
+                                }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'توزيع تقييمات الأداء الصفي حسب الأقسام',
+                            font: {
+                                size: 18,
+                                family: 'Cairo',
+                                weight: 'bold'
+                            },
+                            padding: 20
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                            titleFont: {
+                                family: 'Cairo'
+                            },
+                            bodyFont: {
+                                family: 'Cairo'
+                            },
+                            padding: 10,
+                            cornerRadius: 5
+                        }
+                    },
+                    scales: {
+                        x: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'الأقسام الأكاديمية',
+                                font: {
+                                    size: 14,
+                                    family: 'Cairo',
+                                    weight: 'bold'
+                                }
+                            },
+                            ticks: {
+                                font: {
+                                    family: 'Cairo'
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        y: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'عدد الزيارات',
+                                font: {
+                                    size: 14,
+                                    family: 'Cairo',
+                                    weight: 'bold'
+                                }
+                            },
+                            beginAtZero: true,
+                            ticks: {
+                                font: {
+                                    family: 'Cairo'
+                                },
+                                stepSize: 1
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 1000,
+                        easing: 'easeOutQuart'
+                    },
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                }
             });
         }
 
@@ -1463,48 +2040,18 @@
             });
         }
 
-        // عرض قائمة المستخدمين المحدثة
+        // عرض قائمة المستخدمين
         function renderUserList(category = 'senior_leadership') {
-            const userList = document.getElementById(`${category}List`);
+            const userList = document.getElementById('userList');
             userList.innerHTML = '';
             
             let filteredUsers = appData.users.filter(user => user.role === category);
             
-            if (filteredUsers.length === 0) {
-                const noUsersMsg = document.createElement('div');
-                noUsersMsg.className = 'no-users-message';
-                noUsersMsg.innerHTML = category === 'teacher' ? 'لا يوجد معلمات مسجلات' : 'لا يوجد مستخدمين مسجلين';
-                userList.appendChild(noUsersMsg);
-                return;
-            }
-
-            // إنشاء عناصر التحكم الجماعية
-            const controlsDiv = document.createElement('div');
-            controlsDiv.className = 'user-management-controls';
-            controlsDiv.innerHTML = `
-                <div class="bulk-actions">
-                    <div class="select-all-container">
-                        <input type="checkbox" id="selectAllUsers" class="user-checkbox">
-                        <label for="selectAllUsers">تحديد الكل</label>
-                    </div>
-                    <button class="btn btn-xs btn-danger bulk-action-btn" id="bulkDelete">حذف المحدد</button>
-                    <button class="btn btn-xs btn-success bulk-action-btn" id="bulkActivate">تفعيل المحدد</button>
-                    <button class="btn btn-xs btn-warning bulk-action-btn" id="bulkDeactivate">إلغاء تفعيل المحدد</button>
-                    <button class="btn btn-xs btn-secondary bulk-action-btn" id="bulkPermissions">صلاحيات المحدد</button>
-                </div>
-                <div>
-                    <span>عدد المستخدمين: ${filteredUsers.length}</span>
-                </div>
-            `;
-            userList.appendChild(controlsDiv);
-
             // إنشاء جدول المستخدمين
             const table = document.createElement('table');
-            table.className = 'user-table';
             table.innerHTML = `
                 <thead>
                     <tr>
-                        <th style="width: 40px;"></th>
                         <th>الاسم</th>
                         <th>الوظيفة</th>
                         <th>اسم المستخدم</th>
@@ -1512,167 +2059,228 @@
                         <th>الإجراءات</th>
                     </tr>
                 </thead>
-                <tbody id="usersTable-${category}">
+                <tbody id="usersTable">
                 </tbody>
             `;
             userList.appendChild(table);
-
-            const usersTable = document.getElementById(`usersTable-${category}`);
+            
+            const usersTable = document.getElementById('usersTable');
             filteredUsers.forEach(user => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>
-                        <input type="checkbox" class="user-checkbox user-select" data-id="${user.id}" 
-                               ${user.id === 1 ? 'disabled' : ''}>
-                    </td>
                     <td>${user.name}</td>
                     <td>${user.position}</td>
                     <td>${user.username}</td>
                     <td>
-                        <label class="toggle-switch-enhanced">
-                            <input type="checkbox" ${user.active ? 'checked' : ''} 
-                                   ${user.id === 1 ? 'disabled' : ''}
-                                   onchange="toggleUser(${user.id})">
-                            <span class="toggle-slider-enhanced"></span>
-                        </label>
-                        <span class="status-badge ${user.active ? 'status-active' : 'status-inactive'}" style="margin-right: 10px;">
+                        <span class="status-badge ${user.active ? 'status-active' : 'status-inactive'}">
                             ${user.active ? 'مفعل' : 'غير مفعل'}
                         </span>
                     </td>
                     <td>
                         <div class="user-actions">
-                            <button class="btn btn-xs btn-secondary" onclick="editUser(${user.id})">تعديل</button>
-                            <button class="btn btn-xs btn-warning" onclick="showPermissionsModal(${user.id})">صلاحيات</button>
-                            ${user.id !== 1 ? `
-                                <button class="btn btn-xs btn-danger" onclick="deleteUser(${user.id})">حذف</button>
+                            <button class="btn btn-xs btn-secondary edit-user" data-id="${user.id}">تعديل</button>
+                            <button class="btn btn-xs btn-warning permissions-user" data-id="${user.id}">صلاحيات</button>
+                            <button class="btn btn-xs btn-success preview-user" data-id="${user.id}">معاينة</button>
+                            ${user.id !== appData.currentUser.id && user.id !== 1 ? `
+                                <button class="btn btn-xs btn-danger delete-user" data-id="${user.id}">حذف</button>
+                                <button class="btn btn-xs ${user.active ? 'btn-warning' : 'btn-success'} toggle-user" data-id="${user.id}">
+                                    ${user.active ? 'إلغاء التفعيل' : 'تفعيل'}
+                                </button>
                             ` : ''}
                         </div>
                     </td>
                 `;
                 usersTable.appendChild(row);
             });
-
-            // إضافة معالجي الأحداث للمربعات
-            document.querySelectorAll('.user-select').forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
+            
+            // إضافة معالجي الأحداث للأزرار
+            document.querySelectorAll('.edit-user').forEach(btn => {
+                btn.addEventListener('click', function() {
                     const userId = parseInt(this.getAttribute('data-id'));
-                    if (this.checked) {
-                        selectedUsers.add(userId);
-                    } else {
-                        selectedUsers.delete(userId);
-                    }
-                    updateBulkActions();
+                    editUser(userId);
                 });
             });
-
-            document.getElementById('selectAllUsers').addEventListener('change', function() {
-                const checkboxes = document.querySelectorAll('.user-select:not(:disabled)');
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = this.checked;
-                    const userId = parseInt(checkbox.getAttribute('data-id'));
-                    if (this.checked) {
-                        selectedUsers.add(userId);
-                    } else {
-                        selectedUsers.delete(userId);
-                    }
+            
+            document.querySelectorAll('.permissions-user').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const userId = parseInt(this.getAttribute('data-id'));
+                    showPermissionsModal(userId);
                 });
-                updateBulkActions();
             });
-
-            // إضافة معالجي الأحداث لأزرار الإجراءات الجماعية
-            document.getElementById('bulkDelete').addEventListener('click', bulkDeleteUsers);
-            document.getElementById('bulkActivate').addEventListener('click', bulkActivateUsers);
-            document.getElementById('bulkDeactivate').addEventListener('click', bulkDeactivateUsers);
-            document.getElementById('bulkPermissions').addEventListener('click', bulkPermissions);
-
-            updateBulkActions();
-        }
-
-        // تحديث حالة أزرار الإجراءات الجماعية
-        function updateBulkActions() {
-            const hasSelection = selectedUsers.size > 0;
-            document.getElementById('bulkDelete').disabled = !hasSelection;
-            document.getElementById('bulkActivate').disabled = !hasSelection;
-            document.getElementById('bulkDeactivate').disabled = !hasSelection;
-            document.getElementById('bulkPermissions').disabled = !hasSelection;
-        }
-
-        // دوال الإجراءات الجماعية
-        function bulkDeleteUsers() {
-            if (selectedUsers.size === 0) return;
-            if (confirm(`هل تريد حذف ${selectedUsers.size} مستخدم؟`)) {
-                selectedUsers.forEach(userId => {
-                    if (userId !== 1) {
-                        appData.users = appData.users.filter(u => u.id !== userId);
-                    }
+            
+            document.querySelectorAll('.preview-user').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const userId = parseInt(this.getAttribute('data-id'));
+                    showPreviewModal(userId);
                 });
-                saveDataToStorage();
-                selectedUsers.clear();
-                renderUserList(currentCategory);
-                alert('تم حذف المستخدمين المحددين بنجاح');
-            }
-        }
-
-        function bulkActivateUsers() {
-            if (selectedUsers.size === 0) return;
-            selectedUsers.forEach(userId => {
-                const user = appData.users.find(u => u.id === userId);
-                if (user && userId !== 1) {
-                    user.active = true;
-                }
             });
-            saveDataToStorage();
-            renderUserList(currentCategory);
-            alert('تم تفعيل المستخدمين المحددين بنجاح');
-        }
-
-        function bulkDeactivateUsers() {
-            if (selectedUsers.size === 0) return;
-            selectedUsers.forEach(userId => {
-                const user = appData.users.find(u => u.id === userId);
-                if (user && userId !== 1) {
-                    user.active = false;
-                }
+            
+            document.querySelectorAll('.delete-user').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const userId = parseInt(this.getAttribute('data-id'));
+                    deleteUser(userId);
+                });
             });
-            saveDataToStorage();
-            renderUserList(currentCategory);
-            alert('تم إلغاء تفعيل المستخدمين المحددين بنجاح');
+            
+            document.querySelectorAll('.toggle-user').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const userId = parseInt(this.getAttribute('data-id'));
+                    toggleUser(userId);
+                });
+            });
         }
 
-        function bulkPermissions() {
-            if (selectedUsers.size === 0) return;
-            alert(`سيتم تطبيق الصلاحيات على ${selectedUsers.size} مستخدم`);
+        // الحصول على اسم الدور
+        function getRoleName(role) {
+            const roles = {
+                'admin': 'مدير النظام',
+                'supervisor': 'مشرف',
+                'teacher': 'معلم',
+                'senior_leadership': 'القيادة العليا',
+                'middle_leadership': 'القيادة الوسطى'
+            };
+            return roles[role] || role;
+        }
+
+        // الحصول على اسم الصلاحية
+        function getPermissionName(permission) {
+            const permissions = {
+                'dashboard': 'لوحة التحكم',
+                'middleLeadership': 'متابعة القيادة الوسطى',
+                'visits': 'الزيارات الصفية',
+                'performance': 'تقييم الأداء',
+                'teachers': 'المعلمين المتميزين',
+                'reports': 'التقارير النوعية',
+                'users': 'إدارة المستخدمين'
+            };
+            return permissions[permission] || permission;
         }
 
         // عرض نموذج إضافة زيارة
         function showAddVisitModal() {
-            alert('سيتم فتح نموذج إضافة زيارة');
+            document.getElementById('visitModalTitle').textContent = 'إضافة زيارة صفية';
+            document.getElementById('visitForm').reset();
+            document.getElementById('visitId').value = '';
+            document.getElementById('visitorName').value = appData.currentUser.name;
+            
+            // تعيين القسم بناءً على القسم النشط
+            const activeDepartment = document.querySelector('#visitsSubSections .sub-section-btn.active').getAttribute('data-department');
+            document.getElementById('department').value = activeDepartment;
+            
+            document.getElementById('visitModal').style.display = 'flex';
+        }
+
+        // إغلاق نافذة الزيارة
+        function closeVisitModal() {
+            document.getElementById('visitModal').style.display = 'none';
+        }
+
+        // حفظ زيارة
+        function saveVisit(e) {
+            e.preventDefault();
+            
+            const visitId = document.getElementById('visitId').value;
+            const teacherName = document.getElementById('teacherName').value;
+            const department = document.getElementById('department').value;
+            const visitDate = document.getElementById('visitDate').value;
+            const evaluation = document.getElementById('evaluation').value;
+            const visitorName = document.getElementById('visitorName').value;
+            const notes = document.getElementById('notes').value;
+            
+            if (visitId) {
+                // تعديل زيارة موجودة
+                const visitIndex = appData.visits.findIndex(v => v.id === parseInt(visitId));
+                if (visitIndex !== -1) {
+                    appData.visits[visitIndex] = {
+                        id: parseInt(visitId),
+                        teacher: teacherName,
+                        department,
+                        date: visitDate,
+                        evaluation,
+                        visitor: visitorName,
+                        notes
+                    };
+                }
+            } else {
+                // إضافة زيارة جديدة
+                const newVisit = {
+                    id: Math.max(...appData.visits.map(v => v.id), 0) + 1,
+                    teacher: teacherName,
+                    department,
+                    date: visitDate,
+                    evaluation,
+                    visitor: visitorName,
+                    notes
+                };
+                appData.visits.push(newVisit);
+            }
+            
+            saveDataToStorage();
+            closeVisitModal();
+            
+            // إعادة عرض الزيارات للقسم النشط
+            const activeDepartment = document.querySelector('#visitsSubSections .sub-section-btn.active').getAttribute('data-department');
+            renderVisitsByDepartment(activeDepartment);
+            
+            // تحديث لوحة التحكم
+            renderDashboard();
+            
+            alert('تم حفظ الزيارة بنجاح');
         }
 
         // معاينة زيارة
         function viewVisit(visitId) {
-            alert(`معاينة الزيارة رقم ${visitId}`);
+            const visit = appData.visits.find(v => v.id === visitId);
+            if (!visit) return;
+            
+            alert(`معاينة الزيارة:
+المعلم: ${visit.teacher}
+القسم: ${visit.department}
+التاريخ: ${visit.date}
+التقييم: ${visit.evaluation}
+الزائر: ${visit.visitor}
+الملاحظات: ${visit.notes}`);
         }
 
         // تعديل زيارة
         function editVisit(visitId) {
-            alert(`تعديل الزيارة رقم ${visitId}`);
+            const visit = appData.visits.find(v => v.id === visitId);
+            if (!visit) return;
+            
+            document.getElementById('visitModalTitle').textContent = 'تعديل زيارة صفية';
+            document.getElementById('visitId').value = visit.id;
+            document.getElementById('teacherName').value = visit.teacher;
+            document.getElementById('department').value = visit.department;
+            document.getElementById('visitDate').value = visit.date;
+            document.getElementById('evaluation').value = visit.evaluation;
+            document.getElementById('visitorName').value = visit.visitor;
+            document.getElementById('notes').value = visit.notes;
+            
+            document.getElementById('visitModal').style.display = 'flex';
         }
 
         // حذف زيارة
         function deleteVisit(visitId) {
             if (confirm('هل أنت متأكد من حذف هذه الزيارة؟')) {
+                appData.visits = appData.visits.filter(v => v.id !== visitId);
+                saveDataToStorage();
+                
+                // إعادة عرض الزيارات للقسم النشط
+                const activeDepartment = document.querySelector('#visitsSubSections .sub-section-btn.active').getAttribute('data-department');
+                renderVisitsByDepartment(activeDepartment);
+                
+                // تحديث لوحة التحكم
+                renderDashboard();
+                
                 alert('تم حذف الزيارة بنجاح');
             }
         }
 
         // عرض نموذج إضافة مستخدم
-        function showAddUserModal(role = 'senior_leadership') {
-            document.getElementById('userModalTitle').textContent = 
-                role === 'teacher' ? 'إضافة معلمة جديدة' : 'إضافة مستخدم جديد';
+        function showAddUserModal() {
+            document.getElementById('userModalTitle').textContent = 'إضافة مستخدم جديد';
             document.getElementById('userForm').reset();
             document.getElementById('userId').value = '';
-            document.getElementById('userRole').value = role;
             document.getElementById('userModal').style.display = 'flex';
         }
 
@@ -1721,15 +2329,7 @@
                 }
                 
                 // إنشاء صلاحيات افتراضية بناءً على الدور
-                const defaultPermissions = {
-                    dashboard: true,
-                    middleLeadership: role === 'admin' || role === 'supervisor',
-                    visits: true,
-                    performance: role === 'admin' || role === 'supervisor',
-                    teachers: role === 'admin' || role === 'supervisor',
-                    reports: role === 'admin' || role === 'supervisor',
-                    users: role === 'admin'
-                };
+                const defaultPermissions = createDefaultPermissions(role);
                 
                 const newUser = {
                     id: Math.max(...appData.users.map(u => u.id)) + 1,
@@ -1748,7 +2348,7 @@
             
             saveDataToStorage();
             closeUserModal();
-            renderUserList(currentCategory);
+            renderUserList();
             alert('تم حفظ المستخدم بنجاح');
         }
 
@@ -1779,7 +2379,7 @@
             if (confirm('هل أنت متأكد من حذف هذا المستخدم؟')) {
                 appData.users = appData.users.filter(u => u.id !== userId);
                 saveDataToStorage();
-                renderUserList(currentCategory);
+                renderUserList();
                 alert('تم حذف المستخدم بنجاح');
             }
         }
@@ -1797,7 +2397,7 @@
             
             user.active = !user.active;
             saveDataToStorage();
-            renderUserList(currentCategory);
+            renderUserList();
             alert(`تم ${user.active ? 'تفعيل' : 'إلغاء تفعيل'} المستخدم بنجاح`);
         }
 
@@ -1812,7 +2412,7 @@
                 <div class="permissions-section">
                     <h5>الصلاحيات الأساسية:</h5>
                     <div class="permissions-grid" id="basic-permissions-modal">
-                        ${Object.keys(user.permissions).map(permission => `
+                        ${Object.keys(user.permissions).filter(p => !['departments'].includes(p)).map(permission => `
                             <div class="permission-item">
                                 <span>${getPermissionName(permission)}</span>
                                 <label class="toggle-switch">
@@ -1827,20 +2427,6 @@
             `;
             
             document.getElementById('permissionsModal').style.display = 'flex';
-        }
-
-        // الحصول على اسم الصلاحية
-        function getPermissionName(permission) {
-            const permissions = {
-                'dashboard': 'لوحة التحكم',
-                'middleLeadership': 'متابعة القيادة الوسطى',
-                'visits': 'الزيارات الصفية',
-                'performance': 'تقييم الأداء',
-                'teachers': 'المعلمين المتميزين',
-                'reports': 'التقارير النوعية',
-                'users': 'إدارة المستخدمين'
-            };
-            return permissions[permission] || permission;
         }
 
         // إغلاق نموذج الصلاحيات
@@ -1863,6 +2449,53 @@
             saveDataToStorage();
             closePermissionsModal();
             alert('تم حفظ الصلاحيات بنجاح');
+        }
+
+        // عرض نموذج المعاينة
+        function showPreviewModal(userId) {
+            const user = appData.users.find(u => u.id === userId);
+            if (!user) return;
+            
+            const previewContent = document.getElementById('previewContent');
+            previewContent.innerHTML = `
+                <div class="user-details">
+                    <div class="user-avatar">${user.avatar}</div>
+                    <div>
+                        <h3>${user.name}</h3>
+                        <p>الوظيفة: ${user.position}</p>
+                        <p>اسم المستخدم: ${user.username}</p>
+                        <p>الدور: ${getRoleName(user.role)}</p>
+                        <p>الحالة: <span class="status-badge ${user.active ? 'status-active' : 'status-inactive'}">${user.active ? 'مفعل' : 'غير مفعل'}</span></p>
+                    </div>
+                </div>
+                <div class="permissions-section">
+                    <h4>الصلاحيات الممنوحة:</h4>
+                    <div class="permissions-grid">
+                        ${Object.keys(user.permissions).filter(p => !['departments'].includes(p) && user.permissions[p]).map(permission => `
+                            <div class="permission-item">
+                                <span>${getPermissionName(permission)}</span>
+                                <i class="fas fa-check text-success"></i>
+                            </div>
+                        `).join('')}
+                        ${Object.keys(user.permissions).filter(p => !['departments'].includes(p) && !user.permissions[p]).length > 0 ? `
+                            <h5>الصلاحيات غير الممنوحة:</h5>
+                            ${Object.keys(user.permissions).filter(p => !['departments'].includes(p) && !user.permissions[p]).map(permission => `
+                                <div class="permission-item">
+                                    <span>${getPermissionName(permission)}</span>
+                                    <i class="fas fa-times text-danger"></i>
+                                </div>
+                            `).join('')}
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('previewModal').style.display = 'flex';
+        }
+
+        // إغلاق نموذج المعاينة
+        function closePreviewModal() {
+            document.getElementById('previewModal').style.display = 'none';
         }
 
         // دوال الحفظ للبيانات المختلفة
