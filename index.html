@@ -689,7 +689,7 @@
         }
         
         .user-table th, .user-table td {
-            padding: 12px 15px;
+            padding: 12px 10px;
             text-align: right;
             border: 1px solid #ddd;
         }
@@ -739,11 +739,39 @@
             transition: all 0.3s;
             font-weight: 600;
             border-bottom: 3px solid transparent;
+            cursor: pointer;
         }
         
         .user-sub-tabs a:hover, .user-sub-tabs a.active {
             color: var(--primary);
             border-bottom-color: var(--primary);
+        }
+
+        /* تخصيص أعمدة الجدول */
+        .user-table th:nth-child(1),
+        .user-table td:nth-child(1) {
+            width: 60px; /* الترتيب */
+            text-align: center;
+        }
+        
+        .user-table th:nth-child(2),
+        .user-table td:nth-child(2) {
+            width: 250px; /* الاسم */
+        }
+        
+        .user-table th:nth-child(3),
+        .user-table td:nth-child(3) {
+            width: 200px; /* الوظيفة/القسم */
+        }
+        
+        .user-table th:nth-child(4),
+        .user-table td:nth-child(4) {
+            width: 120px; /* رقم الهاتف */
+        }
+        
+        .user-table th:nth-child(5),
+        .user-table td:nth-child(5) {
+            width: 350px; /* الإجراءات */
         }
 
         /* Responsive */
@@ -787,6 +815,44 @@
             
             .user-actions {
                 justify-content: flex-start;
+            }
+            
+            .user-table {
+                font-size: 0.8rem;
+            }
+            
+            .user-table th, .user-table td {
+                padding: 8px 5px;
+            }
+            
+            .user-table th:nth-child(1),
+            .user-table td:nth-child(1) {
+                width: 40px;
+            }
+            
+            .user-table th:nth-child(2),
+            .user-table td:nth-child(2) {
+                width: 120px;
+            }
+            
+            .user-table th:nth-child(3),
+            .user-table td:nth-child(3) {
+                width: 100px;
+            }
+            
+            .user-table th:nth-child(4),
+            .user-table td:nth-child(4) {
+                width: 90px;
+            }
+            
+            .user-table th:nth-child(5),
+            .user-table td:nth-child(5) {
+                width: 200px;
+            }
+            
+            .btn-xs {
+                padding: 2px 5px;
+                font-size: 0.7rem;
             }
         }
     </style>
@@ -1293,6 +1359,57 @@
                             'القيادة الوسطى': true
                         }
                     }
+                },
+                { 
+                    id: 2, 
+                    username: 'leader1', 
+                    password: '123456', 
+                    name: 'أحمد محمد علي', 
+                    position: 'مدير المدرسة',
+                    role: 'senior_leadership', 
+                    avatar: 'أ',
+                    active: true,
+                    hasAccess: true,
+                    phone: '0551234567',
+                    permissions: {
+                        dashboard: true,
+                        middleLeadership: true,
+                        visits: true,
+                        performance: true,
+                        teachers: true,
+                        reports: true,
+                        users: false,
+                        departments: {
+                            'القيادة العليا': true,
+                            'القيادة الوسطى': false
+                        }
+                    }
+                },
+                { 
+                    id: 3, 
+                    username: 'teacher1', 
+                    password: '123456', 
+                    name: 'فاطمة إبراهيم أحمد', 
+                    position: 'معلمة لغة عربية',
+                    role: 'teacher', 
+                    avatar: 'ف',
+                    active: true,
+                    hasAccess: false,
+                    phone: '0557654321',
+                    department: 'اللغة العربية',
+                    permissions: {
+                        dashboard: true,
+                        middleLeadership: false,
+                        visits: false,
+                        performance: false,
+                        teachers: false,
+                        reports: false,
+                        users: false,
+                        departments: {
+                            'القيادة العليا': false,
+                            'القيادة الوسطى': false
+                        }
+                    }
                 }
             ],
             middleLeadership: [],
@@ -1511,10 +1628,6 @@
             document.getElementById('saveReports').addEventListener('click', saveReports);
             
             // إعداد أزرار النماذج الإضافية
-            document.getElementById('savePermissions').addEventListener('click', savePermissions);
-            document.getElementById('cancelPermissions').addEventListener('click', closePermissionsModal);
-            document.querySelector('#permissionsModal .close-modal').addEventListener('click', closePermissionsModal);
-            
             document.getElementById('closePreview').addEventListener('click', closePreviewModal);
             document.querySelector('#previewModal .close-modal').addEventListener('click', closePreviewModal);
         }
