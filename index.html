@@ -941,6 +941,114 @@
             color: var(--primary-light);
         }
 
+        /* الإعدادات */
+        .settings-section {
+            margin-top: 2rem;
+        }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--light);
+        }
+
+        .settings-title {
+            font-size: 1.4rem;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .settings-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 1.5rem;
+        }
+
+        .settings-card-title {
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .logo-upload {
+            border: 2px dashed #ddd;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logo-upload:hover {
+            border-color: var(--primary);
+            background-color: rgba(44, 90, 160, 0.05);
+        }
+
+        .logo-preview {
+            max-width: 200px;
+            max-height: 100px;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .system-logs {
+            margin-top: 2rem;
+        }
+
+        .logs-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+        }
+
+        .logs-table th, .logs-table td {
+            padding: 12px 10px;
+            text-align: right;
+            border: 1px solid #ddd;
+        }
+
+        .logs-table th {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+        }
+
+        .logs-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .logs-table tr:hover {
+            background-color: #e9ecef;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray);
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            margin: 1rem 0;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--gray);
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .header-content {
@@ -1045,6 +1153,10 @@
             .departments-table {
                 font-size: 0.8rem;
             }
+
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -1095,6 +1207,8 @@
                     <li><a href="#" data-section="teachers">المعلمين المتميزين</a></li>
                     <li><a href="#" data-section="reports">التقارير النوعية</a></li>
                     <li><a href="#" data-section="users" id="usersTab" style="display: none;">إدارة المستخدمين</a></li>
+                    <li><a href="#" data-section="settings" id="settingsTab" style="display: none;">الإعدادات</a></li>
+                    <li><a href="#" data-section="systemLogs" id="systemLogsTab" style="display: none;">سجل النظام</a></li>
                 </ul>
             </div>
         </nav>
@@ -1381,6 +1495,12 @@
                                 <!-- سيتم ملؤها بالبيانات -->
                             </tbody>
                         </table>
+                        <div id="seniorLeadershipEmpty" class="empty-state" style="display: none;">
+                            <i class="fas fa-users"></i>
+                            <h3>لا توجد بيانات</h3>
+                            <p>لم يتم إضافة أي مستخدمين في القيادة العليا بعد</p>
+                            <button class="btn" id="addSeniorLeadershipEmpty">إضافة اسم جديد</button>
+                        </div>
                     </div>
                     
                     <!-- قسم القيادة الوسطى -->
@@ -1438,6 +1558,12 @@
                                 <!-- سيتم ملؤها بالبيانات -->
                             </tbody>
                         </table>
+                        <div id="middleLeadershipEmpty" class="empty-state" style="display: none;">
+                            <i class="fas fa-users"></i>
+                            <h3>لا توجد بيانات</h3>
+                            <p>لم يتم إضافة أي مستخدمين في القيادة الوسطى بعد</p>
+                            <button class="btn" id="addMiddleLeadershipEmpty">إضافة اسم جديد</button>
+                        </div>
                     </div>
                     
                     <!-- قسم المعلمات -->
@@ -1494,6 +1620,12 @@
                                 <!-- سيتم ملؤها بالبيانات -->
                             </tbody>
                         </table>
+                        <div id="teachersEmpty" class="empty-state" style="display: none;">
+                            <i class="fas fa-users"></i>
+                            <h3>لا توجد بيانات</h3>
+                            <p>لم يتم إضافة أي معلمات بعد</p>
+                            <button class="btn" id="addTeacherEmpty">إضافة معلم جديد</button>
+                        </div>
                     </div>
                     
                     <!-- قسم أقسام المواد -->
@@ -1519,6 +1651,447 @@
                             </tbody>
                         </table>
                     </div>
+                </section>
+
+                <!-- Settings Section -->
+                <section id="settings" class="section">
+                    <div class="section-header">
+                        <h2 class="section-title">الإعدادات</h2>
+                    </div>
+                    
+                    <div class="settings-grid">
+                        <div class="settings-card">
+                            <h3 class="settings-card-title">شعار وزارة التربية والتعليم</h3>
+                            <div class="logo-upload" id="ministryLogoUpload">
+                                <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                                <p>انقر لرفع شعار الوزارة</p>
+                                <input type="file" id="ministryLogoFile" accept="image/*" style="display: none;">
+                            </div>
+                            <div id="ministryLogoPreview" style="display: none;">
+                                <img src="" alt="شعار الوزارة" class="logo-preview">
+                                <button class="btn btn-danger btn-sm" id="removeMinistryLogo">إزالة</button>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-card">
+                            <h3 class="settings-card-title">شعار المدرسة</h3>
+                            <div class="logo-upload" id="schoolLogoUpload">
+                                <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                                <p>انقر لرفع شعار المدرسة</p>
+                                <input type="file" id="schoolLogoFile" accept="image/*" style="display: none;">
+                            </div>
+                            <div id="schoolLogoPreview" style="display: none;">
+                                <img src="" alt="شعار المدرسة" class="logo-preview">
+                                <button class="btn btn-danger btn-sm" id="removeSchoolLogo">إزالة</button>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-card">
+                            <h3 class="settings-card-title">اسم المدرسة</h3>
+                            <div class="form-group">
+                                <input type="text" id="schoolName" placeholder="أدخل اسم المدرسة">
+                            </div>
+                            <button class="btn" id="saveSchoolName">حفظ</button>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h3 class="settings-card-title">صلاحيات المستخدمين</h3>
+                        
+                        <div class="permission-category">
+                            <h4 class="permission-category-title">المشرف</h4>
+                            <div class="permissions-grid">
+                                <div class="permission-item">
+                                    <span>لوحة التحكم</span>
+                                    <div class="permission-options">
+                                        <label class="permission-option">
+                                            <input type="checkbox" checked disabled>
+                                            معاينة
+                                        </label>
+                                        <label class="permission-option">
+                                            <input type="checkbox" checked disabled>
+                                            تعديل
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span>متابعة القيادة الوسطى</span>
+                                    <div class="permission-options">
+                                        <label class="permission-option">
+                                            <input type="checkbox" checked disabled>
+                                            معاينة
+                                        </label>
+                                        <label class="permission-option">
+                                            <input type="checkbox" checked disabled>
+                                            تعديل
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span>الزيارات الصفية</span>
+                                    <div class="permission-options">
+                                        <label class="permission-option">
+                                            <input type="checkbox" checked disabled>
+                                            معاينة
+                                        </label>
+                                        <label class="permission-option">
+                                            <input type="checkbox" checked disabled>
+                                            تعديل
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span>تقييم الأداء</span>
+                                    <div class="permission-options">
+                                        <label class="permission-option">
+                                            <input type="checkbox" checked disabled>
+                                            معاينة
+                                        </label>
+                                        <label class="permission-option">
+                                            <input type="checkbox" checked disabled>
+                                            تعديل
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span>المعلمين المتميزين</span>
+                                    <div class="permission-options">
+                                        <label class="permission-option">
+                                            <input type="checkbox" checked disabled>
+                                            معاينة
+                                        </label>
+                                        <label class="permission-option">
+                                            <input type="checkbox" checked disabled>
+                                            تعديل
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span>التقارير النوعية</span>
+                                    <div class="permission-options">
+                                        <label class="permission-option">
+                                            <input type="checkbox" checked disabled>
+                                            معاينة
+                                        </label>
+                                        <label class="permission-option">
+                                            <input type="checkbox" checked disabled>
+                                            تعديل
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span>إدارة المستخدمين</span>
+                                    <div class="permission-options">
+                                        <label class="permission-option">
+                                            <input type="checkbox" checked disabled>
+                                            معاينة
+                                        </label>
+                                        <label class="permission-option">
+                                            <input type="checkbox" checked disabled>
+                                            تعديل
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span>الإعدادات</span>
+                                    <div class="permission-options">
+                                        <label class="permission-option">
+                                            <input type="checkbox" checked disabled>
+                                            معاينة
+                                        </label>
+                                        <label class="permission-option">
+                                            <input type="checkbox" checked disabled>
+                                            تعديل
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span>سجل النظام</span>
+                                    <div class="permission-options">
+                                        <label class="permission-option">
+                                            <input type="checkbox" checked disabled>
+                                            معاينة
+                                        </label>
+                                        <label class="permission-option">
+                                            <input type="checkbox" checked disabled>
+                                            تعديل
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="permission-category">
+                            <h4 class="permission-category-title">إدارة القيادة العليا</h4>
+                            <div class="permissions-grid">
+                                <div class="permission-item">
+                                    <span>لوحة التحكم</span>
+                                    <div class="permission-options">
+                                        <label class="permission-option">
+                                            <input type="checkbox" checked>
+                                            معاينة
+                                        </label>
+                                        <label class="permission-option">
+                                            <input type="checkbox">
+                                            تعديل
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span>متابعة القيادة الوسطى</span>
+                                    <div class="permission-options">
+                                        <label class="permission-option">
+                                            <input type="checkbox" checked>
+                                            معاينة
+                                        </label>
+                                        <label class="permission-option">
+                                            <input type="checkbox">
+                                            تعديل
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span>الزيارات الصفية</span>
+                                    <div class="permission-options">
+                                        <label class="permission-option">
+                                            <input type="checkbox" checked>
+                                            معاينة
+                                        </label>
+                                        <label class="permission-option">
+                                            <input type="checkbox" checked>
+                                            تعديل
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span>تقييم الأداء</span>
+                                    <div class="permission-options">
+                                        <label class="permission-option">
+                                            <input type="checkbox" checked>
+                                            معاينة
+                                        </label>
+                                        <label class="permission-option">
+                                            <input type="checkbox">
+                                            تعديل
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span>المعلمين المتميزين</span>
+                                    <div class="permission-options">
+                                        <label class="permission-option">
+                                            <input type="checkbox" checked>
+                                            معاينة
+                                        </label>
+                                        <label class="permission-option">
+                                            <input type="checkbox">
+                                            تعديل
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span>التقارير النوعية</span>
+                                    <div class="permission-options">
+                                        <label class="permission-option">
+                                            <input type="checkbox" checked>
+                                            معاينة
+                                        </label>
+                                        <label class="permission-option">
+                                            <input type="checkbox">
+                                            تعديل
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span>إدارة المستخدمين</span>
+                                    <div class="permission-options">
+                                        <label class="permission-option">
+                                            <input type="checkbox">
+                                            معاينة
+                                        </label>
+                                        <label class="permission-option">
+                                            <input type="checkbox">
+                                            تعديل
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span>الإعدادات</span>
+                                    <div class="permission-options">
+                                        <label class="permission-option">
+                                            <input type="checkbox">
+                                            معاينة
+                                        </label>
+                                        <label class="permission-option">
+                                            <input type="checkbox">
+                                            تعديل
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span>سجل النظام</span>
+                                    <div class="permission-options">
+                                        <label class="permission-option">
+                                            <input type="checkbox">
+                                            معاينة
+                                        </label>
+                                        <label class="permission-option">
+                                            <input type="checkbox">
+                                            تعديل
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="permission-category">
+                            <h4 class="permission-category-title">إدارة القيادة الوسطى</h4>
+                            <div class="permissions-grid">
+                                <div class="permission-item">
+                                    <span>لوحة التحكم</span>
+                                    <div class="permission-options">
+                                        <label class="permission-option">
+                                            <input type="checkbox" checked>
+                                            معاينة
+                                        </label>
+                                        <label class="permission-option">
+                                            <input type="checkbox">
+                                            تعديل
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span>متابعة القيادة الوسطى</span>
+                                    <div class="permission-options">
+                                        <label class="permission-option">
+                                            <input type="checkbox" checked>
+                                            معاينة
+                                        </label>
+                                        <label class="permission-option">
+                                            <input type="checkbox" checked>
+                                            تعديل
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span>الزيارات الصفية</span>
+                                    <div class="permission-options">
+                                        <label class="permission-option">
+                                            <input type="checkbox" checked>
+                                            معاينة
+                                        </label>
+                                        <label class="permission-option">
+                                            <input type="checkbox" checked>
+                                            تعديل
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span>تقييم الأداء</span>
+                                    <div class="permission-options">
+                                        <label class="permission-option">
+                                            <input type="checkbox" checked>
+                                            معاينة
+                                        </label>
+                                        <label class="permission-option">
+                                            <input type="checkbox">
+                                            تعديل
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span>المعلمين المتميزين</span>
+                                    <div class="permission-options">
+                                        <label class="permission-option">
+                                            <input type="checkbox" checked>
+                                            معاينة
+                                        </label>
+                                        <label class="permission-option">
+                                            <input type="checkbox">
+                                            تعديل
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span>التقارير النوعية</span>
+                                    <div class="permission-options">
+                                        <label class="permission-option">
+                                            <input type="checkbox" checked>
+                                            معاينة
+                                        </label>
+                                        <label class="permission-option">
+                                            <input type="checkbox">
+                                            تعديل
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span>إدارة المستخدمين</span>
+                                    <div class="permission-options">
+                                        <label class="permission-option">
+                                            <input type="checkbox">
+                                            معاينة
+                                        </label>
+                                        <label class="permission-option">
+                                            <input type="checkbox">
+                                            تعديل
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span>الإعدادات</span>
+                                    <div class="permission-options">
+                                        <label class="permission-option">
+                                            <input type="checkbox">
+                                            معاينة
+                                        </label>
+                                        <label class="permission-option">
+                                            <input type="checkbox">
+                                            تعديل
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <span>سجل النظام</span>
+                                    <div class="permission-options">
+                                        <label class="permission-option">
+                                            <input type="checkbox">
+                                            معاينة
+                                        </label>
+                                        <label class="permission-option">
+                                            <input type="checkbox">
+                                            تعديل
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="btn-group">
+                        <button class="btn" id="savePermissionsSettings">حفظ الإعدادات</button>
+                    </div>
+                </section>
+
+                <!-- System Logs Section -->
+                <section id="systemLogs" class="section">
+                    <div class="section-header">
+                        <h2 class="section-title">سجل النظام</h2>
+                    </div>
+                    
+                    <table class="logs-table">
+                        <thead>
+                            <tr>
+                                <th>اسم المستخدم</th>
+                                <th>التاريخ</th>
+                                <th>الوقت</th>
+                                <th>الملخص</th>
+                            </tr>
+                        </thead>
+                        <tbody id="systemLogsTable">
+                            <!-- سيتم ملؤها بالبيانات -->
+                        </tbody>
+                    </table>
                 </section>
             </div>
         </main>
@@ -1707,6 +2280,8 @@
                         teachers: { view: true, edit: true },
                         reports: { view: true, edit: true },
                         users: { view: true, edit: true },
+                        settings: { view: true, edit: true },
+                        systemLogs: { view: true, edit: true },
                         departments: {
                             'القيادة العليا': { view: true, edit: true },
                             'القيادة الوسطى': { view: true, edit: true }
@@ -1732,6 +2307,8 @@
                         teachers: { view: true, edit: false },
                         reports: { view: true, edit: false },
                         users: { view: false, edit: false },
+                        settings: { view: false, edit: false },
+                        systemLogs: { view: false, edit: false },
                         departments: {
                             'القيادة العليا': { view: true, edit: true },
                             'القيادة الوسطى': { view: false, edit: false }
@@ -1758,6 +2335,8 @@
                         teachers: { view: false, edit: false },
                         reports: { view: false, edit: false },
                         users: { view: false, edit: false },
+                        settings: { view: false, edit: false },
+                        systemLogs: { view: false, edit: false },
                         departments: {
                             'القيادة العليا': { view: false, edit: false },
                             'القيادة الوسطى': { view: false, edit: false }
@@ -1771,6 +2350,37 @@
                 { id: 3, name: 'اللغة الإنجليزية', status: 'active', order: 3 },
                 { id: 4, name: 'العلوم', status: 'active', order: 4 },
                 { id: 5, name: 'التربية الإسلامية', status: 'active', order: 5 }
+            ],
+            settings: {
+                schoolName: 'مدرسة النموذجية',
+                ministryLogo: '',
+                schoolLogo: ''
+            },
+            systemLogs: [
+                {
+                    id: 1,
+                    userId: 1,
+                    userName: 'مدير النظام',
+                    date: '2023-10-15',
+                    time: '10:30:25',
+                    action: 'تسجيل الدخول إلى النظام'
+                },
+                {
+                    id: 2,
+                    userId: 1,
+                    userName: 'مدير النظام',
+                    date: '2023-10-15',
+                    time: '10:35:42',
+                    action: 'إضافة مستخدم جديد: أحمد محمد علي'
+                },
+                {
+                    id: 3,
+                    userId: 1,
+                    userName: 'مدير النظام',
+                    date: '2023-10-15',
+                    time: '10:40:15',
+                    action: 'تعديل صلاحيات المستخدم: أحمد محمد علي'
+                }
             ],
             middleLeadership: [],
             visits: [],
@@ -1792,7 +2402,7 @@
             const savedUser = localStorage.getItem('currentUser');
             if (savedUser) {
                 const userData = JSON.parse(savedUser);
-                const user = appData.users.find(u => u.id === userData.id);
+                const user = appData.users.find(u => u.id === userData.id && u.username === userData.username);
                 if (user) {
                     appData.currentUser = user;
                     document.getElementById('loginPage').style.display = 'none';
@@ -1801,8 +2411,18 @@
                     document.getElementById('userAvatar').textContent = user.avatar;
                     
                     // إظهار أو إخفاء تبويب إدارة المستخدمين بناءً على الصلاحية
-                    if (user.role === 'admin') {
+                    if (user.permissions.users && user.permissions.users.view) {
                         document.getElementById('usersTab').style.display = 'block';
+                    }
+                    
+                    // إظهار أو إخفاء تبويب الإعدادات بناءً على الصلاحية
+                    if (user.permissions.settings && user.permissions.settings.view) {
+                        document.getElementById('settingsTab').style.display = 'block';
+                    }
+                    
+                    // إظهار أو إخفاء تبويب سجل النظام بناءً على الصلاحية
+                    if (user.permissions.systemLogs && user.permissions.systemLogs.view) {
+                        document.getElementById('systemLogsTab').style.display = 'block';
                     }
                     
                     renderData();
@@ -1833,6 +2453,12 @@
             
             // إعداد أقسام إدارة المستخدمين
             setupUserManagement();
+            
+            // إعداد الإعدادات
+            setupSettings();
+            
+            // إعداد سجل النظام
+            renderSystemLogs();
         });
 
         // تحميل البيانات من localStorage
@@ -1852,6 +2478,26 @@
         // حفظ البيانات إلى localStorage
         function saveDataToStorage() {
             localStorage.setItem('educationQualityData', JSON.stringify(appData));
+        }
+
+        // إضافة سجل للنظام
+        function addSystemLog(action) {
+            const now = new Date();
+            const date = now.toISOString().split('T')[0];
+            const time = now.toTimeString().split(' ')[0];
+            
+            const log = {
+                id: Math.max(...appData.systemLogs.map(l => l.id), 0) + 1,
+                userId: appData.currentUser.id,
+                userName: appData.currentUser.name,
+                date: date,
+                time: time,
+                action: action
+            };
+            
+            appData.systemLogs.unshift(log); // إضافة في البداية
+            saveDataToStorage();
+            renderSystemLogs();
         }
 
         // إعداد التوجيه حسب الهاش
@@ -1901,6 +2547,11 @@
             if (sectionId === 'performance') {
                 renderPerformanceChart();
             }
+            
+            // إذا كان قسم سجل النظام، عرض السجل
+            if (sectionId === 'systemLogs') {
+                renderSystemLogs();
+            }
         }
 
         // معالج تسجيل الدخول
@@ -1920,7 +2571,12 @@
                 
                 appData.currentUser = user;
                 // حفظ حالة تسجيل الدخول
-                localStorage.setItem('currentUser', JSON.stringify({ id: user.id }));
+                localStorage.setItem('currentUser', JSON.stringify({ 
+                    id: user.id, 
+                    username: user.username,
+                    name: user.name,
+                    role: user.role
+                }));
                 
                 document.getElementById('loginPage').style.display = 'none';
                 document.getElementById('app').style.display = 'block';
@@ -1928,11 +2584,24 @@
                 document.getElementById('userAvatar').textContent = user.avatar;
                 
                 // إظهار أو إخفاء تبويب إدارة المستخدمين بناءً على الصلاحية
-                if (user.role === 'admin') {
+                if (user.permissions.users && user.permissions.users.view) {
                     document.getElementById('usersTab').style.display = 'block';
                 }
                 
+                // إظهار أو إخفاء تبويب الإعدادات بناءً على الصلاحية
+                if (user.permissions.settings && user.permissions.settings.view) {
+                    document.getElementById('settingsTab').style.display = 'block';
+                }
+                
+                // إظهار أو إخفاء تبويب سجل النظام بناءً على الصلاحية
+                if (user.permissions.systemLogs && user.permissions.systemLogs.view) {
+                    document.getElementById('systemLogsTab').style.display = 'block';
+                }
+                
                 renderData();
+                
+                // إضافة سجل لتسجيل الدخول
+                addSystemLog('تسجيل الدخول إلى النظام');
                 
                 // التنقل إلى القسم الافتراضي
                 navigateToSection('dashboard');
@@ -1943,6 +2612,9 @@
 
         // معالج تسجيل الخروج
         function handleLogout() {
+            // إضافة سجل لتسجيل الخروج
+            addSystemLog('تسجيل الخروج من النظام');
+            
             appData.currentUser = null;
             localStorage.removeItem('currentUser');
             document.getElementById('loginPage').style.display = 'flex';
@@ -2045,6 +2717,19 @@
                 showAddUserModal('teacher');
             });
             
+            // إعداد أزرار إضافة المستخدمين من الحالات الفارغة
+            document.getElementById('addSeniorLeadershipEmpty').addEventListener('click', function() {
+                showAddUserModal('senior_leadership');
+            });
+            
+            document.getElementById('addMiddleLeadershipEmpty').addEventListener('click', function() {
+                showAddUserModal('middle_leadership');
+            });
+            
+            document.getElementById('addTeacherEmpty').addEventListener('click', function() {
+                showAddUserModal('teacher');
+            });
+            
             // إعداد أزرار التصدير
             document.getElementById('exportSeniorLeadership').addEventListener('click', function() {
                 exportUsersToCSV('senior_leadership');
@@ -2142,20 +2827,135 @@
             renderUserManagementTable('senior_leadership');
         }
 
+        // إعداد الإعدادات
+        function setupSettings() {
+            // تحميل اسم المدرسة
+            document.getElementById('schoolName').value = appData.settings.schoolName || '';
+            
+            // تحميل شعار الوزارة
+            if (appData.settings.ministryLogo) {
+                document.getElementById('ministryLogoPreview').style.display = 'block';
+                document.getElementById('ministryLogoPreview').querySelector('img').src = appData.settings.ministryLogo;
+                document.getElementById('ministryLogoUpload').style.display = 'none';
+            }
+            
+            // تحميل شعار المدرسة
+            if (appData.settings.schoolLogo) {
+                document.getElementById('schoolLogoPreview').style.display = 'block';
+                document.getElementById('schoolLogoPreview').querySelector('img').src = appData.settings.schoolLogo;
+                document.getElementById('schoolLogoUpload').style.display = 'none';
+            }
+            
+            // إعداد رفع شعار الوزارة
+            document.getElementById('ministryLogoUpload').addEventListener('click', function() {
+                document.getElementById('ministryLogoFile').click();
+            });
+            
+            document.getElementById('ministryLogoFile').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        appData.settings.ministryLogo = e.target.result;
+                        document.getElementById('ministryLogoPreview').style.display = 'block';
+                        document.getElementById('ministryLogoPreview').querySelector('img').src = e.target.result;
+                        document.getElementById('ministryLogoUpload').style.display = 'none';
+                        saveDataToStorage();
+                        addSystemLog('تم رفع شعار وزارة التربية والتعليم');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            document.getElementById('removeMinistryLogo').addEventListener('click', function() {
+                appData.settings.ministryLogo = '';
+                document.getElementById('ministryLogoPreview').style.display = 'none';
+                document.getElementById('ministryLogoUpload').style.display = 'block';
+                saveDataToStorage();
+                addSystemLog('تم إزالة شعار وزارة التربية والتعليم');
+            });
+            
+            // إعداد رفع شعار المدرسة
+            document.getElementById('schoolLogoUpload').addEventListener('click', function() {
+                document.getElementById('schoolLogoFile').click();
+            });
+            
+            document.getElementById('schoolLogoFile').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        appData.settings.schoolLogo = e.target.result;
+                        document.getElementById('schoolLogoPreview').style.display = 'block';
+                        document.getElementById('schoolLogoPreview').querySelector('img').src = e.target.result;
+                        document.getElementById('schoolLogoUpload').style.display = 'none';
+                        saveDataToStorage();
+                        addSystemLog('تم رفع شعار المدرسة');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            document.getElementById('removeSchoolLogo').addEventListener('click', function() {
+                appData.settings.schoolLogo = '';
+                document.getElementById('schoolLogoPreview').style.display = 'none';
+                document.getElementById('schoolLogoUpload').style.display = 'block';
+                saveDataToStorage();
+                addSystemLog('تم إزالة شعار المدرسة');
+            });
+            
+            // حفظ اسم المدرسة
+            document.getElementById('saveSchoolName').addEventListener('click', function() {
+                const schoolName = document.getElementById('schoolName').value;
+                if (schoolName) {
+                    appData.settings.schoolName = schoolName;
+                    saveDataToStorage();
+                    addSystemLog('تم تحديث اسم المدرسة: ' + schoolName);
+                    alert('تم حفظ اسم المدرسة بنجاح');
+                } else {
+                    alert('يرجى إدخال اسم المدرسة');
+                }
+            });
+            
+            // حفظ إعدادات الصلاحيات
+            document.getElementById('savePermissionsSettings').addEventListener('click', function() {
+                saveDataToStorage();
+                addSystemLog('تم تحديث إعدادات صلاحيات المستخدمين');
+                alert('تم حفظ إعدادات الصلاحيات بنجاح');
+            });
+        }
+
         // عرض جدول إدارة المستخدمين
         function renderUserManagementTable(role) {
             let tableId = '';
+            let emptyStateId = '';
             let users = [];
             
             if (role === 'senior_leadership') {
                 tableId = 'seniorLeadershipTable';
+                emptyStateId = 'seniorLeadershipEmpty';
                 users = appData.users.filter(user => user.role === 'senior_leadership');
             } else if (role === 'middle_leadership') {
                 tableId = 'middleLeadershipTable';
+                emptyStateId = 'middleLeadershipEmpty';
                 users = appData.users.filter(user => user.role === 'middle_leadership');
             } else if (role === 'teacher') {
                 tableId = 'teachersTable';
+                emptyStateId = 'teachersEmpty';
                 users = appData.users.filter(user => user.role === 'teacher');
+            }
+            
+            const table = document.getElementById(tableId);
+            const emptyState = document.getElementById(emptyStateId);
+            
+            // إظهار أو إخفاء الحالة الفارغة
+            if (users.length === 0) {
+                table.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            } else {
+                table.style.display = 'table';
+                emptyState.style.display = 'none';
             }
             
             // تطبيق الترتيب
@@ -2178,7 +2978,6 @@
                 }
             });
             
-            const table = document.getElementById(tableId);
             table.innerHTML = '';
             
             users.forEach((user, index) => {
@@ -2309,6 +3108,7 @@
             
             saveDataToStorage();
             renderUserManagementTable(role);
+            addSystemLog(`تم نقل المستخدم ${temp.name} لأعلى في ${getRoleName(role)}`);
         }
 
         // نقل مستخدم لأسفل
@@ -2325,6 +3125,7 @@
             
             saveDataToStorage();
             renderUserManagementTable(role);
+            addSystemLog(`تم نقل المستخدم ${temp.name} لأسفل في ${getRoleName(role)}`);
         }
 
         // منح إذن الوصول
@@ -2342,6 +3143,7 @@
             const activeSection = document.querySelector('#userSubTabs a.active').getAttribute('data-user-section');
             renderUserManagementTable(activeSection);
             
+            addSystemLog(`تم منح إذن الوصول للمستخدم ${user.name}`);
             alert('تم منح إذن الوصول بنجاح');
         }
 
@@ -2433,6 +3235,7 @@
                 
                 saveDataToStorage();
                 renderDepartmentsTable();
+                addSystemLog(`تم نقل قسم ${department.name} لأعلى`);
             }
         }
 
@@ -2453,6 +3256,7 @@
                 
                 saveDataToStorage();
                 renderDepartmentsTable();
+                addSystemLog(`تم نقل قسم ${department.name} لأسفل`);
             }
         }
 
@@ -2561,7 +3365,9 @@
                 if (confirm(`هل أنت متأكد من حذف ${userIds.length} مستخدم؟`)) {
                     userIds.forEach(userId => {
                         if (userId !== 1) { // منع حذف المستخدم الرئيسي
+                            const user = appData.users.find(u => u.id === userId);
                             appData.users = appData.users.filter(u => u.id !== userId);
+                            addSystemLog(`تم حذف المستخدم ${user.name}`);
                         }
                     });
                     saveDataToStorage();
@@ -2573,6 +3379,7 @@
                     const user = appData.users.find(u => u.id === userId);
                     if (user && userId !== 1) { // منع إلغاء تفعيل المستخدم الرئيسي
                         user.active = true;
+                        addSystemLog(`تم تفعيل المستخدم ${user.name}`);
                     }
                 });
                 saveDataToStorage();
@@ -2583,6 +3390,7 @@
                     const user = appData.users.find(u => u.id === userId);
                     if (user && userId !== 1) { // منع إلغاء تفعيل المستخدم الرئيسي
                         user.active = false;
+                        addSystemLog(`تم إلغاء تفعيل المستخدم ${user.name}`);
                     }
                 });
                 saveDataToStorage();
@@ -2672,6 +3480,8 @@
                             appData.users[userIndex].password = password;
                         }
                     }
+                    
+                    addSystemLog(`تم تعديل بيانات المستخدم ${name}`);
                 }
             } else {
                 // إضافة مستخدم جديد
@@ -2695,6 +3505,7 @@
                 }
                 
                 appData.users.push(newUser);
+                addSystemLog(`تم إضافة مستخدم جديد: ${name}`);
             }
             
             saveDataToStorage();
@@ -2766,6 +3577,7 @@
             }
             
             if (confirm('هل أنت متأكد من حذف هذا المستخدم؟')) {
+                const user = appData.users.find(u => u.id === userId);
                 appData.users = appData.users.filter(u => u.id !== userId);
                 saveDataToStorage();
                 
@@ -2773,6 +3585,7 @@
                 const activeSection = document.querySelector('#userSubTabs a.active').getAttribute('data-user-section');
                 renderUserManagementTable(activeSection);
                 
+                addSystemLog(`تم حذف المستخدم ${user.name}`);
                 alert('تم حذف المستخدم بنجاح');
             }
         }
@@ -2795,6 +3608,7 @@
             const activeSection = document.querySelector('#userSubTabs a.active').getAttribute('data-user-section');
             renderUserManagementTable(activeSection);
             
+            addSystemLog(`تم ${user.active ? 'تفعيل' : 'إلغاء تفعيل'} المستخدم ${user.name}`);
             alert(`تم ${user.active ? 'تفعيل' : 'إلغاء تفعيل'} المستخدم بنجاح`);
         }
 
@@ -2886,6 +3700,7 @@
             const activeSection = document.querySelector('#userSubTabs a.active').getAttribute('data-user-section');
             renderUserManagementTable(activeSection);
             
+            addSystemLog(`تم تحديث صلاحيات المستخدم ${user.name}`);
             alert('تم حفظ الصلاحيات بنجاح');
         }
 
@@ -2969,6 +3784,7 @@
                     const activeSection = document.querySelector('#userSubTabs a.active').getAttribute('data-user-section');
                     renderUserManagementTable(activeSection);
                     
+                    addSystemLog(`تم استيراد ${newUsers.length} مستخدم جديد من ملف CSV`);
                     alert(`تم استيراد ${newUsers.length} مستخدم جديد من ملف CSV`);
                 } catch (error) {
                     console.error('خطأ في معالجة ملف CSV:', error);
@@ -3021,6 +3837,8 @@
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+            
+            addSystemLog(`تم تصدير قائمة ${getRoleName(role)} إلى ملف CSV`);
         }
 
         // إنشاء اسم مستخدم تلقائي
@@ -3058,7 +3876,9 @@
                 'performance': 'تقييم الأداء',
                 'teachers': 'المعلمين المتميزين',
                 'reports': 'التقارير النوعية',
-                'users': 'إدارة المستخدمين'
+                'users': 'إدارة المستخدمين',
+                'settings': 'الإعدادات',
+                'systemLogs': 'سجل النظام'
             };
             return permissions[permission] || permission;
         }
@@ -3073,6 +3893,8 @@
                 teachers: { view: false, edit: false },
                 reports: { view: false, edit: false },
                 users: { view: false, edit: false },
+                settings: { view: false, edit: false },
+                systemLogs: { view: false, edit: false },
                 departments: {
                     'القيادة العليا': { view: false, edit: false },
                     'القيادة الوسطى': { view: false, edit: false }
@@ -3170,6 +3992,7 @@
                 if (departmentIndex !== -1) {
                     appData.departments[departmentIndex].name = name;
                     appData.departments[departmentIndex].status = status;
+                    addSystemLog(`تم تعديل القسم: ${name}`);
                 }
             } else {
                 // إضافة قسم جديد
@@ -3181,6 +4004,7 @@
                     order: maxOrder + 1
                 };
                 appData.departments.push(newDepartment);
+                addSystemLog(`تم إضافة قسم جديد: ${name}`);
             }
             
             saveDataToStorage();
@@ -3206,10 +4030,12 @@
         // حذف قسم
         function deleteDepartment(departmentId) {
             if (confirm('هل أنت متأكد من حذف هذا القسم؟')) {
+                const department = appData.departments.find(d => d.id === departmentId);
                 appData.departments = appData.departments.filter(d => d.id !== departmentId);
                 saveDataToStorage();
                 renderDepartmentsTable();
                 
+                addSystemLog(`تم حذف القسم: ${department.name}`);
                 alert('تم حذف القسم بنجاح');
             }
         }
@@ -3223,27 +4049,49 @@
             saveDataToStorage();
             renderDepartmentsTable();
             
+            addSystemLog(`تم ${department.status === 'active' ? 'تفعيل' : 'إلغاء تفعيل'} القسم: ${department.name}`);
             alert(`تم ${department.status === 'active' ? 'تفعيل' : 'إلغاء تفعيل'} القسم بنجاح`);
+        }
+
+        // عرض سجل النظام
+        function renderSystemLogs() {
+            const table = document.getElementById('systemLogsTable');
+            table.innerHTML = '';
+            
+            appData.systemLogs.forEach(log => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${log.userName}</td>
+                    <td>${log.date}</td>
+                    <td>${log.time}</td>
+                    <td>${log.action}</td>
+                `;
+                table.appendChild(row);
+            });
         }
 
         // دوال الحفظ للبيانات المختلفة
         function saveMiddleLeadership() {
             saveDataToStorage();
+            addSystemLog('تم حفظ بيانات متابعة القيادة الوسطى');
             alert('تم حفظ بيانات القيادة الوسطى بنجاح');
         }
 
         function savePerformance() {
             saveDataToStorage();
+            addSystemLog('تم حفظ بيانات تقييم الأداء');
             alert('تم حفظ بيانات التقييم بنجاح');
         }
 
         function saveTeachers() {
             saveDataToStorage();
+            addSystemLog('تم حفظ بيانات المعلمين المتميزين والأولى بالرعاية');
             alert('تم حفظ بيانات المعلمين بنجاح');
         }
 
         function saveReports() {
             saveDataToStorage();
+            addSystemLog('تم حفظ بيانات التقارير النوعية');
             alert('تم حفظ بيانات التقارير بنجاح');
         }
 
@@ -3723,6 +4571,7 @@
                         visitor: visitorName,
                         notes
                     };
+                    addSystemLog(`تم تعديل زيارة صفية للمعلم ${teacherName}`);
                 }
             } else {
                 // إضافة زيارة جديدة
@@ -3736,6 +4585,7 @@
                     notes
                 };
                 appData.visits.push(newVisit);
+                addSystemLog(`تم إضافة زيارة صفية جديدة للمعلم ${teacherName}`);
             }
             
             saveDataToStorage();
@@ -3785,6 +4635,7 @@
         // حذف زيارة
         function deleteVisit(visitId) {
             if (confirm('هل أنت متأكد من حذف هذه الزيارة؟')) {
+                const visit = appData.visits.find(v => v.id === visitId);
                 appData.visits = appData.visits.filter(v => v.id !== visitId);
                 saveDataToStorage();
                 
@@ -3795,6 +4646,7 @@
                 // تحديث لوحة التحكم
                 renderDashboard();
                 
+                addSystemLog(`تم حذف زيارة صفية للمعلم ${visit.teacher}`);
                 alert('تم حذف الزيارة بنجاح');
             }
         }
