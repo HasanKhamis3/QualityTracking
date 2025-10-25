@@ -1514,6 +1514,7 @@
                         <ul class="user-sub-tabs" id="userSubTabs">
                             <li><a href="#" data-user-section="senior_leadership" class="active">القيادة العليا</a></li>
                             <li><a href="#" data-user-section="middle_leadership">القيادة الوسطى</a></li>
+                            <li><a href="#" data-user-section="middle_leadership_1">القيادة الوسطى ١</a></li>
                             <li><a href="#" data-user-section="teacher">المعلمات</a></li>
                             <li><a href="#" data-user-section="departments">أقسام المواد</a></li>
                         </ul>
@@ -1610,6 +1611,52 @@
                             </div>
                         </div>
                         
+                        <!-- قسم القيادة الوسطى ١ -->
+                        <div id="middle_leadership_1" class="user-management-section">
+                            <div class="user-management-header">
+                                <h3 class="user-management-title">إدارة القيادة الوسطى ١</h3>
+                                <div class="user-management-actions">
+                                    <button class="btn" id="addMiddleLeadership1">إضافة اسم جديد</button>
+                                    <button class="btn btn-secondary" id="exportMiddleLeadership1">تصدير CSV</button>
+                                    <button class="btn btn-secondary" id="importMiddleLeadership1">استيراد CSV</button>
+                                    <input type="file" id="middleLeadership1File" accept=".csv" style="display: none;">
+                                </div>
+                            </div>
+                            
+                            <div class="table-header-actions">
+                                <div class="bulk-actions">
+                                    <button class="btn btn-sm btn-danger" id="deleteSelectedMiddle1">حذف المحددين</button>
+                                    <button class="btn btn-sm btn-warning" id="toggleSelectedMiddle1">تفعيل/إلغاء المحددين</button>
+                                    <label class="select-all-checkbox">
+                                        <input type="checkbox" id="selectAllMiddle1"> تحديد الكل
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <table class="user-table">
+                                <thead>
+                                    <tr>
+                                        <th><input type="checkbox" id="selectAllMiddle1Header"></th>
+                                        <th>الترتيب</th>
+                                        <th>الاسم</th>
+                                        <th>الوظيفة</th>
+                                        <th>الهاتف</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="middleLeadership1Table">
+                                    <!-- سيتم ملؤها بالبيانات -->
+                                </tbody>
+                            </table>
+                            
+                            <div id="middleLeadership1Empty" class="empty-state" style="display: none;">
+                                <i class="fas fa-users"></i>
+                                <h3>لا توجد بيانات</h3>
+                                <p>لم يتم إضافة أي مستخدمين في القيادة الوسطى ١ بعد</p>
+                                <button class="btn" id="addMiddleLeadership1Empty">إضافة اسم جديد</button>
+                            </div>
+                        </div>
+                        
                         <!-- قسم المعلمات -->
                         <div id="teacher" class="user-management-section">
                             <div class="user-management-header">
@@ -1664,11 +1711,21 @@
                                 </div>
                             </div>
                             
+                            <div class="table-header-actions">
+                                <div class="bulk-actions">
+                                    <button class="btn btn-sm btn-danger" id="deleteSelectedDepartments">حذف المحددين</button>
+                                    <button class="btn btn-sm btn-warning" id="toggleSelectedDepartments">تفعيل/إلغاء المحددين</button>
+                                    <label class="select-all-checkbox">
+                                        <input type="checkbox" id="selectAllDepartments"> تحديد الكل
+                                    </label>
+                                </div>
+                            </div>
+                            
                             <table class="departments-table">
                                 <thead>
                                     <tr>
+                                        <th><input type="checkbox" id="selectAllDepartmentsHeader"></th>
                                         <th>الترتيب</th>
-                                        <th>الترتيب التفصيلي</th>
                                         <th>اسم القسم / المادة</th>
                                         <th>الحالة</th>
                                         <th>الإجراءات</th>
@@ -1678,6 +1735,13 @@
                                     <!-- سيتم ملؤها بالبيانات -->
                                 </tbody>
                             </table>
+                            
+                            <div id="departmentsEmpty" class="empty-state" style="display: none;">
+                                <i class="fas fa-book"></i>
+                                <h3>لا توجد بيانات</h3>
+                                <p>لم يتم إضافة أي أقسام بعد</p>
+                                <button class="btn" id="addDepartmentEmpty">إضافة قسم جديد</button>
+                            </div>
                         </div>
                     </div>
                     
@@ -1894,7 +1958,8 @@
                         systemLogs: { view: true, edit: true },
                         departments: {
                             'القيادة العليا': { view: true, edit: true },
-                            'القيادة الوسطى': { view: true, edit: true }
+                            'القيادة الوسطى': { view: true, edit: true },
+                            'القيادة الوسطى ١': { view: true, edit: true }
                         }
                     }
                 }
@@ -2245,6 +2310,10 @@
                 showAddUserModal('middle_leadership');
             });
             
+            document.getElementById('addMiddleLeadership1').addEventListener('click', function() {
+                showAddUserModal('middle_leadership_1');
+            });
+            
             document.getElementById('addTeacher').addEventListener('click', function() {
                 showAddUserModal('teacher');
             });
@@ -2258,8 +2327,16 @@
                 showAddUserModal('middle_leadership');
             });
             
+            document.getElementById('addMiddleLeadership1Empty').addEventListener('click', function() {
+                showAddUserModal('middle_leadership_1');
+            });
+            
             document.getElementById('addTeacherEmpty').addEventListener('click', function() {
                 showAddUserModal('teacher');
+            });
+            
+            document.getElementById('addDepartmentEmpty').addEventListener('click', function() {
+                showAddDepartmentModal();
             });
             
             // إعداد أزرار التصدير
@@ -2269,6 +2346,10 @@
             
             document.getElementById('exportMiddleLeadership').addEventListener('click', function() {
                 exportUsersToCSV('middle_leadership');
+            });
+            
+            document.getElementById('exportMiddleLeadership1').addEventListener('click', function() {
+                exportUsersToCSV('middle_leadership_1');
             });
             
             document.getElementById('exportTeachers').addEventListener('click', function() {
@@ -2284,6 +2365,10 @@
                 document.getElementById('middleLeadershipFile').click();
             });
             
+            document.getElementById('importMiddleLeadership1').addEventListener('click', function() {
+                document.getElementById('middleLeadership1File').click();
+            });
+            
             document.getElementById('importTeachers').addEventListener('click', function() {
                 document.getElementById('teachersFile').click();
             });
@@ -2291,6 +2376,7 @@
             // معالجة اختيار الملفات
             document.getElementById('seniorLeadershipFile').addEventListener('change', handleCSVUpload);
             document.getElementById('middleLeadershipFile').addEventListener('change', handleCSVUpload);
+            document.getElementById('middleLeadership1File').addEventListener('change', handleCSVUpload);
             document.getElementById('teachersFile').addEventListener('change', handleCSVUpload);
             
             // إعداد نموذج إضافة/تعديل المستخدم
@@ -2436,6 +2522,20 @@
                 toggleSelectAll('middle_leadership', this.checked);
             });
             
+            // القيادة الوسطى ١
+            document.getElementById('deleteSelectedMiddle1').addEventListener('click', function() {
+                deleteSelectedUsers('middle_leadership_1');
+            });
+            document.getElementById('toggleSelectedMiddle1').addEventListener('click', function() {
+                toggleSelectedUsers('middle_leadership_1');
+            });
+            document.getElementById('selectAllMiddle1').addEventListener('change', function() {
+                toggleSelectAll('middle_leadership_1', this.checked);
+            });
+            document.getElementById('selectAllMiddle1Header').addEventListener('change', function() {
+                toggleSelectAll('middle_leadership_1', this.checked);
+            });
+            
             // المعلمات
             document.getElementById('deleteSelectedTeachers').addEventListener('click', function() {
                 deleteSelectedUsers('teacher');
@@ -2449,12 +2549,27 @@
             document.getElementById('selectAllTeachersHeader').addEventListener('change', function() {
                 toggleSelectAll('teacher', this.checked);
             });
+            
+            // أقسام المواد
+            document.getElementById('deleteSelectedDepartments').addEventListener('click', function() {
+                deleteSelectedDepartments();
+            });
+            document.getElementById('toggleSelectedDepartments').addEventListener('click', function() {
+                toggleSelectedDepartments();
+            });
+            document.getElementById('selectAllDepartments').addEventListener('change', function() {
+                toggleSelectAllDepartments(this.checked);
+            });
+            document.getElementById('selectAllDepartmentsHeader').addEventListener('change', function() {
+                toggleSelectAllDepartments(this.checked);
+            });
         }
 
         // عرض جداول المستخدمين
         function renderUserTables() {
             renderSeniorLeadershipTable();
             renderMiddleLeadershipTable();
+            renderMiddleLeadership1Table();
             renderTeachersTable();
         }
 
@@ -2560,6 +2675,58 @@
             
             // إعداد معالجي الأحداث
             setupUserTableEventHandlers('middle_leadership');
+        }
+
+        // عرض جدول القيادة الوسطى ١
+        function renderMiddleLeadership1Table() {
+            const table = document.getElementById('middleLeadership1Table');
+            const emptyState = document.getElementById('middleLeadership1Empty');
+            
+            const middle1Users = appData.users.filter(user => user.role === 'middle_leadership_1');
+            
+            if (middle1Users.length === 0) {
+                table.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            table.innerHTML = '';
+            
+            // ترتيب المستخدمين حسب الترتيب المخصص
+            const sortedUsers = [...middle1Users].sort((a, b) => (a.order || 0) - (b.order || 0));
+            
+            sortedUsers.forEach((user, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><input type="checkbox" class="user-checkbox" data-id="${user.id}"></td>
+                    <td>
+                        <div class="order-controls">
+                            <button class="order-btn move-up" data-id="${user.id}"><i class="fas fa-chevron-up"></i></button>
+                            <span>${index + 1}</span>
+                            <button class="order-btn move-down" data-id="${user.id}"><i class="fas fa-chevron-down"></i></button>
+                        </div>
+                    </td>
+                    <td>${user.name}</td>
+                    <td>${user.position || ''}</td>
+                    <td>${user.phone || ''}</td>
+                    <td>
+                        <div class="user-actions">
+                            <button class="btn btn-xs btn-warning preview-user" data-id="${user.id}">معاينة</button>
+                            <button class="btn btn-xs btn-secondary edit-user" data-id="${user.id}">تعديل</button>
+                            <button class="btn btn-xs btn-danger delete-user" data-id="${user.id}">حذف</button>
+                            <button class="btn btn-xs ${user.active ? 'btn-warning' : 'btn-success'} toggle-user" data-id="${user.id}">
+                                ${user.active ? 'إلغاء التفعيل' : 'تفعيل'}
+                            </button>
+                            <button class="btn btn-xs btn-primary permissions-user" data-id="${user.id}">الصلاحيات</button>
+                        </div>
+                    </td>
+                `;
+                table.appendChild(row);
+            });
+            
+            // إعداد معالجي الأحداث
+            setupUserTableEventHandlers('middle_leadership_1');
         }
 
         // عرض جدول المعلمات
@@ -2817,16 +2984,31 @@
         // عرض جدول أقسام المواد
         function renderDepartmentsTable() {
             const table = document.getElementById('departmentsTable');
-            table.innerHTML = '';
+            const emptyState = document.getElementById('departmentsEmpty');
             
             // ترتيب الأقسام حسب الترتيب المحدد
             const sortedDepartments = [...appData.departments].sort((a, b) => a.order - b.order);
             
+            if (sortedDepartments.length === 0) {
+                table.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            table.innerHTML = '';
+            
             sortedDepartments.forEach((department, index) => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${department.order}</td>
+                    <td><input type="checkbox" class="department-checkbox" data-id="${department.id}"></td>
+                    <td>
+                        <div class="order-controls">
+                            <button class="order-btn move-up-department" data-id="${department.id}"><i class="fas fa-chevron-up"></i></button>
+                            <span>${index + 1}</span>
+                            <button class="order-btn move-down-department" data-id="${department.id}"><i class="fas fa-chevron-down"></i></button>
+                        </div>
+                    </td>
                     <td>${department.name}</td>
                     <td>
                         <span class="status-badge ${department.status === 'active' ? 'status-active' : 'status-inactive'}">
@@ -2872,6 +3054,125 @@
                     toggleDepartment(departmentId);
                 });
             });
+            
+            document.querySelectorAll('.move-up-department').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const departmentId = parseInt(this.getAttribute('data-id'));
+                    moveDepartmentUp(departmentId);
+                });
+            });
+            
+            document.querySelectorAll('.move-down-department').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const departmentId = parseInt(this.getAttribute('data-id'));
+                    moveDepartmentDown(departmentId);
+                });
+            });
+            
+            document.querySelectorAll('.department-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    updateSelectAllDepartmentsState();
+                });
+            });
+        }
+
+        // نقل قسم لأعلى
+        function moveDepartmentUp(departmentId) {
+            const departmentIndex = appData.departments.findIndex(d => d.id === departmentId);
+            
+            if (departmentIndex > 0) {
+                // تبادل الترتيب مع القسم الذي قبله
+                const tempOrder = appData.departments[departmentIndex].order;
+                appData.departments[departmentIndex].order = appData.departments[departmentIndex - 1].order;
+                appData.departments[departmentIndex - 1].order = tempOrder;
+                
+                saveDataToStorage();
+                renderDepartmentsTable();
+                addSystemLog(`تم تغيير ترتيب القسم: ${appData.departments[departmentIndex].name}`);
+            }
+        }
+
+        // نقل قسم لأسفل
+        function moveDepartmentDown(departmentId) {
+            const departmentIndex = appData.departments.findIndex(d => d.id === departmentId);
+            
+            if (departmentIndex < appData.departments.length - 1) {
+                // تبادل الترتيب مع القسم الذي بعده
+                const tempOrder = appData.departments[departmentIndex].order;
+                appData.departments[departmentIndex].order = appData.departments[departmentIndex + 1].order;
+                appData.departments[departmentIndex + 1].order = tempOrder;
+                
+                saveDataToStorage();
+                renderDepartmentsTable();
+                addSystemLog(`تم تغيير ترتيب القسم: ${appData.departments[departmentIndex].name}`);
+            }
+        }
+
+        // تحديد/إلغاء تحديد جميع الأقسام
+        function toggleSelectAllDepartments(checked) {
+            document.querySelectorAll('#departmentsTable .department-checkbox').forEach(checkbox => {
+                checkbox.checked = checked;
+            });
+            
+            document.getElementById('selectAllDepartments').checked = checked;
+            document.getElementById('selectAllDepartmentsHeader').checked = checked;
+        }
+
+        // تحديث حالة تحديد الكل للأقسام
+        function updateSelectAllDepartmentsState() {
+            const checkboxes = document.querySelectorAll('#departmentsTable .department-checkbox');
+            const allChecked = checkboxes.length > 0 && Array.from(checkboxes).every(checkbox => checkbox.checked);
+            
+            document.getElementById('selectAllDepartments').checked = allChecked;
+            document.getElementById('selectAllDepartmentsHeader').checked = allChecked;
+        }
+
+        // حذف الأقسام المحددة
+        function deleteSelectedDepartments() {
+            const selectedCheckboxes = document.querySelectorAll('#departmentsTable .department-checkbox:checked');
+            
+            if (selectedCheckboxes.length === 0) {
+                alert('يرجى تحديد أقسام لحذفها');
+                return;
+            }
+            
+            if (confirm(`هل أنت متأكد من حذف ${selectedCheckboxes.length} قسم؟`)) {
+                const selectedIds = Array.from(selectedCheckboxes).map(checkbox => parseInt(checkbox.getAttribute('data-id')));
+                
+                // حذف الأقسام المحددة
+                appData.departments = appData.departments.filter(department => !selectedIds.includes(department.id));
+                saveDataToStorage();
+                
+                addSystemLog(`تم حذف ${selectedIds.length} قسم`);
+                renderDepartmentsTable();
+                alert(`تم حذف ${selectedIds.length} قسم بنجاح`);
+            }
+        }
+
+        // تفعيل/إلغاء تفعيل الأقسام المحددة
+        function toggleSelectedDepartments() {
+            const selectedCheckboxes = document.querySelectorAll('#departmentsTable .department-checkbox:checked');
+            
+            if (selectedCheckboxes.length === 0) {
+                alert('يرجى تحديد أقسام لتغيير حالتها');
+                return;
+            }
+            
+            const selectedIds = Array.from(selectedCheckboxes).map(checkbox => parseInt(checkbox.getAttribute('data-id')));
+            
+            // تغيير حالة الأقسام المحددة
+            selectedIds.forEach(departmentId => {
+                const department = appData.departments.find(d => d.id === departmentId);
+                if (department) {
+                    department.status = department.status === 'active' ? 'inactive' : 'active';
+                }
+            });
+            
+            saveDataToStorage();
+            
+            addSystemLog(`تم ${selectedIds[0] ? 'تفعيل/إلغاء تفعيل' : 'تغيير حالة'} ${selectedIds.length} قسم`);
+            renderDepartmentsTable();
+            alert(`تم ${selectedIds[0] ? 'تفعيل/إلغاء تفعيل' : 'تغيير حالة'} ${selectedIds.length} قسم بنجاح`);
         }
 
         // عرض نموذج إضافة مستخدم
@@ -2927,6 +3228,19 @@
             const password = document.getElementById('userPassword').value;
             const avatar = name.charAt(0);
             const department = role === 'teacher' ? document.getElementById('userDepartment').value : '';
+            
+            // التحقق من عدم تكرار المستخدم
+            if (!userId) {
+                const existingUser = appData.users.find(u => 
+                    (u.name === name && u.role === role) || 
+                    (username && u.username === username)
+                );
+                
+                if (existingUser) {
+                    alert('هذا المستخدم موجود مسبقاً. يرجى استخدام اسم أو اسم مستخدم مختلف.');
+                    return;
+                }
+            }
             
             if (userId) {
                 // تعديل مستخدم موجود
@@ -3174,6 +3488,8 @@
                 userRole = 'senior_leadership';
             } else if (fileType === 'middleLeadershipFile') {
                 userRole = 'middle_leadership';
+            } else if (fileType === 'middleLeadership1File') {
+                userRole = 'middle_leadership_1';
             } else if (fileType === 'teachersFile') {
                 userRole = 'teacher';
             }
@@ -3201,7 +3517,7 @@
                         let position = '';
                         let phone = '';
                         
-                        if (userRole === 'senior_leadership' || userRole === 'middle_leadership') {
+                        if (userRole === 'senior_leadership' || userRole === 'middle_leadership' || userRole === 'middle_leadership_1') {
                             position = cols[2]?.trim() || 'موظف';
                             phone = cols[3]?.trim() || '';
                         } else if (userRole === 'teacher') {
@@ -3271,6 +3587,9 @@
             } else if (role === 'middle_leadership') {
                 csvContent = BOM + 'الترتيب,الاسم,الوظيفة,رقم الهاتف\n';
                 fileName = 'قائمة_القيادة_الوسطى.csv';
+            } else if (role === 'middle_leadership_1') {
+                csvContent = BOM + 'الترتيب,الاسم,الوظيفة,رقم الهاتف\n';
+                fileName = 'قائمة_القيادة_الوسطى_١.csv';
             } else if (role === 'teacher') {
                 csvContent = BOM + 'الترتيب,الاسم,القسم\n';
                 fileName = 'قائمة_المعلمات.csv';
@@ -3322,7 +3641,8 @@
                 'supervisor': 'مشرف',
                 'teacher': 'معلم',
                 'senior_leadership': 'القيادة العليا',
-                'middle_leadership': 'القيادة الوسطى'
+                'middle_leadership': 'القيادة الوسطى',
+                'middle_leadership_1': 'القيادة الوسطى ١'
             };
             return roles[role] || role;
         }
@@ -3357,7 +3677,8 @@
                 systemLogs: { view: false, edit: false },
                 departments: {
                     'القيادة العليا': { view: false, edit: false },
-                    'القيادة الوسطى': { view: false, edit: false }
+                    'القيادة الوسطى': { view: false, edit: false },
+                    'القيادة الوسطى ١': { view: false, edit: false }
                 }
             };
             
@@ -3377,6 +3698,11 @@
                 basePermissions.dashboard = { view: true, edit: false };
                 basePermissions.visits = { view: true, edit: true };
                 basePermissions.departments['القيادة العليا'] = { view: true, edit: true };
+            } else if (role === 'middle_leadership' || role === 'middle_leadership_1') {
+                // القيادة الوسطى لديها صلاحيات محدودة
+                basePermissions.dashboard = { view: true, edit: false };
+                basePermissions.visits = { view: true, edit: true };
+                basePermissions.departments[role === 'middle_leadership' ? 'القيادة الوسطى' : 'القيادة الوسطى ١'] = { view: true, edit: true };
             }
             
             return basePermissions;
