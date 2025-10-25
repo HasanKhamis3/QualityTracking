@@ -750,13 +750,13 @@
         /* تخصيص أعمدة الجدول */
         .user-table th:nth-child(1),
         .user-table td:nth-child(1) {
-            width: 60px; /* الترتيب */
+            width: 60px; /* التحديد */
             text-align: center;
         }
         
         .user-table th:nth-child(2),
         .user-table td:nth-child(2) {
-            width: 80px; /* التصنيف */
+            width: 60px; /* الترتيب */
             text-align: center;
         }
         
@@ -783,29 +783,29 @@
         /* جدول المعلمات بدون رقم الهاتف */
         .teachers-table th:nth-child(1),
         .teachers-table td:nth-child(1) {
-            width: 60px;
+            width: 60px; /* التحديد */
             text-align: center;
         }
         
         .teachers-table th:nth-child(2),
         .teachers-table td:nth-child(2) {
-            width: 80px;
+            width: 60px; /* الترتيب */
             text-align: center;
         }
         
         .teachers-table th:nth-child(3),
         .teachers-table td:nth-child(3) {
-            width: 200px;
+            width: 200px; /* الاسم */
         }
         
         .teachers-table th:nth-child(4),
         .teachers-table td:nth-child(4) {
-            width: 150px;
+            width: 150px; /* القسم/المادة */
         }
         
         .teachers-table th:nth-child(5),
         .teachers-table td:nth-child(5) {
-            width: 200px;
+            width: 200px; /* الإجراءات */
         }
 
         /* الأنماط الجديدة */
@@ -1530,7 +1530,33 @@
                                 </div>
                             </div>
                             
-                            <div id="seniorLeadershipEmpty" class="empty-state">
+                            <div class="table-header-actions">
+                                <div class="bulk-actions">
+                                    <button class="btn btn-sm btn-danger" id="deleteSelectedSenior">حذف المحددين</button>
+                                    <button class="btn btn-sm btn-warning" id="toggleSelectedSenior">تفعيل/إلغاء المحددين</button>
+                                    <label class="select-all-checkbox">
+                                        <input type="checkbox" id="selectAllSenior"> تحديد الكل
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <table class="user-table">
+                                <thead>
+                                    <tr>
+                                        <th><input type="checkbox" id="selectAllSeniorHeader"></th>
+                                        <th>الترتيب</th>
+                                        <th>الاسم</th>
+                                        <th>الوظيفة</th>
+                                        <th>الهاتف</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="seniorLeadershipTable">
+                                    <!-- سيتم ملؤها بالبيانات -->
+                                </tbody>
+                            </table>
+                            
+                            <div id="seniorLeadershipEmpty" class="empty-state" style="display: none;">
                                 <i class="fas fa-users"></i>
                                 <h3>لا توجد بيانات</h3>
                                 <p>لم يتم إضافة أي مستخدمين في القيادة العليا بعد</p>
@@ -1550,7 +1576,33 @@
                                 </div>
                             </div>
                             
-                            <div id="middleLeadershipEmpty" class="empty-state">
+                            <div class="table-header-actions">
+                                <div class="bulk-actions">
+                                    <button class="btn btn-sm btn-danger" id="deleteSelectedMiddle">حذف المحددين</button>
+                                    <button class="btn btn-sm btn-warning" id="toggleSelectedMiddle">تفعيل/إلغاء المحددين</button>
+                                    <label class="select-all-checkbox">
+                                        <input type="checkbox" id="selectAllMiddle"> تحديد الكل
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <table class="user-table">
+                                <thead>
+                                    <tr>
+                                        <th><input type="checkbox" id="selectAllMiddleHeader"></th>
+                                        <th>الترتيب</th>
+                                        <th>الاسم</th>
+                                        <th>الوظيفة</th>
+                                        <th>الهاتف</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="middleLeadershipTable">
+                                    <!-- سيتم ملؤها بالبيانات -->
+                                </tbody>
+                            </table>
+                            
+                            <div id="middleLeadershipEmpty" class="empty-state" style="display: none;">
                                 <i class="fas fa-users"></i>
                                 <h3>لا توجد بيانات</h3>
                                 <p>لم يتم إضافة أي مستخدمين في القيادة الوسطى بعد</p>
@@ -1570,7 +1622,32 @@
                                 </div>
                             </div>
                             
-                            <div id="teachersEmpty" class="empty-state">
+                            <div class="table-header-actions">
+                                <div class="bulk-actions">
+                                    <button class="btn btn-sm btn-danger" id="deleteSelectedTeachers">حذف المحددين</button>
+                                    <button class="btn btn-sm btn-warning" id="toggleSelectedTeachers">تفعيل/إلغاء المحددين</button>
+                                    <label class="select-all-checkbox">
+                                        <input type="checkbox" id="selectAllTeachers"> تحديد الكل
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <table class="user-table teachers-table">
+                                <thead>
+                                    <tr>
+                                        <th><input type="checkbox" id="selectAllTeachersHeader"></th>
+                                        <th>الترتيب</th>
+                                        <th>الاسم</th>
+                                        <th>القسم/المادة</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="teachersTable">
+                                    <!-- سيتم ملؤها بالبيانات -->
+                                </tbody>
+                            </table>
+                            
+                            <div id="teachersEmpty" class="empty-state" style="display: none;">
                                 <i class="fas fa-users"></i>
                                 <h3>لا توجد بيانات</h3>
                                 <p>لم يتم إضافة أي معلمات بعد</p>
@@ -1868,7 +1945,7 @@
                     
                     renderData();
                     
-                    // التنقل إلى القسم المحفوظ
+                    // التنقل إلى القسم المحفوظ أو لوحة التحكم
                     const savedSection = localStorage.getItem('currentSection') || 'dashboard';
                     navigateToSection(savedSection);
                 }
@@ -1986,6 +2063,9 @@
                 renderSettingsSection('general_settings');
                 renderDepartmentsTable();
                 renderSystemLogs();
+                
+                // عرض جداول المستخدمين
+                renderUserTables();
             }
             
             // إذا كان قسم تقييم الأداء، عرض الرسم البياني
@@ -2122,7 +2202,7 @@
                     
                     // عرض المحتوى المناسب
                     if (sectionId === 'user_management') {
-                        renderDepartmentsTable();
+                        renderUserTables();
                     } else if (sectionId === 'system_logs') {
                         renderSystemLogs();
                     }
@@ -2150,6 +2230,8 @@
                     // عرض المحتوى المناسب
                     if (sectionId === 'departments') {
                         renderDepartmentsTable();
+                    } else {
+                        renderUserTables();
                     }
                 });
             });
@@ -2319,6 +2401,400 @@
             
             // عرض القسم الافتراضي (الإعدادات العامة)
             renderSettingsSection('general_settings');
+            
+            // إعداد أزرار الإجراءات الجماعية
+            setupBulkActions();
+        }
+
+        // إعداد أزرار الإجراءات الجماعية
+        function setupBulkActions() {
+            // القيادة العليا
+            document.getElementById('deleteSelectedSenior').addEventListener('click', function() {
+                deleteSelectedUsers('senior_leadership');
+            });
+            document.getElementById('toggleSelectedSenior').addEventListener('click', function() {
+                toggleSelectedUsers('senior_leadership');
+            });
+            document.getElementById('selectAllSenior').addEventListener('change', function() {
+                toggleSelectAll('senior_leadership', this.checked);
+            });
+            document.getElementById('selectAllSeniorHeader').addEventListener('change', function() {
+                toggleSelectAll('senior_leadership', this.checked);
+            });
+            
+            // القيادة الوسطى
+            document.getElementById('deleteSelectedMiddle').addEventListener('click', function() {
+                deleteSelectedUsers('middle_leadership');
+            });
+            document.getElementById('toggleSelectedMiddle').addEventListener('click', function() {
+                toggleSelectedUsers('middle_leadership');
+            });
+            document.getElementById('selectAllMiddle').addEventListener('change', function() {
+                toggleSelectAll('middle_leadership', this.checked);
+            });
+            document.getElementById('selectAllMiddleHeader').addEventListener('change', function() {
+                toggleSelectAll('middle_leadership', this.checked);
+            });
+            
+            // المعلمات
+            document.getElementById('deleteSelectedTeachers').addEventListener('click', function() {
+                deleteSelectedUsers('teacher');
+            });
+            document.getElementById('toggleSelectedTeachers').addEventListener('click', function() {
+                toggleSelectedUsers('teacher');
+            });
+            document.getElementById('selectAllTeachers').addEventListener('change', function() {
+                toggleSelectAll('teacher', this.checked);
+            });
+            document.getElementById('selectAllTeachersHeader').addEventListener('change', function() {
+                toggleSelectAll('teacher', this.checked);
+            });
+        }
+
+        // عرض جداول المستخدمين
+        function renderUserTables() {
+            renderSeniorLeadershipTable();
+            renderMiddleLeadershipTable();
+            renderTeachersTable();
+        }
+
+        // عرض جدول القيادة العليا
+        function renderSeniorLeadershipTable() {
+            const table = document.getElementById('seniorLeadershipTable');
+            const emptyState = document.getElementById('seniorLeadershipEmpty');
+            
+            const seniorUsers = appData.users.filter(user => user.role === 'senior_leadership');
+            
+            if (seniorUsers.length === 0) {
+                table.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            table.innerHTML = '';
+            
+            // ترتيب المستخدمين حسب الترتيب المخصص
+            const sortedUsers = [...seniorUsers].sort((a, b) => (a.order || 0) - (b.order || 0));
+            
+            sortedUsers.forEach((user, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><input type="checkbox" class="user-checkbox" data-id="${user.id}"></td>
+                    <td>
+                        <div class="order-controls">
+                            <button class="order-btn move-up" data-id="${user.id}"><i class="fas fa-chevron-up"></i></button>
+                            <span>${index + 1}</span>
+                            <button class="order-btn move-down" data-id="${user.id}"><i class="fas fa-chevron-down"></i></button>
+                        </div>
+                    </td>
+                    <td>${user.name}</td>
+                    <td>${user.position || ''}</td>
+                    <td>${user.phone || ''}</td>
+                    <td>
+                        <div class="user-actions">
+                            <button class="btn btn-xs btn-warning preview-user" data-id="${user.id}">معاينة</button>
+                            <button class="btn btn-xs btn-secondary edit-user" data-id="${user.id}">تعديل</button>
+                            <button class="btn btn-xs btn-danger delete-user" data-id="${user.id}">حذف</button>
+                            <button class="btn btn-xs ${user.active ? 'btn-warning' : 'btn-success'} toggle-user" data-id="${user.id}">
+                                ${user.active ? 'إلغاء التفعيل' : 'تفعيل'}
+                            </button>
+                            <button class="btn btn-xs btn-primary permissions-user" data-id="${user.id}">الصلاحيات</button>
+                        </div>
+                    </td>
+                `;
+                table.appendChild(row);
+            });
+            
+            // إعداد معالجي الأحداث
+            setupUserTableEventHandlers('senior_leadership');
+        }
+
+        // عرض جدول القيادة الوسطى
+        function renderMiddleLeadershipTable() {
+            const table = document.getElementById('middleLeadershipTable');
+            const emptyState = document.getElementById('middleLeadershipEmpty');
+            
+            const middleUsers = appData.users.filter(user => user.role === 'middle_leadership');
+            
+            if (middleUsers.length === 0) {
+                table.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            table.innerHTML = '';
+            
+            // ترتيب المستخدمين حسب الترتيب المخصص
+            const sortedUsers = [...middleUsers].sort((a, b) => (a.order || 0) - (b.order || 0));
+            
+            sortedUsers.forEach((user, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><input type="checkbox" class="user-checkbox" data-id="${user.id}"></td>
+                    <td>
+                        <div class="order-controls">
+                            <button class="order-btn move-up" data-id="${user.id}"><i class="fas fa-chevron-up"></i></button>
+                            <span>${index + 1}</span>
+                            <button class="order-btn move-down" data-id="${user.id}"><i class="fas fa-chevron-down"></i></button>
+                        </div>
+                    </td>
+                    <td>${user.name}</td>
+                    <td>${user.position || ''}</td>
+                    <td>${user.phone || ''}</td>
+                    <td>
+                        <div class="user-actions">
+                            <button class="btn btn-xs btn-warning preview-user" data-id="${user.id}">معاينة</button>
+                            <button class="btn btn-xs btn-secondary edit-user" data-id="${user.id}">تعديل</button>
+                            <button class="btn btn-xs btn-danger delete-user" data-id="${user.id}">حذف</button>
+                            <button class="btn btn-xs ${user.active ? 'btn-warning' : 'btn-success'} toggle-user" data-id="${user.id}">
+                                ${user.active ? 'إلغاء التفعيل' : 'تفعيل'}
+                            </button>
+                            <button class="btn btn-xs btn-primary permissions-user" data-id="${user.id}">الصلاحيات</button>
+                        </div>
+                    </td>
+                `;
+                table.appendChild(row);
+            });
+            
+            // إعداد معالجي الأحداث
+            setupUserTableEventHandlers('middle_leadership');
+        }
+
+        // عرض جدول المعلمات
+        function renderTeachersTable() {
+            const table = document.getElementById('teachersTable');
+            const emptyState = document.getElementById('teachersEmpty');
+            
+            const teacherUsers = appData.users.filter(user => user.role === 'teacher');
+            
+            if (teacherUsers.length === 0) {
+                table.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            table.innerHTML = '';
+            
+            // ترتيب المستخدمين حسب الترتيب المخصص
+            const sortedUsers = [...teacherUsers].sort((a, b) => (a.order || 0) - (b.order || 0));
+            
+            sortedUsers.forEach((user, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><input type="checkbox" class="user-checkbox" data-id="${user.id}"></td>
+                    <td>
+                        <div class="order-controls">
+                            <button class="order-btn move-up" data-id="${user.id}"><i class="fas fa-chevron-up"></i></button>
+                            <span>${index + 1}</span>
+                            <button class="order-btn move-down" data-id="${user.id}"><i class="fas fa-chevron-down"></i></button>
+                        </div>
+                    </td>
+                    <td>${user.name}</td>
+                    <td>${user.department || ''}</td>
+                    <td>
+                        <div class="user-actions">
+                            <button class="btn btn-xs btn-warning preview-user" data-id="${user.id}">معاينة</button>
+                            <button class="btn btn-xs btn-secondary edit-user" data-id="${user.id}">تعديل</button>
+                            <button class="btn btn-xs btn-danger delete-user" data-id="${user.id}">حذف</button>
+                            <button class="btn btn-xs ${user.active ? 'btn-warning' : 'btn-success'} toggle-user" data-id="${user.id}">
+                                ${user.active ? 'إلغاء التفعيل' : 'تفعيل'}
+                            </button>
+                        </div>
+                    </td>
+                `;
+                table.appendChild(row);
+            });
+            
+            // إعداد معالجي الأحداث
+            setupUserTableEventHandlers('teacher');
+        }
+
+        // إعداد معالجي الأحداث لجداول المستخدمين
+        function setupUserTableEventHandlers(role) {
+            // معاينة المستخدم
+            document.querySelectorAll(`#${role === 'teacher' ? 'teachersTable' : role + 'Table'} .preview-user`).forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const userId = parseInt(this.getAttribute('data-id'));
+                    showPreviewModal(userId);
+                });
+            });
+            
+            // تعديل المستخدم
+            document.querySelectorAll(`#${role === 'teacher' ? 'teachersTable' : role + 'Table'} .edit-user`).forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const userId = parseInt(this.getAttribute('data-id'));
+                    editUser(userId);
+                });
+            });
+            
+            // حذف المستخدم
+            document.querySelectorAll(`#${role === 'teacher' ? 'teachersTable' : role + 'Table'} .delete-user`).forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const userId = parseInt(this.getAttribute('data-id'));
+                    deleteUser(userId);
+                });
+            });
+            
+            // تفعيل/إلغاء تفعيل المستخدم
+            document.querySelectorAll(`#${role === 'teacher' ? 'teachersTable' : role + 'Table'} .toggle-user`).forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const userId = parseInt(this.getAttribute('data-id'));
+                    toggleUser(userId);
+                });
+            });
+            
+            // الصلاحيات (للقادة فقط)
+            if (role !== 'teacher') {
+                document.querySelectorAll(`#${role}Table .permissions-user`).forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const userId = parseInt(this.getAttribute('data-id'));
+                        showPermissionsModal(userId);
+                    });
+                });
+            }
+            
+            // أزرار الترتيب
+            document.querySelectorAll(`#${role === 'teacher' ? 'teachersTable' : role + 'Table'} .move-up`).forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const userId = parseInt(this.getAttribute('data-id'));
+                    moveUserUp(userId, role);
+                });
+            });
+            
+            document.querySelectorAll(`#${role === 'teacher' ? 'teachersTable' : role + 'Table'} .move-down`).forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const userId = parseInt(this.getAttribute('data-id'));
+                    moveUserDown(userId, role);
+                });
+            });
+            
+            // تحديث حالة تحديد الكل
+            document.querySelectorAll(`#${role === 'teacher' ? 'teachersTable' : role + 'Table'} .user-checkbox`).forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    updateSelectAllState(role);
+                });
+            });
+        }
+
+        // نقل المستخدم لأعلى
+        function moveUserUp(userId, role) {
+            const users = appData.users.filter(user => user.role === role);
+            const userIndex = users.findIndex(user => user.id === userId);
+            
+            if (userIndex > 0) {
+                // تبادل الترتيب مع المستخدم الذي قبله
+                const tempOrder = users[userIndex].order || userIndex + 1;
+                users[userIndex].order = users[userIndex - 1].order || userIndex;
+                users[userIndex - 1].order = tempOrder;
+                
+                saveDataToStorage();
+                renderUserTables();
+                addSystemLog(`تم تغيير ترتيب المستخدم ${users[userIndex].name}`);
+            }
+        }
+
+        // نقل المستخدم لأسفل
+        function moveUserDown(userId, role) {
+            const users = appData.users.filter(user => user.role === role);
+            const userIndex = users.findIndex(user => user.id === userId);
+            
+            if (userIndex < users.length - 1) {
+                // تبادل الترتيب مع المستخدم الذي بعده
+                const tempOrder = users[userIndex].order || userIndex + 1;
+                users[userIndex].order = users[userIndex + 1].order || userIndex + 2;
+                users[userIndex + 1].order = tempOrder;
+                
+                saveDataToStorage();
+                renderUserTables();
+                addSystemLog(`تم تغيير ترتيب المستخدم ${users[userIndex].name}`);
+            }
+        }
+
+        // تحديد/إلغاء تحديد جميع المستخدمين
+        function toggleSelectAll(role, checked) {
+            const tableId = role === 'teacher' ? 'teachersTable' : role + 'Table';
+            document.querySelectorAll(`#${tableId} .user-checkbox`).forEach(checkbox => {
+                checkbox.checked = checked;
+            });
+            
+            // تحديث حالة تحديد الكل في الشريط العلوي
+            document.getElementById(`selectAll${role.charAt(0).toUpperCase() + role.slice(1)}`).checked = checked;
+            document.getElementById(`selectAll${role.charAt(0).toUpperCase() + role.slice(1)}Header`).checked = checked;
+        }
+
+        // تحديث حالة تحديد الكل
+        function updateSelectAllState(role) {
+            const tableId = role === 'teacher' ? 'teachersTable' : role + 'Table';
+            const checkboxes = document.querySelectorAll(`#${tableId} .user-checkbox`);
+            const allChecked = checkboxes.length > 0 && Array.from(checkboxes).every(checkbox => checkbox.checked);
+            
+            document.getElementById(`selectAll${role.charAt(0).toUpperCase() + role.slice(1)}`).checked = allChecked;
+            document.getElementById(`selectAll${role.charAt(0).toUpperCase() + role.slice(1)}Header`).checked = allChecked;
+        }
+
+        // حذف المستخدمين المحددين
+        function deleteSelectedUsers(role) {
+            const tableId = role === 'teacher' ? 'teachersTable' : role + 'Table';
+            const selectedCheckboxes = document.querySelectorAll(`#${tableId} .user-checkbox:checked`);
+            
+            if (selectedCheckboxes.length === 0) {
+                alert('يرجى تحديد مستخدمين لحذفهم');
+                return;
+            }
+            
+            if (confirm(`هل أنت متأكد من حذف ${selectedCheckboxes.length} مستخدم؟`)) {
+                const selectedIds = Array.from(selectedCheckboxes).map(checkbox => parseInt(checkbox.getAttribute('data-id')));
+                
+                // منع حذف المستخدم الرئيسي
+                if (selectedIds.includes(1)) {
+                    alert('لا يمكن حذف المستخدم الرئيسي');
+                    return;
+                }
+                
+                // حذف المستخدمين المحددين
+                appData.users = appData.users.filter(user => !selectedIds.includes(user.id));
+                saveDataToStorage();
+                
+                addSystemLog(`تم حذف ${selectedIds.length} مستخدم من ${getRoleName(role)}`);
+                renderUserTables();
+                alert(`تم حذف ${selectedIds.length} مستخدم بنجاح`);
+            }
+        }
+
+        // تفعيل/إلغاء تفعيل المستخدمين المحددين
+        function toggleSelectedUsers(role) {
+            const tableId = role === 'teacher' ? 'teachersTable' : role + 'Table';
+            const selectedCheckboxes = document.querySelectorAll(`#${tableId} .user-checkbox:checked`);
+            
+            if (selectedCheckboxes.length === 0) {
+                alert('يرجى تحديد مستخدمين لتغيير حالتهم');
+                return;
+            }
+            
+            const selectedIds = Array.from(selectedCheckboxes).map(checkbox => parseInt(checkbox.getAttribute('data-id')));
+            
+            // منع إلغاء تفعيل المستخدم الرئيسي
+            if (selectedIds.includes(1)) {
+                alert('لا يمكن إلغاء تفعيل المستخدم الرئيسي');
+                return;
+            }
+            
+            // تغيير حالة المستخدمين المحددين
+            selectedIds.forEach(userId => {
+                const user = appData.users.find(u => u.id === userId);
+                if (user) {
+                    user.active = !user.active;
+                }
+            });
+            
+            saveDataToStorage();
+            
+            addSystemLog(`تم ${selectedIds[0] ? 'تفعيل/إلغاء تفعيل' : 'تغيير حالة'} ${selectedIds.length} مستخدم من ${getRoleName(role)}`);
+            renderUserTables();
+            alert(`تم ${selectedIds[0] ? 'تفعيل/إلغاء تفعيل' : 'تغيير حالة'} ${selectedIds.length} مستخدم بنجاح`);
         }
 
         // عرض قسم الإعدادات
@@ -2478,6 +2954,7 @@
                 }
             } else {
                 // إضافة مستخدم جديد
+                const usersInRole = appData.users.filter(u => u.role === role);
                 const newUser = {
                     id: Math.max(...appData.users.map(u => u.id), 0) + 1,
                     name,
@@ -2488,6 +2965,7 @@
                     active: true,
                     hasAccess: role !== 'teacher' ? hasAccess : false,
                     department: role === 'teacher' ? department : '',
+                    order: usersInRole.length + 1,
                     permissions: createDefaultPermissions(role)
                 };
                 
@@ -2503,6 +2981,7 @@
             
             saveDataToStorage();
             closeUserModal();
+            renderUserTables();
             
             alert('تم حفظ المستخدم بنجاح');
         }
@@ -2569,6 +3048,7 @@
                 const user = appData.users.find(u => u.id === userId);
                 appData.users = appData.users.filter(u => u.id !== userId);
                 saveDataToStorage();
+                renderUserTables();
                 
                 addSystemLog(`تم حذف المستخدم ${user.name}`);
                 alert('تم حذف المستخدم بنجاح');
@@ -2588,6 +3068,7 @@
             
             user.active = !user.active;
             saveDataToStorage();
+            renderUserTables();
             
             addSystemLog(`تم ${user.active ? 'تفعيل' : 'إلغاء تفعيل'} المستخدم ${user.name}`);
             alert(`تم ${user.active ? 'تفعيل' : 'إلغاء تفعيل'} المستخدم بنجاح`);
@@ -2730,6 +3211,7 @@
                         
                         // التحقق من عدم تكرار المستخدم
                         if (!appData.users.some(u => u.name === name && u.role === userRole)) {
+                            const usersInRole = appData.users.filter(u => u.role === userRole);
                             const newUser = {
                                 id: Math.max(...appData.users.map(u => u.id), 0) + 1,
                                 name,
@@ -2740,6 +3222,7 @@
                                 active: true,
                                 hasAccess: userRole !== 'teacher',
                                 department: userRole === 'teacher' ? position : '',
+                                order: usersInRole.length + 1,
                                 permissions: createDefaultPermissions(userRole)
                             };
                             
@@ -2756,6 +3239,7 @@
                     // إضافة المستخدمين الجدد
                     appData.users.push(...newUsers);
                     saveDataToStorage();
+                    renderUserTables();
                     
                     addSystemLog(`تم استيراد ${newUsers.length} مستخدم جديد من ملف CSV`);
                     alert(`تم استيراد ${newUsers.length} مستخدم جديد من ملف CSV`);
@@ -2792,7 +3276,10 @@
                 fileName = 'قائمة_المعلمات.csv';
             }
             
-            users.forEach((user, index) => {
+            // ترتيب المستخدمين حسب الترتيب المخصص
+            const sortedUsers = [...users].sort((a, b) => (a.order || 0) - (b.order || 0));
+            
+            sortedUsers.forEach((user, index) => {
                 if (role === 'teacher') {
                     csvContent += `${index + 1},${user.name},${user.department || user.position || ''}\n`;
                 } else {
