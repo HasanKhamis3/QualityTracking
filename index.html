@@ -1916,61 +1916,6 @@
                             'القيادة الوسطى': { view: true, edit: true }
                         }
                     }
-                },
-                { 
-                    id: 2, 
-                    username: 'leader1', 
-                    password: '123456', 
-                    name: 'أحمد محمد علي', 
-                    position: 'مدير المدرسة',
-                    role: 'senior_leadership', 
-                    avatar: 'أ',
-                    active: true,
-                    hasAccess: true,
-                    phone: '0551234567',
-                    permissions: {
-                        dashboard: { view: true, edit: false },
-                        middleLeadership: { view: true, edit: false },
-                        visits: { view: true, edit: true },
-                        performance: { view: true, edit: false },
-                        teachers: { view: true, edit: false },
-                        reports: { view: true, edit: false },
-                        users: { view: false, edit: false },
-                        settings: { view: false, edit: false },
-                        systemLogs: { view: false, edit: false },
-                        departments: {
-                            'القيادة العليا': { view: true, edit: true },
-                            'القيادة الوسطى': { view: false, edit: false }
-                        }
-                    }
-                },
-                { 
-                    id: 3, 
-                    username: 'teacher1', 
-                    password: '123456', 
-                    name: 'فاطمة إبراهيم أحمد', 
-                    position: 'معلمة لغة عربية',
-                    role: 'teacher', 
-                    avatar: 'ف',
-                    active: true,
-                    hasAccess: false,
-                    phone: '0557654321',
-                    department: 'اللغة العربية',
-                    permissions: {
-                        dashboard: { view: true, edit: false },
-                        middleLeadership: { view: false, edit: false },
-                        visits: { view: false, edit: false },
-                        performance: { view: false, edit: false },
-                        teachers: { view: false, edit: false },
-                        reports: { view: false, edit: false },
-                        users: { view: false, edit: false },
-                        settings: { view: false, edit: false },
-                        systemLogs: { view: false, edit: false },
-                        departments: {
-                            'القيادة العليا': { view: false, edit: false },
-                            'القيادة الوسطى': { view: false, edit: false }
-                        }
-                    }
                 }
             ],
             departments: [
@@ -1991,24 +1936,8 @@
                     userId: 1,
                     userName: 'مدير النظام',
                     date: '2023-10-15',
-                    time: '10:30:25',
+                    time: '10:30:25 صباحاً',
                     action: 'تسجيل الدخول إلى النظام'
-                },
-                {
-                    id: 2,
-                    userId: 1,
-                    userName: 'مدير النظام',
-                    date: '2023-10-15',
-                    time: '10:35:42',
-                    action: 'إضافة مستخدم جديد: أحمد محمد علي'
-                },
-                {
-                    id: 3,
-                    userId: 1,
-                    userName: 'مدير النظام',
-                    date: '2023-10-15',
-                    time: '10:40:15',
-                    action: 'تعديل صلاحيات المستخدم: أحمد محمد علي'
                 }
             ],
             middleLeadership: [],
@@ -2126,7 +2055,13 @@
         function addSystemLog(action) {
             const now = new Date();
             const date = now.toISOString().split('T')[0];
-            const time = now.toTimeString().split(' ')[0];
+            const hours = now.getHours();
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+            
+            // تحديد الفترة (صباحاً/مساءً)
+            const period = hours < 12 ? 'صباحاً' : 'مساءً';
+            const time = `${hours}:${minutes}:${seconds} ${period}`;
             
             const log = {
                 id: Math.max(...appData.systemLogs.map(l => l.id), 0) + 1,
@@ -2227,7 +2162,7 @@
                 // إضافة سجل لتسجيل الدخول
                 addSystemLog('تسجيل الدخول إلى النظام');
                 
-                // التنقل إلى القسم الافتراضي
+                // التنقل إلى القسم الافتراضي (لوحة التحكم)
                 navigateToSection('dashboard');
             } else {
                 alert('اسم المستخدم أو كلمة المرور غير صحيحة');
