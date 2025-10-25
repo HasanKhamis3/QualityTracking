@@ -2011,11 +2011,25 @@
                                     <button class="btn" id="addDepartment">إضافة قسم جديد</button>
                                 </div>
                             </div>
+
+                            <!-- إجراءات جماعية -->
+                            <div class="table-header-actions">
+                                <div class="bulk-actions">
+                                    <button class="btn btn-xs btn-danger" id="bulkDeleteDepartments">حذف المحددين</button>
+                                    <button class="btn btn-xs btn-success" id="bulkActivateDepartments">تفعيل المحددين</button>
+                                    <button class="btn btn-xs btn-warning" id="bulkDeactivateDepartments">إلغاء تفعيل المحددين</button>
+                                    <label class="select-all-checkbox">
+                                        <input type="checkbox" id="selectAllDepartments"> تحديد الكل
+                                    </label>
+                                </div>
+                            </div>
                             
                             <table class="departments-table">
                                 <thead>
                                     <tr>
                                         <th>الترتيب</th>
+                                        <th>الترتيب التفصيلي</th>
+                                        <th>التصنيف</th>
                                         <th>اسم القسم / المادة</th>
                                         <th>الحالة</th>
                                         <th>الإجراءات</th>
@@ -2064,13 +2078,14 @@
                 <input type="hidden" id="visitId">
                 <div class="form-group">
                     <label for="teacherName">اسم المعلم</label>
-                    <input type="text" id="teacherName" required>
+                    <select id="teacherName" required>
+                        <!-- سيتم ملؤها من قائمة المعلمات -->
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="department">القسم</label>
                     <select id="department" required>
-                        <option value="القيادة العليا">القيادة العليا</option>
-                        <option value="القيادة الوسطى">القيادة الوسطى</option>
+                        <!-- سيتم ملؤها من أقسام المواد -->
                     </select>
                 </div>
                 <div class="form-group">
@@ -2391,7 +2406,44 @@
             
             // إعداد سجل النظام
             renderSystemLogs();
+            
+            // إعداد التحسينات الجديدة
+            setupImprovements();
         });
+
+        // إعداد التحسينات الجديدة
+        function setupImprovements() {
+            // إعداد أزرار الترتيب في أقسام المواد
+            document.querySelectorAll('.move-up, .move-down').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const departmentId = parseInt(this.getAttribute('data-id'));
+                    if (this.classList.contains('move-up')) {
+                        moveDepartmentUp(departmentId);
+                    } else {
+                        moveDepartmentDown(departmentId);
+                    }
+                });
+            });
+
+            // إعداد تحديد الكل في أقسام المواد
+            document.getElementById('selectAllDepartments').addEventListener('change', function() {
+                toggleSelectAllDepartments(this.checked);
+            });
+
+            // إعداد أزرار الإجراءات الجماعية في أقسام المواد
+            document.getElementById('bulkDeleteDepartments').addEventListener('click', function() {
+                bulkActionDepartments('delete');
+            });
+            document.getElementById('bulkActivateDepartments').addEventListener('click', function() {
+                bulkActionDepartments('activate');
+            });
+            document.getElementById('bulkDeactivateDepartments').addEventListener('click', function() {
+                bulkActionDepartments('deactivate');
+            });
+
+            // تحديث قوائم الاختيار في نموذج إضافة زيارة
+            updateVisitFormDropdowns();
+        }
 
         // تحميل البيانات من localStorage
         function loadDataFromStorage() {
@@ -2926,12 +2978,7 @@
                         <input type="checkbox" class="user-checkbox" data-id="${user.id}">
                         ${index + 1}
                     </td>
-                    <td>
-                        <div class="order-controls">
-                            <button class="order-btn move-up" data-id="${user.id}" data-role="${role}">▲</button>
-                            <button class="order-btn move-down" data-id="${user.id}" data-role="${role}">▼</button>
-                        </div>
-                    </td>
+                    <td>التصنيف</td>
                     <td>${user.name}</td>
                     <td>${thirdColumn}</td>
                     ${phoneColumn}
@@ -2994,28 +3041,15 @@
                 });
             });
             
-            document.querySelectorAll(`#${tableId} .move-up`).forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const userId = parseInt(this.getAttribute('data-id'));
-                    const userRole = this.getAttribute('data-role');
-                    moveUserUp(userId, userRole);
-                });
-            });
-            
-            document.querySelectorAll(`#${tableId} .move-down`).forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const userId = parseInt(this.getAttribute('data-id'));
-                    const userRole = this.getAttribute('data-role');
-                    moveUserDown(userId, userRole);
-                });
-            });
-            
             // إضافة معالجي الأحداث لخانات الاختيار
             document.querySelectorAll(`#${tableId} .user-checkbox`).forEach(checkbox => {
                 checkbox.addEventListener('change', function() {
                     updateBulkActionsState(role);
                 });
             });
+            
+            // تحديث حالة أزرار الإجراءات الجماعية
+            updateBulkActionsState(role);
         }
 
         // نقل مستخدم لأعلى
@@ -3071,80 +3105,6 @@
             alert('تم منح إذن الوصول بنجاح');
         }
 
-        // عرض جدول أقسام المواد
-        function renderDepartmentsTable() {
-            const table = document.getElementById('departmentsTable');
-            table.innerHTML = '';
-            
-            // ترتيب الأقسام حسب الترتيب المحدد
-            const sortedDepartments = [...appData.departments].sort((a, b) => a.order - b.order);
-            
-            sortedDepartments.forEach((department, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>
-                        <div class="order-controls">
-                            <button class="order-btn move-up" data-id="${department.id}">▲</button>
-                            ${department.order}
-                            <button class="order-btn move-down" data-id="${department.id}">▼</button>
-                        </div>
-                    </td>
-                    <td>${department.name}</td>
-                    <td>
-                        <span class="status-badge ${department.status === 'active' ? 'status-active' : 'status-inactive'}">
-                            ${department.status === 'active' ? 'مفعل' : 'غير مفعل'}
-                        </span>
-                    </td>
-                    <td>
-                        <div class="user-actions">
-                            <button class="btn btn-xs btn-secondary edit-department" data-id="${department.id}">تعديل</button>
-                            <button class="btn btn-xs btn-danger delete-department" data-id="${department.id}">حذف</button>
-                            <button class="btn btn-xs ${department.status === 'active' ? 'btn-warning' : 'btn-success'} toggle-department" data-id="${department.id}">
-                                ${department.status === 'active' ? 'إلغاء التفعيل' : 'تفعيل'}
-                            </button>
-                        </div>
-                    </td>
-                `;
-                table.appendChild(row);
-            });
-            
-            // إضافة معالجي الأحداث للأزرار
-            document.querySelectorAll('.edit-department').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const departmentId = parseInt(this.getAttribute('data-id'));
-                    editDepartment(departmentId);
-                });
-            });
-            
-            document.querySelectorAll('.delete-department').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const departmentId = parseInt(this.getAttribute('data-id'));
-                    deleteDepartment(departmentId);
-                });
-            });
-            
-            document.querySelectorAll('.toggle-department').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const departmentId = parseInt(this.getAttribute('data-id'));
-                    toggleDepartment(departmentId);
-                });
-            });
-            
-            document.querySelectorAll('.move-up').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const departmentId = parseInt(this.getAttribute('data-id'));
-                    moveDepartmentUp(departmentId);
-                });
-            });
-            
-            document.querySelectorAll('.move-down').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const departmentId = parseInt(this.getAttribute('data-id'));
-                    moveDepartmentDown(departmentId);
-                });
-            });
-        }
-
         // نقل قسم لأعلى
         function moveDepartmentUp(departmentId) {
             const department = appData.departments.find(d => d.id === departmentId);
@@ -3182,6 +3142,168 @@
                 renderDepartmentsTable();
                 addSystemLog(`تم نقل قسم ${department.name} لأسفل`);
             }
+        }
+
+        // تحديد/إلغاء تحديد جميع الأقسام
+        function toggleSelectAllDepartments(checked) {
+            document.querySelectorAll('#departmentsTable .department-checkbox').forEach(checkbox => {
+                checkbox.checked = checked;
+            });
+            updateBulkActionsDepartmentsState();
+        }
+
+        // تحديث حالة أزرار الإجراءات الجماعية للأقسام
+        function updateBulkActionsDepartmentsState() {
+            const checkedBoxes = document.querySelectorAll('#departmentsTable .department-checkbox:checked');
+            const hasSelected = checkedBoxes.length > 0;
+            
+            const bulkButtons = document.querySelectorAll('#departments .bulk-actions button');
+            bulkButtons.forEach(button => {
+                if (button.id !== 'selectAllDepartments') {
+                    button.disabled = !hasSelected;
+                }
+            });
+        }
+
+        // تنفيذ الإجراءات الجماعية على الأقسام
+        function bulkActionDepartments(action) {
+            const checkedBoxes = document.querySelectorAll('#departmentsTable .department-checkbox:checked');
+            
+            if (checkedBoxes.length === 0) {
+                alert('يرجى تحديد أقسام على الأقل');
+                return;
+            }
+            
+            const departmentIds = Array.from(checkedBoxes).map(checkbox => parseInt(checkbox.getAttribute('data-id')));
+            
+            if (action === 'delete') {
+                if (confirm(`هل أنت متأكد من حذف ${departmentIds.length} قسم؟`)) {
+                    departmentIds.forEach(departmentId => {
+                        const department = appData.departments.find(d => d.id === departmentId);
+                        appData.departments = appData.departments.filter(d => d.id !== departmentId);
+                        addSystemLog(`تم حذف القسم ${department.name}`);
+                    });
+                    saveDataToStorage();
+                    renderDepartmentsTable();
+                    alert(`تم حذف ${departmentIds.length} قسم بنجاح`);
+                }
+            } else if (action === 'activate') {
+                departmentIds.forEach(departmentId => {
+                    const department = appData.departments.find(d => d.id === departmentId);
+                    if (department) {
+                        department.status = 'active';
+                        addSystemLog(`تم تفعيل القسم ${department.name}`);
+                    }
+                });
+                saveDataToStorage();
+                renderDepartmentsTable();
+                alert(`تم تفعيل ${departmentIds.length} قسم بنجاح`);
+            } else if (action === 'deactivate') {
+                departmentIds.forEach(departmentId => {
+                    const department = appData.departments.find(d => d.id === departmentId);
+                    if (department) {
+                        department.status = 'inactive';
+                        addSystemLog(`تم إلغاء تفعيل القسم ${department.name}`);
+                    }
+                });
+                saveDataToStorage();
+                renderDepartmentsTable();
+                alert(`تم إلغاء تفعيل ${departmentIds.length} قسم بنجاح`);
+            }
+            
+            // إعادة تعيين تحديد الكل
+            document.getElementById('selectAllDepartments').checked = false;
+        }
+
+        // عرض جدول أقسام المواد مع التحسينات
+        function renderDepartmentsTable() {
+            const table = document.getElementById('departmentsTable');
+            table.innerHTML = '';
+            
+            // ترتيب الأقسام حسب الترتيب المحدد
+            const sortedDepartments = [...appData.departments].sort((a, b) => a.order - b.order);
+            
+            sortedDepartments.forEach((department, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <input type="checkbox" class="department-checkbox" data-id="${department.id}">
+                        ${index + 1}
+                    </td>
+                    <td>
+                        <div class="order-controls">
+                            <button class="order-btn move-up" data-id="${department.id}">▲</button>
+                            ${department.order}
+                            <button class="order-btn move-down" data-id="${department.id}">▼</button>
+                        </div>
+                    </td>
+                    <td>التصنيف</td>
+                    <td>${department.name}</td>
+                    <td>
+                        <span class="status-badge ${department.status === 'active' ? 'status-active' : 'status-inactive'}">
+                            ${department.status === 'active' ? 'مفعل' : 'غير مفعل'}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="user-actions">
+                            <button class="btn btn-xs btn-secondary edit-department" data-id="${department.id}">تعديل</button>
+                            <button class="btn btn-xs btn-danger delete-department" data-id="${department.id}">حذف</button>
+                            <button class="btn btn-xs ${department.status === 'active' ? 'btn-warning' : 'btn-success'} toggle-department" data-id="${department.id}">
+                                ${department.status === 'active' ? 'إلغاء التفعيل' : 'تفعيل'}
+                            </button>
+                        </div>
+                    </td>
+                `;
+                table.appendChild(row);
+            });
+            
+            // إعادة إعداد معالجي الأحداث
+            setupDepartmentsEventHandlers();
+            updateBulkActionsDepartmentsState();
+        }
+
+        // إعداد معالجي الأحداث للجداول المحسنة
+        function setupDepartmentsEventHandlers() {
+            document.querySelectorAll('.edit-department').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const departmentId = parseInt(this.getAttribute('data-id'));
+                    editDepartment(departmentId);
+                });
+            });
+            
+            document.querySelectorAll('.delete-department').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const departmentId = parseInt(this.getAttribute('data-id'));
+                    deleteDepartment(departmentId);
+                });
+            });
+            
+            document.querySelectorAll('.toggle-department').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const departmentId = parseInt(this.getAttribute('data-id'));
+                    toggleDepartment(departmentId);
+                });
+            });
+            
+            document.querySelectorAll('.move-up').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const departmentId = parseInt(this.getAttribute('data-id'));
+                    moveDepartmentUp(departmentId);
+                });
+            });
+            
+            document.querySelectorAll('.move-down').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const departmentId = parseInt(this.getAttribute('data-id'));
+                    moveDepartmentDown(departmentId);
+                });
+            });
+            
+            document.querySelectorAll('.department-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    updateBulkActionsDepartmentsState();
+                });
+            });
         }
 
         // تحديد/إلغاء تحديد الكل
@@ -3957,6 +4079,36 @@
             });
         }
 
+        // تحديث قوائم الاختيار في نموذج إضافة زيارة
+        function updateVisitFormDropdowns() {
+            // تحديث قائمة الأقسام
+            const departmentSelect = document.getElementById('department');
+            if (departmentSelect) {
+                departmentSelect.innerHTML = '';
+                appData.departments.forEach(department => {
+                    if (department.status === 'active') {
+                        const option = document.createElement('option');
+                        option.value = department.name;
+                        option.textContent = department.name;
+                        departmentSelect.appendChild(option);
+                    }
+                });
+            }
+            
+            // تحديث قائمة المعلمين
+            const teacherSelect = document.getElementById('teacherName');
+            if (teacherSelect) {
+                teacherSelect.innerHTML = '';
+                const teachers = appData.users.filter(user => user.role === 'teacher' && user.active);
+                teachers.forEach(teacher => {
+                    const option = document.createElement('option');
+                    option.value = teacher.name;
+                    option.textContent = teacher.name;
+                    teacherSelect.appendChild(option);
+                });
+            }
+        }
+
         // دوال الحفظ للبيانات المختلفة
         function saveMiddleLeadership() {
             saveDataToStorage();
@@ -4420,6 +4572,9 @@
             document.getElementById('visitForm').reset();
             document.getElementById('visitId').value = '';
             document.getElementById('visitorName').value = appData.currentUser.name;
+            
+            // تحديث القوائم المنسدلة
+            updateVisitFormDropdowns();
             
             // تعيين القسم بناءً على القسم النشط
             const activeDepartment = document.querySelector('#visitsSubSections .sub-section-btn.active').getAttribute('data-department');
