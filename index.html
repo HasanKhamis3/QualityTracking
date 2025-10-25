@@ -1503,8 +1503,6 @@
                             </div>
                         </div>
                         
-                        <!-- تم إزالة قسم صلاحيات المستخدمين بالكامل -->
-                        
                         <div class="btn-group">
                             <button class="btn" id="saveGeneralSettings">حفظ الإعدادات</button>
                         </div>
@@ -1568,7 +1566,7 @@
                             </div>
                         </div>
                         
-                        <!-- قسم القيادة الوسطى -->
+                        <!-- قسم القيادة الوسطى - محدث -->
                         <div id="middle_leadership" class="user-management-section">
                             <div class="user-management-header">
                                 <h3 class="user-management-title">إدارة القيادة الوسطى</h3>
@@ -1592,11 +1590,12 @@
                                 </div>
                             </div>
                             
+                            <!-- جدول القيادة الوسطى - محدث -->
                             <table class="user-table">
                                 <thead>
                                     <tr>
+                                        <th><input type="checkbox" id="selectAllUsersMiddle"></th>
                                         <th>الترتيب</th>
-                                        <th>التصنيف</th>
                                         <th>الاسم</th>
                                         <th>الوظيفة</th>
                                         <th>رقم الهاتف</th>
@@ -1615,7 +1614,7 @@
                             </div>
                         </div>
                         
-                        <!-- قسم المعلمات -->
+                        <!-- قسم المعلمات - محدث -->
                         <div id="teacher" class="user-management-section">
                             <div class="user-management-header">
                                 <h3 class="user-management-title">إدارة المعلمات</h3>
@@ -1639,11 +1638,12 @@
                                 </div>
                             </div>
                             
+                            <!-- جدول المعلمات - محدث -->
                             <table class="user-table teachers-table">
                                 <thead>
                                     <tr>
+                                        <th><input type="checkbox" id="selectAllUsersTeachers"></th>
                                         <th>الترتيب</th>
-                                        <th>التصنيف</th>
                                         <th>الاسم</th>
                                         <th>القسم</th>
                                         <th>الإجراءات</th>
@@ -1685,9 +1685,9 @@
                             <table class="departments-table">
                                 <thead>
                                     <tr>
+                                        <th><input type="checkbox" id="selectAllDepartments"></th>
                                         <th>الترتيب</th>
                                         <th>الترتيب التفصيلي</th>
-                                        <th>التصنيف</th>
                                         <th>اسم القسم / المادة</th>
                                         <th>الحالة</th>
                                         <th>الإجراءات</th>
@@ -2622,12 +2622,12 @@
                 
                 // تحديد الأعمدة بناءً على الدور
                 if (role === 'teacher') {
-                    // جدول المعلمات بدون رقم الهاتف وإدارة الصلاحيات
+                    // جدول المعلمات - محدث
                     row.innerHTML = `
                         <td>
                             <input type="checkbox" class="user-checkbox" data-id="${user.id}">
-                            ${index + 1}
                         </td>
+                        <td>${index + 1}</td>
                         <td>${user.name}</td>
                         <td>${user.department || user.position || ''}</td>
                         <td>
@@ -2642,7 +2642,7 @@
                         </td>
                     `;
                 } else if (role === 'senior_leadership') {
-                    // جدول القيادة العليا مع الأعمدة المحدثة
+                    // جدول القيادة العليا - محدث
                     row.innerHTML = `
                         <td>
                             <input type="checkbox" class="user-checkbox" data-id="${user.id}">
@@ -2666,13 +2666,12 @@
                         </td>
                     `;
                 } else {
-                    // جدول القيادة الوسطى مع رقم الهاتف وإدارة الصلاحيات
+                    // جدول القيادة الوسطى - محدث
                     row.innerHTML = `
                         <td>
                             <input type="checkbox" class="user-checkbox" data-id="${user.id}">
-                            ${index + 1}
                         </td>
-                        <td>التصنيف</td>
+                        <td>${index + 1}</td>
                         <td>${user.name}</td>
                         <td>${user.position || ''}</td>
                         <td>${user.phone || ''}</td>
@@ -2896,8 +2895,8 @@
                 row.innerHTML = `
                     <td>
                         <input type="checkbox" class="department-checkbox" data-id="${department.id}">
-                        ${index + 1}
                     </td>
+                    <td>${index + 1}</td>
                     <td>
                         <div class="order-controls">
                             <button class="order-btn move-up" data-id="${department.id}">▲</button>
@@ -2905,7 +2904,6 @@
                             <button class="order-btn move-down" data-id="${department.id}">▼</button>
                         </div>
                     </td>
-                    <td>التصنيف</td>
                     <td>${department.name}</td>
                     <td>
                         <span class="status-badge ${department.status === 'active' ? 'status-active' : 'status-inactive'}">
