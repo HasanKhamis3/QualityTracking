@@ -1234,6 +1234,7 @@
                     <li><a href="#" data-section="performance">تقييم الأداء</a></li>
                     <li><a href="#" data-section="teachers">المعلمين المتميزين</a></li>
                     <li><a href="#" data-section="reports">التقارير النوعية</a></li>
+                    <li><a href="#" data-section="userManagement">إدارة المستخدمين</a></li>
                     <li><a href="#" data-section="settings" id="settingsTab">الإعدادات</a></li>
                 </ul>
             </div>
@@ -1452,6 +1453,183 @@
                     </div>
                 </section>
 
+                <!-- إدارة المستخدمين - القسم الجديد -->
+                <section id="userManagement" class="section">
+                    <div class="section-header">
+                        <h2 class="section-title">إدارة المستخدمين</h2>
+                    </div>
+                    
+                    <!-- علامات التبويب الفرعية -->
+                    <ul class="user-sub-tabs" id="userManagementSubTabs">
+                        <li><a href="#" data-user-section="senior_leadership" class="active">القيادة العليا</a></li>
+                        <li><a href="#" data-user-section="middle_leadership">القيادة الوسطى</a></li>
+                        <li><a href="#" data-user-section="teacher">المعلمات</a></li>
+                        <li><a href="#" data-user-section="departments">أقسام المواد</a></li>
+                    </ul>
+                    
+                    <!-- قسم القيادة العليا -->
+                    <div id="senior_leadership" class="user-management-section active">
+                        <div class="user-management-header">
+                            <h3 class="user-management-title">إدارة القيادة العليا</h3>
+                            <div class="user-management-actions">
+                                <button class="btn" id="addSeniorLeadership">إضافة اسم جديد</button>
+                                <button class="btn btn-secondary" id="exportSeniorLeadership">تصدير CSV</button>
+                                <button class="btn btn-secondary" id="importSeniorLeadership">استيراد CSV</button>
+                                <input type="file" id="seniorLeadershipFile" accept=".csv" style="display: none;">
+                            </div>
+                        </div>
+                        
+                        <div class="table-header-actions">
+                            <div class="bulk-actions">
+                                <button class="btn btn-sm btn-danger" id="deleteSelectedSenior">حذف المحددين</button>
+                                <button class="btn btn-sm btn-warning" id="toggleSelectedSenior">تفعيل/إلغاء المحددين</button>
+                                <label class="select-all-checkbox">
+                                    <input type="checkbox" id="selectAllSenior"> تحديد الكل
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <table class="user-table">
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox" id="selectAllSeniorHeader"></th>
+                                    <th>الترتيب</th>
+                                    <th>الاسم</th>
+                                    <th>الوظيفة</th>
+                                    <th>الهاتف</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="seniorLeadershipTable">
+                                <!-- سيتم ملؤها بالبيانات -->
+                            </tbody>
+                        </table>
+                        
+                        <div id="seniorLeadershipEmpty" class="empty-state" style="display: none;">
+                            <i class="fas fa-users"></i>
+                            <h3>لا توجد بيانات</h3>
+                            <p>لم يتم إضافة أي مستخدمين في القيادة العليا بعد</p>
+                            <button class="btn" id="addSeniorLeadershipEmpty">إضافة اسم جديد</button>
+                        </div>
+                    </div>
+                    
+                    <!-- قسم القيادة الوسطى -->
+                    <div id="middle_leadership" class="user-management-section">
+                        <div class="user-management-header">
+                            <h3 class="user-management-title">إدارة القيادة الوسطى</h3>
+                            <div class="user-management-actions">
+                                <button class="btn" id="addMiddleLeadership">إضافة اسم جديد</button>
+                                <button class="btn btn-secondary" id="exportMiddleLeadership">تصدير CSV</button>
+                                <button class="btn btn-secondary" id="importMiddleLeadership">استيراد CSV</button>
+                                <input type="file" id="middleLeadershipFile" accept=".csv" style="display: none;">
+                            </div>
+                        </div>
+                        
+                        <div class="table-header-actions">
+                            <div class="bulk-actions">
+                                <button class="btn btn-sm btn-danger" id="deleteSelectedMiddle">حذف المحددين</button>
+                                <button class="btn btn-sm btn-warning" id="toggleSelectedMiddle">تفعيل/إلغاء المحددين</button>
+                                <label class="select-all-checkbox">
+                                    <input type="checkbox" id="selectAllMiddle"> تحديد الكل
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <table class="user-table">
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox" id="selectAllMiddleHeader"></th>
+                                    <th>الترتيب</th>
+                                    <th>الاسم</th>
+                                    <th>الوظيفة</th>
+                                    <th>الهاتف</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="middleLeadershipTable">
+                                <!-- سيتم ملؤها بالبيانات -->
+                            </tbody>
+                        </table>
+                        
+                        <div id="middleLeadershipEmpty" class="empty-state" style="display: none;">
+                            <i class="fas fa-users"></i>
+                            <h3>لا توجد بيانات</h3>
+                            <p>لم يتم إضافة أي مستخدمين في القيادة الوسطى بعد</p>
+                            <button class="btn" id="addMiddleLeadershipEmpty">إضافة اسم جديد</button>
+                        </div>
+                    </div>
+                    
+                    <!-- قسم المعلمات -->
+                    <div id="teacher" class="user-management-section">
+                        <div class="user-management-header">
+                            <h3 class="user-management-title">إدارة المعلمات</h3>
+                            <div class="user-management-actions">
+                                <button class="btn" id="addTeacher">إضافة معلم جديد</button>
+                                <button class="btn btn-secondary" id="exportTeachers">تصدير CSV</button>
+                                <button class="btn btn-secondary" id="importTeachers">استيراد CSV</button>
+                                <input type="file" id="teachersFile" accept=".csv" style="display: none;">
+                            </div>
+                        </div>
+                        
+                        <div class="table-header-actions">
+                            <div class="bulk-actions">
+                                <button class="btn btn-sm btn-danger" id="deleteSelectedTeachers">حذف المحددين</button>
+                                <button class="btn btn-sm btn-warning" id="toggleSelectedTeachers">تفعيل/إلغاء المحددين</button>
+                                <label class="select-all-checkbox">
+                                    <input type="checkbox" id="selectAllTeachers"> تحديد الكل
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <table class="user-table teachers-table">
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox" id="selectAllTeachersHeader"></th>
+                                    <th>الترتيب</th>
+                                    <th>الاسم</th>
+                                    <th>القسم/المادة</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="teachersTable">
+                                <!-- سيتم ملؤها بالبيانات -->
+                            </tbody>
+                        </table>
+                        
+                        <div id="teachersEmpty" class="empty-state" style="display: none;">
+                            <i class="fas fa-users"></i>
+                            <h3>لا توجد بيانات</h3>
+                            <p>لم يتم إضافة أي معلمات بعد</p>
+                            <button class="btn" id="addTeacherEmpty">إضافة معلم جديد</button>
+                        </div>
+                    </div>
+                    
+                    <!-- قسم أقسام المواد -->
+                    <div id="departments" class="user-management-section">
+                        <div class="departments-header">
+                            <h3 class="departments-title">إدارة أقسام المواد</h3>
+                            <div class="user-management-actions">
+                                <button class="btn" id="addDepartment">إضافة قسم جديد</button>
+                            </div>
+                        </div>
+                        
+                        <table class="departments-table">
+                            <thead>
+                                <tr>
+                                    <th>الترتيب</th>
+                                    <th>الترتيب التفصيلي</th>
+                                    <th>اسم القسم / المادة</th>
+                                    <th>الحالة</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="departmentsTable">
+                                <!-- سيتم ملؤها بالبيانات -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
                 <!-- Settings Section - المدمجة -->
                 <section id="settings" class="section">
                     <div class="section-header">
@@ -1461,7 +1639,6 @@
                     <!-- علامات التبويب الفرعية للإعدادات -->
                     <ul class="user-sub-tabs" id="settingsSubTabs">
                         <li><a href="#" data-settings-section="general_settings" class="active">الإعدادات العامة</a></li>
-                        <li><a href="#" data-settings-section="user_management">إدارة المستخدمين</a></li>
                         <li><a href="#" data-settings-section="system_logs">سجل النظام</a></li>
                     </ul>
                     
@@ -1505,179 +1682,6 @@
                         
                         <div class="btn-group">
                             <button class="btn" id="saveGeneralSettings">حفظ الإعدادات</button>
-                        </div>
-                    </div>
-                    
-                    <!-- إدارة المستخدمين -->
-                    <div id="user_management" class="user-management-section">
-                        <!-- علامات التبويب الفرعية -->
-                        <ul class="user-sub-tabs" id="userSubTabs">
-                            <li><a href="#" data-user-section="senior_leadership" class="active">القيادة العليا</a></li>
-                            <li><a href="#" data-user-section="middle_leadership">القيادة الوسطى</a></li>
-                            <li><a href="#" data-user-section="teacher">المعلمات</a></li>
-                            <li><a href="#" data-user-section="departments">أقسام المواد</a></li>
-                        </ul>
-                        
-                        <!-- قسم القيادة العليا -->
-                        <div id="senior_leadership" class="user-management-section active">
-                            <div class="user-management-header">
-                                <h3 class="user-management-title">إدارة القيادة العليا</h3>
-                                <div class="user-management-actions">
-                                    <button class="btn" id="addSeniorLeadership">إضافة اسم جديد</button>
-                                    <button class="btn btn-secondary" id="exportSeniorLeadership">تصدير CSV</button>
-                                    <button class="btn btn-secondary" id="importSeniorLeadership">استيراد CSV</button>
-                                    <input type="file" id="seniorLeadershipFile" accept=".csv" style="display: none;">
-                                </div>
-                            </div>
-                            
-                            <div class="table-header-actions">
-                                <div class="bulk-actions">
-                                    <button class="btn btn-sm btn-danger" id="deleteSelectedSenior">حذف المحددين</button>
-                                    <button class="btn btn-sm btn-warning" id="toggleSelectedSenior">تفعيل/إلغاء المحددين</button>
-                                    <label class="select-all-checkbox">
-                                        <input type="checkbox" id="selectAllSenior"> تحديد الكل
-                                    </label>
-                                </div>
-                            </div>
-                            
-                            <table class="user-table">
-                                <thead>
-                                    <tr>
-                                        <th><input type="checkbox" id="selectAllSeniorHeader"></th>
-                                        <th>الترتيب</th>
-                                        <th>الاسم</th>
-                                        <th>الوظيفة</th>
-                                        <th>الهاتف</th>
-                                        <th>الإجراءات</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="seniorLeadershipTable">
-                                    <!-- سيتم ملؤها بالبيانات -->
-                                </tbody>
-                            </table>
-                            
-                            <div id="seniorLeadershipEmpty" class="empty-state" style="display: none;">
-                                <i class="fas fa-users"></i>
-                                <h3>لا توجد بيانات</h3>
-                                <p>لم يتم إضافة أي مستخدمين في القيادة العليا بعد</p>
-                                <button class="btn" id="addSeniorLeadershipEmpty">إضافة اسم جديد</button>
-                            </div>
-                        </div>
-                        
-                        <!-- قسم القيادة الوسطى -->
-                        <div id="middle_leadership" class="user-management-section">
-                            <div class="user-management-header">
-                                <h3 class="user-management-title">إدارة القيادة الوسطى</h3>
-                                <div class="user-management-actions">
-                                    <button class="btn" id="addMiddleLeadership">إضافة اسم جديد</button>
-                                    <button class="btn btn-secondary" id="exportMiddleLeadership">تصدير CSV</button>
-                                    <button class="btn btn-secondary" id="importMiddleLeadership">استيراد CSV</button>
-                                    <input type="file" id="middleLeadershipFile" accept=".csv" style="display: none;">
-                                </div>
-                            </div>
-                            
-                            <div class="table-header-actions">
-                                <div class="bulk-actions">
-                                    <button class="btn btn-sm btn-danger" id="deleteSelectedMiddle">حذف المحددين</button>
-                                    <button class="btn btn-sm btn-warning" id="toggleSelectedMiddle">تفعيل/إلغاء المحددين</button>
-                                    <label class="select-all-checkbox">
-                                        <input type="checkbox" id="selectAllMiddle"> تحديد الكل
-                                    </label>
-                                </div>
-                            </div>
-                            
-                            <table class="user-table">
-                                <thead>
-                                    <tr>
-                                        <th><input type="checkbox" id="selectAllMiddleHeader"></th>
-                                        <th>الترتيب</th>
-                                        <th>الاسم</th>
-                                        <th>الوظيفة</th>
-                                        <th>الهاتف</th>
-                                        <th>الإجراءات</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="middleLeadershipTable">
-                                    <!-- سيتم ملؤها بالبيانات -->
-                                </tbody>
-                            </table>
-                            
-                            <div id="middleLeadershipEmpty" class="empty-state" style="display: none;">
-                                <i class="fas fa-users"></i>
-                                <h3>لا توجد بيانات</h3>
-                                <p>لم يتم إضافة أي مستخدمين في القيادة الوسطى بعد</p>
-                                <button class="btn" id="addMiddleLeadershipEmpty">إضافة اسم جديد</button>
-                            </div>
-                        </div>
-                        
-                        <!-- قسم المعلمات -->
-                        <div id="teacher" class="user-management-section">
-                            <div class="user-management-header">
-                                <h3 class="user-management-title">إدارة المعلمات</h3>
-                                <div class="user-management-actions">
-                                    <button class="btn" id="addTeacher">إضافة معلم جديد</button>
-                                    <button class="btn btn-secondary" id="exportTeachers">تصدير CSV</button>
-                                    <button class="btn btn-secondary" id="importTeachers">استيراد CSV</button>
-                                    <input type="file" id="teachersFile" accept=".csv" style="display: none;">
-                                </div>
-                            </div>
-                            
-                            <div class="table-header-actions">
-                                <div class="bulk-actions">
-                                    <button class="btn btn-sm btn-danger" id="deleteSelectedTeachers">حذف المحددين</button>
-                                    <button class="btn btn-sm btn-warning" id="toggleSelectedTeachers">تفعيل/إلغاء المحددين</button>
-                                    <label class="select-all-checkbox">
-                                        <input type="checkbox" id="selectAllTeachers"> تحديد الكل
-                                    </label>
-                                </div>
-                            </div>
-                            
-                            <table class="user-table teachers-table">
-                                <thead>
-                                    <tr>
-                                        <th><input type="checkbox" id="selectAllTeachersHeader"></th>
-                                        <th>الترتيب</th>
-                                        <th>الاسم</th>
-                                        <th>القسم/المادة</th>
-                                        <th>الإجراءات</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="teachersTable">
-                                    <!-- سيتم ملؤها بالبيانات -->
-                                </tbody>
-                            </table>
-                            
-                            <div id="teachersEmpty" class="empty-state" style="display: none;">
-                                <i class="fas fa-users"></i>
-                                <h3>لا توجد بيانات</h3>
-                                <p>لم يتم إضافة أي معلمات بعد</p>
-                                <button class="btn" id="addTeacherEmpty">إضافة معلم جديد</button>
-                            </div>
-                        </div>
-                        
-                        <!-- قسم أقسام المواد -->
-                        <div id="departments" class="user-management-section">
-                            <div class="departments-header">
-                                <h3 class="departments-title">إدارة أقسام المواد</h3>
-                                <div class="user-management-actions">
-                                    <button class="btn" id="addDepartment">إضافة قسم جديد</button>
-                                </div>
-                            </div>
-                            
-                            <table class="departments-table">
-                                <thead>
-                                    <tr>
-                                        <th>الترتيب</th>
-                                        <th>الترتيب التفصيلي</th>
-                                        <th>اسم القسم / المادة</th>
-                                        <th>الحالة</th>
-                                        <th>الإجراءات</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="departmentsTable">
-                                    <!-- سيتم ملؤها بالبيانات -->
-                                </tbody>
-                            </table>
                         </div>
                     </div>
                     
@@ -1969,8 +1973,8 @@
             // إعداد الروابط حسب الهاش
             setupHashRouting();
             
-            // إعداد أقسام الإعدادات
-            setupSettings();
+            // إعداد أقسام إدارة المستخدمين
+            setupUserManagement();
             
             // إعداد سجل النظام
             renderSystemLogs();
@@ -2058,14 +2062,19 @@
             // تحديث الهاش في الرابط
             window.location.hash = sectionId;
             
-            // إذا كان قسم الإعدادات، عرض الإعدادات العامة
-            if (sectionId === 'settings') {
-                renderSettingsSection('general_settings');
+            // إذا كان قسم إدارة المستخدمين، عرض القيادة العليا
+            if (sectionId === 'userManagement') {
+                renderUserManagementSection('senior_leadership');
                 renderDepartmentsTable();
-                renderSystemLogs();
                 
                 // عرض جداول المستخدمين
                 renderUserTables();
+            }
+            
+            // إذا كان قسم الإعدادات، عرض الإعدادات العامة
+            if (sectionId === 'settings') {
+                renderSettingsSection('general_settings');
+                renderSystemLogs();
             }
             
             // إذا كان قسم تقييم الأداء، عرض الرسم البياني
@@ -2180,47 +2189,20 @@
             document.querySelector('#previewModal .close-modal').addEventListener('click', closePreviewModal);
         }
 
-        // إعداد أقسام الإعدادات
-        function setupSettings() {
-            // إعداد علامات التبويب الفرعية للإعدادات
-            document.querySelectorAll('#settingsSubTabs a').forEach(tab => {
-                tab.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const sectionId = this.getAttribute('data-settings-section');
-                    
-                    // تحديث علامات التبويب النشطة
-                    document.querySelectorAll('#settingsSubTabs a').forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // إظهار القسم المطلوب
-                    document.querySelectorAll('#settings .user-management-section').forEach(section => {
-                        section.classList.remove('active');
-                        if (section.id === sectionId) {
-                            section.classList.add('active');
-                        }
-                    });
-                    
-                    // عرض المحتوى المناسب
-                    if (sectionId === 'user_management') {
-                        renderUserTables();
-                    } else if (sectionId === 'system_logs') {
-                        renderSystemLogs();
-                    }
-                });
-            });
-            
+        // إعداد أقسام إدارة المستخدمين
+        function setupUserManagement() {
             // إعداد علامات التبويب الفرعية لإدارة المستخدمين
-            document.querySelectorAll('#userSubTabs a').forEach(tab => {
+            document.querySelectorAll('#userManagementSubTabs a').forEach(tab => {
                 tab.addEventListener('click', function(e) {
                     e.preventDefault();
                     const sectionId = this.getAttribute('data-user-section');
                     
                     // تحديث علامات التبويب النشطة
-                    document.querySelectorAll('#userSubTabs a').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('#userManagementSubTabs a').forEach(t => t.classList.remove('active'));
                     this.classList.add('active');
                     
                     // إظهار القسم المطلوب
-                    document.querySelectorAll('#user_management .user-management-section').forEach(section => {
+                    document.querySelectorAll('#userManagement .user-management-section').forEach(section => {
                         section.classList.remove('active');
                         if (section.id === sectionId) {
                             section.classList.add('active');
@@ -2303,104 +2285,6 @@
             document.getElementById('cancelDepartment').addEventListener('click', closeDepartmentModal);
             document.querySelector('#departmentModal .close-modal').addEventListener('click', closeDepartmentModal);
             document.getElementById('departmentForm').addEventListener('submit', saveDepartment);
-            
-            // تحميل اسم المدرسة
-            document.getElementById('schoolName').value = appData.settings.schoolName || '';
-            
-            // تحميل شعار الوزارة
-            if (appData.settings.ministryLogo) {
-                document.getElementById('ministryLogoPreview').style.display = 'block';
-                document.getElementById('ministryLogoPreview').querySelector('img').src = appData.settings.ministryLogo;
-                document.getElementById('ministryLogoUpload').style.display = 'none';
-            }
-            
-            // تحميل شعار المدرسة
-            if (appData.settings.schoolLogo) {
-                document.getElementById('schoolLogoPreview').style.display = 'block';
-                document.getElementById('schoolLogoPreview').querySelector('img').src = appData.settings.schoolLogo;
-                document.getElementById('schoolLogoUpload').style.display = 'none';
-            }
-            
-            // إعداد رفع شعار الوزارة
-            document.getElementById('ministryLogoUpload').addEventListener('click', function() {
-                document.getElementById('ministryLogoFile').click();
-            });
-            
-            document.getElementById('ministryLogoFile').addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        appData.settings.ministryLogo = e.target.result;
-                        document.getElementById('ministryLogoPreview').style.display = 'block';
-                        document.getElementById('ministryLogoPreview').querySelector('img').src = e.target.result;
-                        document.getElementById('ministryLogoUpload').style.display = 'none';
-                        saveDataToStorage();
-                        addSystemLog('تم رفع شعار وزارة التربية والتعليم');
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-            
-            document.getElementById('removeMinistryLogo').addEventListener('click', function() {
-                appData.settings.ministryLogo = '';
-                document.getElementById('ministryLogoPreview').style.display = 'none';
-                document.getElementById('ministryLogoUpload').style.display = 'block';
-                saveDataToStorage();
-                addSystemLog('تم إزالة شعار وزارة التربية والتعليم');
-            });
-            
-            // إعداد رفع شعار المدرسة
-            document.getElementById('schoolLogoUpload').addEventListener('click', function() {
-                document.getElementById('schoolLogoFile').click();
-            });
-            
-            document.getElementById('schoolLogoFile').addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        appData.settings.schoolLogo = e.target.result;
-                        document.getElementById('schoolLogoPreview').style.display = 'block';
-                        document.getElementById('schoolLogoPreview').querySelector('img').src = e.target.result;
-                        document.getElementById('schoolLogoUpload').style.display = 'none';
-                        saveDataToStorage();
-                        addSystemLog('تم رفع شعار المدرسة');
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-            
-            document.getElementById('removeSchoolLogo').addEventListener('click', function() {
-                appData.settings.schoolLogo = '';
-                document.getElementById('schoolLogoPreview').style.display = 'none';
-                document.getElementById('schoolLogoUpload').style.display = 'block';
-                saveDataToStorage();
-                addSystemLog('تم إزالة شعار المدرسة');
-            });
-            
-            // حفظ اسم المدرسة
-            document.getElementById('saveSchoolName').addEventListener('click', function() {
-                const schoolName = document.getElementById('schoolName').value;
-                if (schoolName) {
-                    appData.settings.schoolName = schoolName;
-                    saveDataToStorage();
-                    addSystemLog('تم تحديث اسم المدرسة: ' + schoolName);
-                    alert('تم حفظ اسم المدرسة بنجاح');
-                } else {
-                    alert('يرجى إدخال اسم المدرسة');
-                }
-            });
-            
-            // حفظ الإعدادات العامة
-            document.getElementById('saveGeneralSettings').addEventListener('click', function() {
-                saveDataToStorage();
-                addSystemLog('تم تحديث الإعدادات العامة');
-                alert('تم حفظ الإعدادات العامة بنجاح');
-            });
-            
-            // عرض القسم الافتراضي (الإعدادات العامة)
-            renderSettingsSection('general_settings');
             
             // إعداد أزرار الإجراءات الجماعية
             setupBulkActions();
@@ -2797,18 +2681,18 @@
             alert(`تم ${selectedIds[0] ? 'تفعيل/إلغاء تفعيل' : 'تغيير حالة'} ${selectedIds.length} مستخدم بنجاح`);
         }
 
-        // عرض قسم الإعدادات
-        function renderSettingsSection(sectionId) {
-            document.querySelectorAll('#settings .user-management-section').forEach(section => {
+        // عرض قسم إدارة المستخدمين
+        function renderUserManagementSection(sectionId) {
+            document.querySelectorAll('#userManagement .user-management-section').forEach(section => {
                 section.classList.remove('active');
                 if (section.id === sectionId) {
                     section.classList.add('active');
                 }
             });
             
-            document.querySelectorAll('#settingsSubTabs a').forEach(tab => {
+            document.querySelectorAll('#userManagementSubTabs a').forEach(tab => {
                 tab.classList.remove('active');
-                if (tab.getAttribute('data-settings-section') === sectionId) {
+                if (tab.getAttribute('data-user-section') === sectionId) {
                     tab.classList.add('active');
                 }
             });
@@ -3527,6 +3411,149 @@
                     <td>${log.action}</td>
                 `;
                 table.appendChild(row);
+            });
+        }
+
+        // إعداد أقسام الإعدادات
+        function setupSettings() {
+            // إعداد علامات التبويب الفرعية للإعدادات
+            document.querySelectorAll('#settingsSubTabs a').forEach(tab => {
+                tab.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const sectionId = this.getAttribute('data-settings-section');
+                    
+                    // تحديث علامات التبويب النشطة
+                    document.querySelectorAll('#settingsSubTabs a').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // إظهار القسم المطلوب
+                    document.querySelectorAll('#settings .user-management-section').forEach(section => {
+                        section.classList.remove('active');
+                        if (section.id === sectionId) {
+                            section.classList.add('active');
+                        }
+                    });
+                    
+                    // عرض المحتوى المناسب
+                    if (sectionId === 'system_logs') {
+                        renderSystemLogs();
+                    }
+                });
+            });
+            
+            // تحميل اسم المدرسة
+            document.getElementById('schoolName').value = appData.settings.schoolName || '';
+            
+            // تحميل شعار الوزارة
+            if (appData.settings.ministryLogo) {
+                document.getElementById('ministryLogoPreview').style.display = 'block';
+                document.getElementById('ministryLogoPreview').querySelector('img').src = appData.settings.ministryLogo;
+                document.getElementById('ministryLogoUpload').style.display = 'none';
+            }
+            
+            // تحميل شعار المدرسة
+            if (appData.settings.schoolLogo) {
+                document.getElementById('schoolLogoPreview').style.display = 'block';
+                document.getElementById('schoolLogoPreview').querySelector('img').src = appData.settings.schoolLogo;
+                document.getElementById('schoolLogoUpload').style.display = 'none';
+            }
+            
+            // إعداد رفع شعار الوزارة
+            document.getElementById('ministryLogoUpload').addEventListener('click', function() {
+                document.getElementById('ministryLogoFile').click();
+            });
+            
+            document.getElementById('ministryLogoFile').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        appData.settings.ministryLogo = e.target.result;
+                        document.getElementById('ministryLogoPreview').style.display = 'block';
+                        document.getElementById('ministryLogoPreview').querySelector('img').src = e.target.result;
+                        document.getElementById('ministryLogoUpload').style.display = 'none';
+                        saveDataToStorage();
+                        addSystemLog('تم رفع شعار وزارة التربية والتعليم');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            document.getElementById('removeMinistryLogo').addEventListener('click', function() {
+                appData.settings.ministryLogo = '';
+                document.getElementById('ministryLogoPreview').style.display = 'none';
+                document.getElementById('ministryLogoUpload').style.display = 'block';
+                saveDataToStorage();
+                addSystemLog('تم إزالة شعار وزارة التربية والتعليم');
+            });
+            
+            // إعداد رفع شعار المدرسة
+            document.getElementById('schoolLogoUpload').addEventListener('click', function() {
+                document.getElementById('schoolLogoFile').click();
+            });
+            
+            document.getElementById('schoolLogoFile').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        appData.settings.schoolLogo = e.target.result;
+                        document.getElementById('schoolLogoPreview').style.display = 'block';
+                        document.getElementById('schoolLogoPreview').querySelector('img').src = e.target.result;
+                        document.getElementById('schoolLogoUpload').style.display = 'none';
+                        saveDataToStorage();
+                        addSystemLog('تم رفع شعار المدرسة');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            document.getElementById('removeSchoolLogo').addEventListener('click', function() {
+                appData.settings.schoolLogo = '';
+                document.getElementById('schoolLogoPreview').style.display = 'none';
+                document.getElementById('schoolLogoUpload').style.display = 'block';
+                saveDataToStorage();
+                addSystemLog('تم إزالة شعار المدرسة');
+            });
+            
+            // حفظ اسم المدرسة
+            document.getElementById('saveSchoolName').addEventListener('click', function() {
+                const schoolName = document.getElementById('schoolName').value;
+                if (schoolName) {
+                    appData.settings.schoolName = schoolName;
+                    saveDataToStorage();
+                    addSystemLog('تم تحديث اسم المدرسة: ' + schoolName);
+                    alert('تم حفظ اسم المدرسة بنجاح');
+                } else {
+                    alert('يرجى إدخال اسم المدرسة');
+                }
+            });
+            
+            // حفظ الإعدادات العامة
+            document.getElementById('saveGeneralSettings').addEventListener('click', function() {
+                saveDataToStorage();
+                addSystemLog('تم تحديث الإعدادات العامة');
+                alert('تم حفظ الإعدادات العامة بنجاح');
+            });
+            
+            // عرض القسم الافتراضي (الإعدادات العامة)
+            renderSettingsSection('general_settings');
+        }
+
+        // عرض قسم الإعدادات
+        function renderSettingsSection(sectionId) {
+            document.querySelectorAll('#settings .user-management-section').forEach(section => {
+                section.classList.remove('active');
+                if (section.id === sectionId) {
+                    section.classList.add('active');
+                }
+            });
+            
+            document.querySelectorAll('#settingsSubTabs a').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.getAttribute('data-settings-section') === sectionId) {
+                    tab.classList.add('active');
+                }
             });
         }
 
