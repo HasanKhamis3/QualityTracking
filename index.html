@@ -747,16 +747,16 @@
             border-bottom-color: var(--primary);
         }
 
-        /* تخصيص أعمدة الجدول */
+        /* تخصيص أعمدة الجدول - التعديلات المطلوبة */
         .user-table th:nth-child(1),
         .user-table td:nth-child(1) {
-            width: 60px; /* الترتيب */
+            width: 60px; /* م */
             text-align: center;
         }
         
         .user-table th:nth-child(2),
         .user-table td:nth-child(2) {
-            width: 80px; /* التصنيف */
+            width: 100px; /* التصنيف */
             text-align: center;
         }
         
@@ -777,7 +777,19 @@
         
         .user-table th:nth-child(6),
         .user-table td:nth-child(6) {
-            width: 350px; /* الإجراءات */
+            width: 200px; /* الإجراءات */
+            text-align: center;
+        }
+        
+        /* إخفاء رقم الهاتف للمعلمات */
+        .teacher-table th:nth-child(5),
+        .teacher-table td:nth-child(5) {
+            display: none;
+        }
+        
+        /* إخفاء أزرار الصلاحيات للمعلمات */
+        .teacher-table .access-user {
+            display: none;
         }
 
         /* الأنماط الجديدة */
@@ -1890,7 +1902,7 @@
                             <table class="user-table">
                                 <thead>
                                     <tr>
-                                        <th>الترتيب</th>
+                                        <th>م</th>
                                         <th>التصنيف</th>
                                         <th>الاسم</th>
                                         <th>الوظيفة</th>
@@ -1937,7 +1949,7 @@
                             <table class="user-table">
                                 <thead>
                                     <tr>
-                                        <th>الترتيب</th>
+                                        <th>م</th>
                                         <th>التصنيف</th>
                                         <th>الاسم</th>
                                         <th>الوظيفة</th>
@@ -1981,13 +1993,14 @@
                                 </div>
                             </div>
                             
-                            <table class="user-table">
+                            <table class="user-table teacher-table">
                                 <thead>
                                     <tr>
-                                        <th>الترتيب</th>
+                                        <th>م</th>
                                         <th>التصنيف</th>
                                         <th>الاسم</th>
                                         <th>القسم</th>
+                                        <th>رقم الهاتف</th>
                                         <th>الإجراءات</th>
                                     </tr>
                                 </thead>
@@ -2406,44 +2419,7 @@
             
             // إعداد سجل النظام
             renderSystemLogs();
-            
-            // إعداد التحسينات الجديدة
-            setupImprovements();
         });
-
-        // إعداد التحسينات الجديدة
-        function setupImprovements() {
-            // إعداد أزرار الترتيب في أقسام المواد
-            document.querySelectorAll('.move-up, .move-down').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const departmentId = parseInt(this.getAttribute('data-id'));
-                    if (this.classList.contains('move-up')) {
-                        moveDepartmentUp(departmentId);
-                    } else {
-                        moveDepartmentDown(departmentId);
-                    }
-                });
-            });
-
-            // إعداد تحديد الكل في أقسام المواد
-            document.getElementById('selectAllDepartments').addEventListener('change', function() {
-                toggleSelectAllDepartments(this.checked);
-            });
-
-            // إعداد أزرار الإجراءات الجماعية في أقسام المواد
-            document.getElementById('bulkDeleteDepartments').addEventListener('click', function() {
-                bulkActionDepartments('delete');
-            });
-            document.getElementById('bulkActivateDepartments').addEventListener('click', function() {
-                bulkActionDepartments('activate');
-            });
-            document.getElementById('bulkDeactivateDepartments').addEventListener('click', function() {
-                bulkActionDepartments('deactivate');
-            });
-
-            // تحديث قوائم الاختيار في نموذج إضافة زيارة
-            updateVisitFormDropdowns();
-        }
 
         // تحميل البيانات من localStorage
         function loadDataFromStorage() {
@@ -2924,7 +2900,7 @@
             });
         }
 
-        // عرض جدول إدارة المستخدمين
+        // عرض جدول إدارة المستخدمين - التعديلات المطلوبة
         function renderUserManagementTable(role) {
             let tableId = '';
             let emptyStateId = '';
@@ -2947,6 +2923,13 @@
             const table = document.getElementById(tableId);
             const emptyState = document.getElementById(emptyStateId);
             
+            // إضافة كلاس للمعلمات لإخفاء رقم الهاتف وأزرار الصلاحيات
+            if (role === 'teacher') {
+                table.classList.add('teacher-table');
+            } else {
+                table.classList.remove('teacher-table');
+            }
+            
             // إظهار أو إخفاء الحالة الفارغة
             if (users.length === 0) {
                 table.style.display = 'none';
@@ -2962,27 +2945,31 @@
             users.forEach((user, index) => {
                 const row = document.createElement('tr');
                 
-                // تحديد نص العمود الثالث بناءً على الدور
-                let thirdColumn = '';
+                // تحديد نص التصنيف بناءً على الدور
+                let classification = '';
+                if (role === 'senior_leadership') {
+                    classification = 'قيادة عليا';
+                } else if (role === 'middle_leadership') {
+                    classification = 'قيادة وسطى';
+                } else if (role === 'teacher') {
+                    classification = 'معلمة';
+                }
+                
+                // تحديد نص العمود الرابع بناءً على الدور
+                let fourthColumn = '';
                 if (role === 'teacher') {
-                    thirdColumn = user.department || user.position || '';
+                    fourthColumn = user.department || user.position || '';
                 } else {
-                    thirdColumn = user.position || '';
+                    fourthColumn = user.position || '';
                 }
                 
                 // تحديد ما إذا كان سيتم عرض رقم الهاتف
                 const phoneColumn = role === 'teacher' ? '' : `<td>${user.phone || ''}</td>`;
                 
-                row.innerHTML = `
-                    <td>
-                        <input type="checkbox" class="user-checkbox" data-id="${user.id}">
-                        ${index + 1}
-                    </td>
-                    <td>التصنيف</td>
-                    <td>${user.name}</td>
-                    <td>${thirdColumn}</td>
-                    ${phoneColumn}
-                    <td>
+                // تحديد أزرار الإجراءات
+                let actionButtons = '';
+                if (role === 'teacher') {
+                    actionButtons = `
                         <div class="user-actions">
                             <button class="btn btn-xs btn-warning preview-user" data-id="${user.id}">معاينة</button>
                             <button class="btn btn-xs btn-secondary edit-user" data-id="${user.id}">تعديل</button>
@@ -2990,18 +2977,47 @@
                             <button class="btn btn-xs ${user.active ? 'btn-warning' : 'btn-success'} toggle-user" data-id="${user.id}">
                                 ${user.active ? 'إلغاء التفعيل' : 'تفعيل'}
                             </button>
-                            ${role !== 'teacher' ? `
-                                <button class="btn btn-xs ${user.hasAccess ? 'btn-success' : 'btn-secondary'} access-user" data-id="${user.id}">
-                                    ${user.hasAccess ? 'إدارة الصلاحيات' : 'إذن الوصول'}
-                                </button>
-                            ` : ''}
                         </div>
+                    `;
+                } else {
+                    actionButtons = `
+                        <div class="user-actions">
+                            <button class="btn btn-xs btn-warning preview-user" data-id="${user.id}">معاينة</button>
+                            <button class="btn btn-xs btn-secondary edit-user" data-id="${user.id}">تعديل</button>
+                            <button class="btn btn-xs btn-danger delete-user" data-id="${user.id}">حذف</button>
+                            <button class="btn btn-xs ${user.active ? 'btn-warning' : 'btn-success'} toggle-user" data-id="${user.id}">
+                                ${user.active ? 'إلغاء التفعيل' : 'تفعيل'}
+                            </button>
+                            <button class="btn btn-xs ${user.hasAccess ? 'btn-success' : 'btn-secondary'} access-user" data-id="${user.id}">
+                                ${user.hasAccess ? 'إدارة الصلاحيات' : 'إذن الوصول'}
+                            </button>
+                        </div>
+                    `;
+                }
+                
+                row.innerHTML = `
+                    <td>
+                        <input type="checkbox" class="user-checkbox" data-id="${user.id}">
+                        ${index + 1}
                     </td>
+                    <td>${classification}</td>
+                    <td>${user.name}</td>
+                    <td>${fourthColumn}</td>
+                    ${phoneColumn}
+                    <td>${actionButtons}</td>
                 `;
                 table.appendChild(row);
             });
             
             // إضافة معالجي الأحداث للأزرار
+            setupUserTableEventHandlers(tableId, role);
+            
+            // تحديث حالة أزرار الإجراءات الجماعية
+            updateBulkActionsState(role);
+        }
+
+        // إعداد معالجي الأحداث للجدول
+        function setupUserTableEventHandlers(tableId, role) {
             document.querySelectorAll(`#${tableId} .preview-user`).forEach(btn => {
                 btn.addEventListener('click', function() {
                     const userId = parseInt(this.getAttribute('data-id'));
@@ -3030,278 +3046,24 @@
                 });
             });
             
-            document.querySelectorAll(`#${tableId} .access-user`).forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const userId = parseInt(this.getAttribute('data-id'));
-                    if (this.textContent === 'إذن الوصول') {
-                        grantAccess(userId);
-                    } else {
-                        showPermissionsModal(userId);
-                    }
+            // إضافة معالج أزرار الصلاحيات فقط للقيادة
+            if (role !== 'teacher') {
+                document.querySelectorAll(`#${tableId} .access-user`).forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const userId = parseInt(this.getAttribute('data-id'));
+                        if (this.textContent === 'إذن الوصول') {
+                            grantAccess(userId);
+                        } else {
+                            showPermissionsModal(userId);
+                        }
+                    });
                 });
-            });
+            }
             
             // إضافة معالجي الأحداث لخانات الاختيار
             document.querySelectorAll(`#${tableId} .user-checkbox`).forEach(checkbox => {
                 checkbox.addEventListener('change', function() {
                     updateBulkActionsState(role);
-                });
-            });
-            
-            // تحديث حالة أزرار الإجراءات الجماعية
-            updateBulkActionsState(role);
-        }
-
-        // نقل مستخدم لأعلى
-        function moveUserUp(userId, role) {
-            const users = appData.users.filter(user => user.role === role);
-            const userIndex = users.findIndex(u => u.id === userId);
-            
-            if (userIndex <= 0) return;
-            
-            // تبادل المواقع
-            const temp = users[userIndex];
-            users[userIndex] = users[userIndex - 1];
-            users[userIndex - 1] = temp;
-            
-            saveDataToStorage();
-            renderUserManagementTable(role);
-            addSystemLog(`تم نقل المستخدم ${temp.name} لأعلى في ${getRoleName(role)}`);
-        }
-
-        // نقل مستخدم لأسفل
-        function moveUserDown(userId, role) {
-            const users = appData.users.filter(user => user.role === role);
-            const userIndex = users.findIndex(u => u.id === userId);
-            
-            if (userIndex === -1 || userIndex >= users.length - 1) return;
-            
-            // تبادل المواقع
-            const temp = users[userIndex];
-            users[userIndex] = users[userIndex + 1];
-            users[userIndex + 1] = temp;
-            
-            saveDataToStorage();
-            renderUserManagementTable(role);
-            addSystemLog(`تم نقل المستخدم ${temp.name} لأسفل في ${getRoleName(role)}`);
-        }
-
-        // منح إذن الوصول
-        function grantAccess(userId) {
-            const user = appData.users.find(u => u.id === userId);
-            if (!user) return;
-            
-            user.hasAccess = true;
-            user.username = generateUsername(user.name);
-            user.password = '123456';
-            
-            saveDataToStorage();
-            
-            // تحديث الجدول الحالي
-            const activeSection = document.querySelector('#userSubTabs a.active').getAttribute('data-user-section');
-            renderUserManagementTable(activeSection);
-            
-            addSystemLog(`تم منح إذن الوصول للمستخدم ${user.name}`);
-            alert('تم منح إذن الوصول بنجاح');
-        }
-
-        // نقل قسم لأعلى
-        function moveDepartmentUp(departmentId) {
-            const department = appData.departments.find(d => d.id === departmentId);
-            if (!department || department.order <= 1) return;
-            
-            const prevDepartment = appData.departments.find(d => d.order === department.order - 1);
-            if (prevDepartment) {
-                // تبادل الترتيب
-                const tempOrder = department.order;
-                department.order = prevDepartment.order;
-                prevDepartment.order = tempOrder;
-                
-                saveDataToStorage();
-                renderDepartmentsTable();
-                addSystemLog(`تم نقل قسم ${department.name} لأعلى`);
-            }
-        }
-
-        // نقل قسم لأسفل
-        function moveDepartmentDown(departmentId) {
-            const department = appData.departments.find(d => d.id === departmentId);
-            if (!department) return;
-            
-            const maxOrder = Math.max(...appData.departments.map(d => d.order));
-            if (department.order >= maxOrder) return;
-            
-            const nextDepartment = appData.departments.find(d => d.order === department.order + 1);
-            if (nextDepartment) {
-                // تبادل الترتيب
-                const tempOrder = department.order;
-                department.order = nextDepartment.order;
-                nextDepartment.order = tempOrder;
-                
-                saveDataToStorage();
-                renderDepartmentsTable();
-                addSystemLog(`تم نقل قسم ${department.name} لأسفل`);
-            }
-        }
-
-        // تحديد/إلغاء تحديد جميع الأقسام
-        function toggleSelectAllDepartments(checked) {
-            document.querySelectorAll('#departmentsTable .department-checkbox').forEach(checkbox => {
-                checkbox.checked = checked;
-            });
-            updateBulkActionsDepartmentsState();
-        }
-
-        // تحديث حالة أزرار الإجراءات الجماعية للأقسام
-        function updateBulkActionsDepartmentsState() {
-            const checkedBoxes = document.querySelectorAll('#departmentsTable .department-checkbox:checked');
-            const hasSelected = checkedBoxes.length > 0;
-            
-            const bulkButtons = document.querySelectorAll('#departments .bulk-actions button');
-            bulkButtons.forEach(button => {
-                if (button.id !== 'selectAllDepartments') {
-                    button.disabled = !hasSelected;
-                }
-            });
-        }
-
-        // تنفيذ الإجراءات الجماعية على الأقسام
-        function bulkActionDepartments(action) {
-            const checkedBoxes = document.querySelectorAll('#departmentsTable .department-checkbox:checked');
-            
-            if (checkedBoxes.length === 0) {
-                alert('يرجى تحديد أقسام على الأقل');
-                return;
-            }
-            
-            const departmentIds = Array.from(checkedBoxes).map(checkbox => parseInt(checkbox.getAttribute('data-id')));
-            
-            if (action === 'delete') {
-                if (confirm(`هل أنت متأكد من حذف ${departmentIds.length} قسم؟`)) {
-                    departmentIds.forEach(departmentId => {
-                        const department = appData.departments.find(d => d.id === departmentId);
-                        appData.departments = appData.departments.filter(d => d.id !== departmentId);
-                        addSystemLog(`تم حذف القسم ${department.name}`);
-                    });
-                    saveDataToStorage();
-                    renderDepartmentsTable();
-                    alert(`تم حذف ${departmentIds.length} قسم بنجاح`);
-                }
-            } else if (action === 'activate') {
-                departmentIds.forEach(departmentId => {
-                    const department = appData.departments.find(d => d.id === departmentId);
-                    if (department) {
-                        department.status = 'active';
-                        addSystemLog(`تم تفعيل القسم ${department.name}`);
-                    }
-                });
-                saveDataToStorage();
-                renderDepartmentsTable();
-                alert(`تم تفعيل ${departmentIds.length} قسم بنجاح`);
-            } else if (action === 'deactivate') {
-                departmentIds.forEach(departmentId => {
-                    const department = appData.departments.find(d => d.id === departmentId);
-                    if (department) {
-                        department.status = 'inactive';
-                        addSystemLog(`تم إلغاء تفعيل القسم ${department.name}`);
-                    }
-                });
-                saveDataToStorage();
-                renderDepartmentsTable();
-                alert(`تم إلغاء تفعيل ${departmentIds.length} قسم بنجاح`);
-            }
-            
-            // إعادة تعيين تحديد الكل
-            document.getElementById('selectAllDepartments').checked = false;
-        }
-
-        // عرض جدول أقسام المواد مع التحسينات
-        function renderDepartmentsTable() {
-            const table = document.getElementById('departmentsTable');
-            table.innerHTML = '';
-            
-            // ترتيب الأقسام حسب الترتيب المحدد
-            const sortedDepartments = [...appData.departments].sort((a, b) => a.order - b.order);
-            
-            sortedDepartments.forEach((department, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>
-                        <input type="checkbox" class="department-checkbox" data-id="${department.id}">
-                        ${index + 1}
-                    </td>
-                    <td>
-                        <div class="order-controls">
-                            <button class="order-btn move-up" data-id="${department.id}">▲</button>
-                            ${department.order}
-                            <button class="order-btn move-down" data-id="${department.id}">▼</button>
-                        </div>
-                    </td>
-                    <td>التصنيف</td>
-                    <td>${department.name}</td>
-                    <td>
-                        <span class="status-badge ${department.status === 'active' ? 'status-active' : 'status-inactive'}">
-                            ${department.status === 'active' ? 'مفعل' : 'غير مفعل'}
-                        </span>
-                    </td>
-                    <td>
-                        <div class="user-actions">
-                            <button class="btn btn-xs btn-secondary edit-department" data-id="${department.id}">تعديل</button>
-                            <button class="btn btn-xs btn-danger delete-department" data-id="${department.id}">حذف</button>
-                            <button class="btn btn-xs ${department.status === 'active' ? 'btn-warning' : 'btn-success'} toggle-department" data-id="${department.id}">
-                                ${department.status === 'active' ? 'إلغاء التفعيل' : 'تفعيل'}
-                            </button>
-                        </div>
-                    </td>
-                `;
-                table.appendChild(row);
-            });
-            
-            // إعادة إعداد معالجي الأحداث
-            setupDepartmentsEventHandlers();
-            updateBulkActionsDepartmentsState();
-        }
-
-        // إعداد معالجي الأحداث للجداول المحسنة
-        function setupDepartmentsEventHandlers() {
-            document.querySelectorAll('.edit-department').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const departmentId = parseInt(this.getAttribute('data-id'));
-                    editDepartment(departmentId);
-                });
-            });
-            
-            document.querySelectorAll('.delete-department').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const departmentId = parseInt(this.getAttribute('data-id'));
-                    deleteDepartment(departmentId);
-                });
-            });
-            
-            document.querySelectorAll('.toggle-department').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const departmentId = parseInt(this.getAttribute('data-id'));
-                    toggleDepartment(departmentId);
-                });
-            });
-            
-            document.querySelectorAll('.move-up').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const departmentId = parseInt(this.getAttribute('data-id'));
-                    moveDepartmentUp(departmentId);
-                });
-            });
-            
-            document.querySelectorAll('.move-down').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const departmentId = parseInt(this.getAttribute('data-id'));
-                    moveDepartmentDown(departmentId);
-                });
-            });
-            
-            document.querySelectorAll('.department-checkbox').forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
-                    updateBulkActionsDepartmentsState();
                 });
             });
         }
@@ -3619,6 +3381,25 @@
             
             addSystemLog(`تم ${user.active ? 'تفعيل' : 'إلغاء تفعيل'} المستخدم ${user.name}`);
             alert(`تم ${user.active ? 'تفعيل' : 'إلغاء تفعيل'} المستخدم بنجاح`);
+        }
+
+        // منح إذن الوصول
+        function grantAccess(userId) {
+            const user = appData.users.find(u => u.id === userId);
+            if (!user) return;
+            
+            user.hasAccess = true;
+            user.username = generateUsername(user.name);
+            user.password = '123456';
+            
+            saveDataToStorage();
+            
+            // تحديث الجدول الحالي
+            const activeSection = document.querySelector('#userSubTabs a.active').getAttribute('data-user-section');
+            renderUserManagementTable(activeSection);
+            
+            addSystemLog(`تم منح إذن الوصول للمستخدم ${user.name}`);
+            alert('تم منح إذن الوصول بنجاح');
         }
 
         // عرض نموذج الصلاحيات
@@ -4079,36 +3860,6 @@
             });
         }
 
-        // تحديث قوائم الاختيار في نموذج إضافة زيارة
-        function updateVisitFormDropdowns() {
-            // تحديث قائمة الأقسام
-            const departmentSelect = document.getElementById('department');
-            if (departmentSelect) {
-                departmentSelect.innerHTML = '';
-                appData.departments.forEach(department => {
-                    if (department.status === 'active') {
-                        const option = document.createElement('option');
-                        option.value = department.name;
-                        option.textContent = department.name;
-                        departmentSelect.appendChild(option);
-                    }
-                });
-            }
-            
-            // تحديث قائمة المعلمين
-            const teacherSelect = document.getElementById('teacherName');
-            if (teacherSelect) {
-                teacherSelect.innerHTML = '';
-                const teachers = appData.users.filter(user => user.role === 'teacher' && user.active);
-                teachers.forEach(teacher => {
-                    const option = document.createElement('option');
-                    option.value = teacher.name;
-                    option.textContent = teacher.name;
-                    teacherSelect.appendChild(option);
-                });
-            }
-        }
-
         // دوال الحفظ للبيانات المختلفة
         function saveMiddleLeadership() {
             saveDataToStorage();
@@ -4134,7 +3885,7 @@
             alert('تم حفظ بيانات التقارير بنجاح');
         }
 
-        // ========== دوال باقي الأقسام (بدون تغيير) ==========
+        // ========== دوال باقي الأقسام ==========
 
         // عرض البيانات
         function renderData() {
@@ -4690,6 +4441,159 @@
                 
                 addSystemLog(`تم حذف زيارة صفية للمعلم ${visit.teacher}`);
                 alert('تم حذف الزيارة بنجاح');
+            }
+        }
+
+        // تحديث قوائم الاختيار في نموذج إضافة زيارة
+        function updateVisitFormDropdowns() {
+            // تحديث قائمة الأقسام
+            const departmentSelect = document.getElementById('department');
+            if (departmentSelect) {
+                departmentSelect.innerHTML = '';
+                appData.departments.forEach(department => {
+                    if (department.status === 'active') {
+                        const option = document.createElement('option');
+                        option.value = department.name;
+                        option.textContent = department.name;
+                        departmentSelect.appendChild(option);
+                    }
+                });
+            }
+            
+            // تحديث قائمة المعلمين
+            const teacherSelect = document.getElementById('teacherName');
+            if (teacherSelect) {
+                teacherSelect.innerHTML = '';
+                const teachers = appData.users.filter(user => user.role === 'teacher' && user.active);
+                teachers.forEach(teacher => {
+                    const option = document.createElement('option');
+                    option.value = teacher.name;
+                    option.textContent = teacher.name;
+                    teacherSelect.appendChild(option);
+                });
+            }
+        }
+
+        // عرض جدول أقسام المواد
+        function renderDepartmentsTable() {
+            const table = document.getElementById('departmentsTable');
+            table.innerHTML = '';
+            
+            // ترتيب الأقسام حسب الترتيب المحدد
+            const sortedDepartments = [...appData.departments].sort((a, b) => a.order - b.order);
+            
+            sortedDepartments.forEach((department, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <input type="checkbox" class="department-checkbox" data-id="${department.id}">
+                        ${index + 1}
+                    </td>
+                    <td>
+                        <div class="order-controls">
+                            <button class="order-btn move-up" data-id="${department.id}">▲</button>
+                            ${department.order}
+                            <button class="order-btn move-down" data-id="${department.id}">▼</button>
+                        </div>
+                    </td>
+                    <td>التصنيف</td>
+                    <td>${department.name}</td>
+                    <td>
+                        <span class="status-badge ${department.status === 'active' ? 'status-active' : 'status-inactive'}">
+                            ${department.status === 'active' ? 'مفعل' : 'غير مفعل'}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="user-actions">
+                            <button class="btn btn-xs btn-secondary edit-department" data-id="${department.id}">تعديل</button>
+                            <button class="btn btn-xs btn-danger delete-department" data-id="${department.id}">حذف</button>
+                            <button class="btn btn-xs ${department.status === 'active' ? 'btn-warning' : 'btn-success'} toggle-department" data-id="${department.id}">
+                                ${department.status === 'active' ? 'إلغاء التفعيل' : 'تفعيل'}
+                            </button>
+                        </div>
+                    </td>
+                `;
+                table.appendChild(row);
+            });
+            
+            // إعادة إعداد معالجي الأحداث
+            setupDepartmentsEventHandlers();
+        }
+
+        // إعداد معالجي الأحداث للجداول
+        function setupDepartmentsEventHandlers() {
+            document.querySelectorAll('.edit-department').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const departmentId = parseInt(this.getAttribute('data-id'));
+                    editDepartment(departmentId);
+                });
+            });
+            
+            document.querySelectorAll('.delete-department').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const departmentId = parseInt(this.getAttribute('data-id'));
+                    deleteDepartment(departmentId);
+                });
+            });
+            
+            document.querySelectorAll('.toggle-department').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const departmentId = parseInt(this.getAttribute('data-id'));
+                    toggleDepartment(departmentId);
+                });
+            });
+            
+            document.querySelectorAll('.move-up').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const departmentId = parseInt(this.getAttribute('data-id'));
+                    moveDepartmentUp(departmentId);
+                });
+            });
+            
+            document.querySelectorAll('.move-down').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const departmentId = parseInt(this.getAttribute('data-id'));
+                    moveDepartmentDown(departmentId);
+                });
+            });
+        }
+
+        // نقل قسم لأعلى
+        function moveDepartmentUp(departmentId) {
+            const department = appData.departments.find(d => d.id === departmentId);
+            if (!department || department.order <= 1) return;
+            
+            const prevDepartment = appData.departments.find(d => d.order === department.order - 1);
+            if (prevDepartment) {
+                // تبادل الترتيب
+                const tempOrder = department.order;
+                department.order = prevDepartment.order;
+                prevDepartment.order = tempOrder;
+                
+                saveDataToStorage();
+                renderDepartmentsTable();
+                addSystemLog(`تم نقل قسم ${department.name} لأعلى`);
+            }
+        }
+
+        // نقل قسم لأسفل
+        function moveDepartmentDown(departmentId) {
+            const department = appData.departments.find(d => d.id === departmentId);
+            if (!department) return;
+            
+            const maxOrder = Math.max(...appData.departments.map(d => d.order));
+            if (department.order >= maxOrder) return;
+            
+            const nextDepartment = appData.departments.find(d => d.order === department.order + 1);
+            if (nextDepartment) {
+                // تبادل الترتيب
+                const tempOrder = department.order;
+                department.order = nextDepartment.order;
+                nextDepartment.order = tempOrder;
+                
+                saveDataToStorage();
+                renderDepartmentsTable();
+                addSystemLog(`تم نقل قسم ${department.name} لأسفل`);
             }
         }
     </script>
