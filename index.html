@@ -2705,18 +2705,23 @@
             renderTeachersNeedCareReportTable();
             renderQualityReportTable();
 
-            // إعداد أزرار التحميل مع تأثيرات الضغط
+            // إعداد أزرار التحميل مع تأثيرات الضغط - إصلاح المشكلة
             const wordBtn = document.getElementById('downloadWordReport');
             const saveBtn = document.getElementById('saveQualityReport');
 
+            // إزالة أي مستمعي أحداث سابقين لمنع التكرار
             if (wordBtn) {
-                wordBtn.addEventListener('click', function(e) {
+                const newWordBtn = wordBtn.cloneNode(true);
+                wordBtn.parentNode.replaceChild(newWordBtn, wordBtn);
+                newWordBtn.addEventListener('click', function(e) {
                     showLoadingEffect(e.target, downloadWordReport);
                 });
             }
 
             if (saveBtn) {
-                saveBtn.addEventListener('click', function(e) {
+                const newSaveBtn = saveBtn.cloneNode(true);
+                saveBtn.parentNode.replaceChild(newSaveBtn, saveBtn);
+                newSaveBtn.addEventListener('click', function(e) {
                     showLoadingEffect(e.target, saveQualityReport);
                 });
             }
@@ -2773,6 +2778,13 @@
 
         // حفظ تقرير الجودة
         function saveQualityReport() {
+            // إضافة علامة لمنع التنفيذ المكرر
+            if (window.isSavingQualityReport) {
+                return;
+            }
+            
+            window.isSavingQualityReport = true;
+            
             updateQualityReport();
             try {
                 // إنشاء معرف فريد للتقرير
@@ -2806,6 +2818,11 @@
             } catch (e) {
                 alert('حدث خطأ أثناء حفظ التقرير');
                 console.error('خطأ في الحفظ:', e);
+            } finally {
+                // إعادة تعيين العلامة بعد اكتمال العملية
+                setTimeout(() => {
+                    window.isSavingQualityReport = false;
+                }, 1000);
             }
         }
 
@@ -3626,6 +3643,11 @@
 
         // وظيفة لإظهار تأثير التحميل
         function showLoadingEffect(button, callback) {
+            // التحقق من عدم وجود عملية تحميل حالية
+            if (button.classList.contains('btn-loading')) {
+                return;
+            }
+            
             // إضافة تأثير التحميل
             button.classList.add('btn-loading');
             
