@@ -1298,233 +1298,6 @@
             text-align: center;
         }
 
-        /* قسم إعدادات التقرير */
-        .report-settings-section {
-            background-color: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            padding: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .report-settings-header {
-            text-align: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--light);
-        }
-
-        .report-settings-title {
-            font-size: 1.8rem;
-            color: var(--primary);
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .report-settings-subtitle {
-            font-size: 1.2rem;
-            color: var(--gray);
-            margin-bottom: 0.5rem;
-        }
-
-        .settings-tabs {
-            display: flex;
-            background-color: white;
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            margin-bottom: 2rem;
-            box-shadow: var(--box-shadow);
-        }
-
-        .settings-tab {
-            flex: 1;
-            padding: 15px 20px;
-            text-align: center;
-            background-color: #f8f9fa;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: all 0.3s;
-            color: var(--gray);
-        }
-
-        .settings-tab.active {
-            background-color: var(--primary);
-            color: white;
-        }
-
-        .settings-tab:hover:not(.active) {
-            background-color: #e9ecef;
-        }
-
-        .settings-tab-content {
-            display: none;
-        }
-
-        .settings-tab-content.active {
-            display: block;
-        }
-
-        .settings-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 1.5rem;
-            font-size: 0.9rem;
-        }
-
-        .settings-table th, .settings-table td {
-            padding: 12px 10px;
-            text-align: right;
-            border: 1px solid #ddd;
-        }
-
-        .settings-table th {
-            background-color: var(--primary);
-            color: white;
-            font-weight: 600;
-        }
-
-        .settings-table tr:nth-child(even) {
-            background-color: #f8f9fa;
-        }
-
-        .settings-table tr:hover {
-            background-color: #e9ecef;
-        }
-
-        /* إعدادات الشعار */
-        .logo-upload-area {
-            border: 2px dashed #ddd;
-            border-radius: var(--border-radius);
-            padding: 2rem;
-            text-align: center;
-            margin-top: 1rem;
-            background-color: white;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .logo-upload-area:hover {
-            border-color: var(--primary);
-            background-color: rgba(44, 90, 160, 0.05);
-        }
-
-        .logo-upload-area.active {
-            border-color: var(--primary);
-            background-color: rgba(44, 90, 160, 0.1);
-        }
-
-        .logo-preview {
-            max-width: 200px;
-            max-height: 150px;
-            margin: 0 auto 1rem;
-            display: block;
-        }
-
-        .logo-upload-icon {
-            font-size: 3rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
-
-        /* إعدادات التذييل */
-        .footer-settings {
-            margin-top: 2rem;
-            padding: 1.5rem;
-            background-color: #f8f9fa;
-            border-radius: var(--border-radius);
-        }
-
-        .footer-preview {
-            margin-top: 1rem;
-            padding: 1rem;
-            background-color: white;
-            border-radius: var(--border-radius);
-            border: 1px solid #ddd;
-            text-align: center;
-        }
-
-        /* غلاف التقرير */
-        .report-cover {
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            color: white;
-            padding: 3rem;
-            border-radius: var(--border-radius);
-            text-align: center;
-            margin-bottom: 2rem;
-            position: relative;
-            overflow: hidden;
-            min-height: 500px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .report-cover::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.1)"/></svg>');
-            background-size: cover;
-        }
-
-        .report-cover-content {
-            position: relative;
-            z-index: 1;
-        }
-
-        .ministry-logo {
-            max-width: 150px;
-            margin: 0 auto 2rem;
-            display: block;
-        }
-
-        .report-cover-title {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            font-weight: 700;
-        }
-
-        .report-cover-subtitle {
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-        }
-
-        .report-cover-info {
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-        }
-
-        .report-cover-signatures {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 3rem;
-        }
-
-        .signature-box {
-            text-align: center;
-        }
-
-        .signature-line {
-            width: 200px;
-            height: 1px;
-            background-color: white;
-            margin: 10px auto;
-        }
-
-        .month-selector-cover {
-            background-color: rgba(255, 255, 255, 0.2);
-            padding: 10px 20px;
-            border-radius: 30px;
-            display: inline-block;
-            margin-bottom: 2rem;
-        }
-
         /* Responsive */
         @media (max-width: 768px) {
             .header-content {
@@ -1659,36 +1432,6 @@
                 flex-direction: column;
                 gap: 10px;
             }
-
-            .settings-table {
-                font-size: 0.8rem;
-            }
-            
-            .settings-table th,
-            .settings-table td {
-                padding: 8px 4px;
-            }
-
-            .report-cover {
-                padding: 1.5rem;
-            }
-            
-            .report-cover-title {
-                font-size: 1.8rem;
-            }
-            
-            .report-cover-subtitle {
-                font-size: 1.2rem;
-            }
-            
-            .report-cover-info {
-                font-size: 1rem;
-            }
-            
-            .report-cover-signatures {
-                flex-direction: column;
-                gap: 1.5rem;
-            }
         }
     </style>
 </head>
@@ -1733,12 +1476,12 @@
             <div class="container">
                 <ul class="nav-tabs" id="navTabs">
                     <li><a href="#" data-section="dashboard" class="active">لوحة التحكم</a></li>
+                    <!-- تم إزالة قسم القيادة الوسطى -->
                     <li><a href="#" data-section="visits">الزيارات الصفية</a></li>
                     <li><a href="#" data-section="performance">تقييم الأداء</a></li>
                     <li><a href="#" data-section="teachers">المعلمين المتميزين</a></li>
                     <li><a href="#" data-section="reports">التقارير النوعية</a></li>
                     <li><a href="#" data-section="quality-report">تقرير جودة التعليم</a></li>
-                    <li><a href="#" data-section="report-settings" id="reportSettingsTab" style="display: none;">إعدادات التقرير</a></li>
                     <li><a href="#" data-section="users" id="usersTab" style="display: none;">إدارة المستخدمين</a></li>
                 </ul>
             </div>
@@ -1803,8 +1546,9 @@
                     </div>
                     
                     <div class="sub-sections" id="visitsSubSections">
+                        <!-- تم إضافة قسم القيادة كنسخة من القيادة العليا -->
                         <button class="sub-section-btn active" data-department="القيادة العليا">القيادة العليا</button>
-                        <button class="sub-section-btn" data-department="القيادة الوسطى">القيادة الوسطى</button>
+                        <button class="sub-section-btn" data-department="القيادة">القيادة</button>
                     </div>
                     
                     <div id="visitsContent">
@@ -1945,47 +1689,12 @@
                     <!-- صفحة إنشاء التقرير -->
                     <div id="create-quality-report" class="quality-tab-content active">
                         <div class="quality-report-section">
-                            <div class="month-selector-cover">
-                                <label for="reportMonthCover">اختر الشهر:</label>
-                                <select id="reportMonthCover">
-                                    <option value="يناير">يناير</option>
-                                    <option value="فبراير">فبراير</option>
-                                    <option value="مارس">مارس</option>
-                                    <option value="أبريل">أبريل</option>
-                                    <option value="مايو">مايو</option>
-                                    <option value="يونيو">يونيو</option>
-                                    <option value="يوليو">يوليو</option>
-                                    <option value="أغسطس">أغسطس</option>
-                                    <option value="سبتمبر">سبتمبر</option>
-                                    <option value="أكتوبر">أكتوبر</option>
-                                    <option value="نوفمبر">نوفمبر</option>
-                                    <option value="ديسمبر">ديسمبر</option>
-                                </select>
-                            </div>
-
-                            <!-- صفحة الغلاف -->
-                            <div class="report-cover">
-                                <div class="report-cover-content">
-                                    <img id="ministryLogoPreview" class="ministry-logo" src="" alt="شعار الوزارة" style="display: none;">
-                                    <h1 class="report-cover-title">تقرير متابعة جودة التعليم والتعلم</h1>
-                                    <h2 class="report-cover-subtitle">للقيادة العليا والوسطى</h2>
-                                    <div class="report-cover-info" id="schoolNameCover">لمدرسة ___________________________</div>
-                                    <div class="report-cover-info" id="reportMonthCoverText">شهر ____________</div>
-                                    <div class="report-cover-info">العام الدراسي 2025 / 2026م</div>
-                                    
-                                    <div class="report-cover-signatures">
-                                        <div class="signature-box">
-                                            <div>إعداد المدير/ة المساعد/ة</div>
-                                            <div class="signature-line"></div>
-                                            <div id="assistantManagerName">___________________________</div>
-                                        </div>
-                                        <div class="signature-box">
-                                            <div>يعتمد، مدير/ة المدرسة</div>
-                                            <div class="signature-line"></div>
-                                            <div id="schoolManagerName">___________________________</div>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="quality-report-header">
+                                <h2 class="quality-report-title">تقرير متابعة جودة التعليم والتعلم للقيادة العليا والوسطى</h2>
+                                <p class="quality-report-subtitle" id="schoolNameHeader">لمدرسة ــــــــــــــــــــــــــــــــــــ</p>
+                                <p class="quality-report-subtitle" id="reportMonthHeader">شهر ____________</p>
+                                <p class="quality-report-subtitle" id="academicYearHeader">العام الدراسي 2025 / 2026م</p>
+                                <p class="quality-report-subtitle">إعداد المدير/ة المساعد/ة /يعتمد، مدير/ة المدرسة</p>
                             </div>
 
                             <!-- أولاً: متابعة تسليم القيادة الوسطى -->
@@ -2147,130 +1856,6 @@
                     </div>
                 </section>
 
-                <!-- Report Settings Section - الجديد -->
-                <section id="report-settings" class="section">
-                    <div class="section-header">
-                        <h2 class="section-title">إعدادات التقرير</h2>
-                    </div>
-                    
-                    <div class="settings-tabs">
-                        <button class="settings-tab active" data-tab="quality-report-settings">إعدادات تقرير جودة التعليم</button>
-                    </div>
-
-                    <!-- صفحة إعدادات تقرير جودة التعليم -->
-                    <div id="quality-report-settings" class="settings-tab-content active">
-                        <div class="report-settings-section">
-                            <div class="report-settings-header">
-                                <h2 class="report-settings-title">إعدادات تقرير جودة التعليم</h2>
-                                <p class="report-settings-subtitle">إعدادات الغلاف والزيارات الصفية</p>
-                            </div>
-
-                            <!-- إعدادات الشعار -->
-                            <div class="report-section">
-                                <h3 class="report-section-title">إعدادات الشعار</h3>
-                                <div class="logo-upload-area" id="logoUploadArea">
-                                    <i class="fas fa-cloud-upload-alt logo-upload-icon"></i>
-                                    <p>انقر لتحميل شعار الوزارة</p>
-                                    <p class="report-notes">الحجم الموصى به: 150x150 بكسل</p>
-                                    <img id="logoPreview" class="logo-preview" style="display: none;">
-                                </div>
-                                <input type="file" id="logoUpload" accept="image/*" style="display: none;">
-                            </div>
-
-                            <!-- إعدادات الغلاف -->
-                            <div class="report-section">
-                                <h3 class="report-section-title">إعدادات الغلاف</h3>
-                                <div class="form-group">
-                                    <label for="schoolName">اسم المدرسة</label>
-                                    <input type="text" id="schoolName" class="report-input" placeholder="أدخل اسم المدرسة">
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label>يعتمد، مدير/ة المدرسة</label>
-                                    <div class="table-header-actions">
-                                        <button class="btn" id="addSchoolManager">إضافة اسم</button>
-                                    </div>
-                                    <table class="settings-table">
-                                        <thead>
-                                            <tr>
-                                                <th>الترتيب</th>
-                                                <th>الاسم</th>
-                                                <th>الإجراءات</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="schoolManagersTable">
-                                            <!-- سيتم ملؤها بالبيانات -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label>إعداد المدير/ة المساعد/ة</label>
-                                    <div class="table-header-actions">
-                                        <button class="btn" id="addAssistantManager">إضافة اسم</button>
-                                    </div>
-                                    <table class="settings-table">
-                                        <thead>
-                                            <tr>
-                                                <th>الترتيب</th>
-                                                <th>الاسم</th>
-                                                <th>الإجراءات</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="assistantManagersTable">
-                                            <!-- سيتم ملؤها بالبيانات -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                            <!-- إعدادات الزيارات الصفية -->
-                            <div class="report-section">
-                                <h3 class="report-section-title">إعدادات الزيارات الصفية</h3>
-                                <p>إعداد ترتيب أسماء الزوار من القيادة العليا والوسطى</p>
-                                
-                                <div class="table-header-actions">
-                                    <button class="btn" id="addVisitor">إضافة زائر</button>
-                                </div>
-                                
-                                <table class="settings-table">
-                                    <thead>
-                                        <tr>
-                                            <th>الترتيب</th>
-                                            <th>اسم الزائر</th>
-                                            <th>الدور</th>
-                                            <th>الإجراءات</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="visitorsTable">
-                                        <!-- سيتم ملؤها بالبيانات -->
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <!-- إعدادات التذييل -->
-                            <div class="footer-settings">
-                                <h3 class="report-section-title">إعدادات التذييل</h3>
-                                <div class="form-group">
-                                    <label for="reportFooter">نص التذييل</label>
-                                    <textarea id="reportFooter" class="report-textarea" placeholder="أدخل نص التذييل الذي سيظهر في جميع صفحات التقرير"></textarea>
-                                </div>
-                                <div class="footer-preview">
-                                    <h4>معاينة التذييل</h4>
-                                    <div id="footerPreview"></div>
-                                </div>
-                            </div>
-
-                            <!-- أزرار الحفظ -->
-                            <div class="report-actions">
-                                <button class="btn btn-success" id="saveReportSettings">
-                                    <i class="fas fa-save"></i> حفظ الإعدادات
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
                 <!-- Users Management Section - المحدث -->
                 <section id="users" class="section">
                     <div class="section-header">
@@ -2279,8 +1864,9 @@
                     
                     <!-- علامات التبويب الفرعية -->
                     <ul class="user-sub-tabs" id="userSubTabs">
+                        <!-- تم إضافة قسم القيادة كنسخة من القيادة العليا -->
                         <li><a href="#" data-user-section="senior_leadership" class="active">القيادة العليا</a></li>
-                        <li><a href="#" data-user-section="middle_leadership">القيادة الوسطى</a></li>
+                        <li><a href="#" data-user-section="leadership">القيادة</a></li>
                         <li><a href="#" data-user-section="teacher">المعلمات</a></li>
                         <li><a href="#" data-user-section="departments">أقسام المواد</a></li>
                     </ul>
@@ -2341,26 +1927,26 @@
                         </table>
                     </div>
                     
-                    <!-- قسم القيادة الوسطى -->
-                    <div id="middle_leadership" class="user-management-section">
+                    <!-- قسم القيادة - تم إضافته كنسخة من القيادة العليا -->
+                    <div id="leadership" class="user-management-section">
                         <div class="user-management-header">
-                            <h3 class="user-management-title">إدارة القيادة الوسطى</h3>
+                            <h3 class="user-management-title">إدارة القيادة</h3>
                             <div class="user-management-actions">
-                                <button class="btn" id="addMiddleLeadership">إضافة اسم جديد</button>
-                                <button class="btn btn-secondary" id="exportMiddleLeadership">تصدير CSV</button>
-                                <button class="btn btn-secondary" id="importMiddleLeadership">استيراد CSV</button>
-                                <input type="file" id="middleLeadershipFile" accept=".csv" style="display: none;">
+                                <button class="btn" id="addLeadership">إضافة اسم جديد</button>
+                                <button class="btn btn-secondary" id="exportLeadership">تصدير CSV</button>
+                                <button class="btn btn-secondary" id="importLeadership">استيراد CSV</button>
+                                <input type="file" id="leadershipFile" accept=".csv" style="display: none;">
                             </div>
                         </div>
 
                         <!-- إجراءات جماعية -->
                         <div class="table-header-actions">
                             <div class="bulk-actions">
-                                <button class="btn btn-xs btn-danger" id="bulkDeleteMiddle">حذف المحددين</button>
-                                <button class="btn btn-xs btn-success" id="bulkActivateMiddle">تفعيل المحددين</button>
-                                <button class="btn btn-xs btn-warning" id="bulkDeactivateMiddle">إلغاء تفعيل المحددين</button>
+                                <button class="btn btn-xs btn-danger" id="bulkDelete">حذف المحددين</button>
+                                <button class="btn btn-xs btn-success" id="bulkActivate">تفعيل المحددين</button>
+                                <button class="btn btn-xs btn-warning" id="bulkDeactivate">إلغاء تفعيل المحددين</button>
                                 <label class="select-all-checkbox">
-                                    <input type="checkbox" id="selectAllUsersMiddle"> تحديد الكل
+                                    <input type="checkbox" id="selectAllUsers"> تحديد الكل
                                 </label>
                             </div>
                         </div>
@@ -2391,13 +1977,13 @@
                                     <th>الإجراءات</th>
                                 </tr>
                             </thead>
-                            <tbody id="middleLeadershipTable">
+                            <tbody id="leadershipTable">
                                 <!-- سيتم ملؤها بالبيانات -->
                             </tbody>
                         </table>
                     </div>
                     
-                    <!-- قسم المعلمات -->
+                    <!-- قسم المعلمات - تم تحديثه -->
                     <div id="teacher" class="user-management-section">
                         <div class="user-management-header">
                             <h3 class="user-management-title">إدارة المعلمات</h3>
@@ -2443,6 +2029,7 @@
                                         </div>
                                     </th>
                                     <th>القسم</th>
+                                    <!-- تم إزالة عمود رقم الهاتف -->
                                     <th>الإجراءات</th>
                                 </tr>
                             </thead>
@@ -2496,11 +2083,9 @@
                 <div class="form-group">
                     <label for="department">القسم</label>
                     <select id="department" required>
-                        <option value="اللغة العربية">اللغة العربية</option>
-                        <option value="الرياضيات">الرياضيات</option>
-                        <option value="اللغة الإنجليزية">اللغة الإنجليزية</option>
-                        <option value="العلوم">العلوم</option>
-                        <option value="التربية الإسلامية">التربية الإسلامية</option>
+                        <!-- تم إضافة قسم القيادة كخيار جديد -->
+                        <option value="القيادة العليا">القيادة العليا</option>
+                        <option value="القيادة">القيادة</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -2650,35 +2235,6 @@
         </div>
     </div>
 
-    <!-- Modal for Adding/Editing Report Settings -->
-    <div id="reportSettingsModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="reportSettingsModalTitle">إضافة إعداد</h3>
-                <button class="close-modal">&times;</button>
-            </div>
-            <form id="reportSettingsForm">
-                <input type="hidden" id="settingId">
-                <input type="hidden" id="settingType">
-                <div class="form-group">
-                    <label for="settingName">الاسم</label>
-                    <input type="text" id="settingName" required>
-                </div>
-                <div class="form-group" id="settingRoleGroup" style="display: none;">
-                    <label for="settingRole">الدور</label>
-                    <select id="settingRole">
-                        <option value="القيادة العليا">القيادة العليا</option>
-                        <option value="القيادة الوسطى">القيادة الوسطى</option>
-                    </select>
-                </div>
-                <div class="btn-group">
-                    <button type="submit" class="btn">حفظ</button>
-                    <button type="button" class="btn btn-secondary" id="cancelReportSetting">إلغاء</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <script>
         // بيانات التطبيق - تم تحديثها
         const appData = {
@@ -2701,11 +2257,10 @@
                         teachers: { view: true, edit: true },
                         reports: { view: true, edit: true },
                         qualityReport: { view: true, edit: true },
-                        reportSettings: { view: true, edit: true },
                         users: { view: true, edit: true },
                         departments: {
                             'القيادة العليا': { view: true, edit: true },
-                            'القيادة الوسطى': { view: true, edit: true }
+                            'القيادة': { view: true, edit: true }
                         }
                     }
                 },
@@ -2727,11 +2282,10 @@
                         teachers: { view: true, edit: false },
                         reports: { view: true, edit: false },
                         qualityReport: { view: true, edit: true },
-                        reportSettings: { view: false, edit: false },
                         users: { view: false, edit: false },
                         departments: {
                             'القيادة العليا': { view: true, edit: true },
-                            'القيادة الوسطى': { view: false, edit: false }
+                            'القيادة': { view: false, edit: false }
                         }
                     }
                 },
@@ -2741,7 +2295,7 @@
                     password: '123456', 
                     name: 'محمد إبراهيم أحمد', 
                     position: 'نائب المدير',
-                    role: 'middle_leadership', 
+                    role: 'leadership', 
                     avatar: 'م',
                     active: true,
                     hasAccess: true,
@@ -2753,11 +2307,10 @@
                         teachers: { view: true, edit: false },
                         reports: { view: true, edit: false },
                         qualityReport: { view: true, edit: true },
-                        reportSettings: { view: false, edit: false },
                         users: { view: false, edit: false },
                         departments: {
                             'القيادة العليا': { view: false, edit: false },
-                            'القيادة الوسطى': { view: true, edit: true }
+                            'القيادة': { view: true, edit: true }
                         }
                     }
                 },
@@ -2771,6 +2324,7 @@
                     avatar: 'ف',
                     active: true,
                     hasAccess: false,
+                    // تم إزالة رقم الهاتف
                     department: 'اللغة العربية',
                     permissions: {
                         dashboard: { view: true, edit: false },
@@ -2779,11 +2333,10 @@
                         teachers: { view: false, edit: false },
                         reports: { view: false, edit: false },
                         qualityReport: { view: false, edit: false },
-                        reportSettings: { view: false, edit: false },
                         users: { view: false, edit: false },
                         departments: {
                             'القيادة العليا': { view: false, edit: false },
-                            'القيادة الوسطى': { view: false, edit: false }
+                            'القيادة': { view: false, edit: false }
                         }
                     }
                 }
@@ -2795,6 +2348,7 @@
                 { id: 4, name: 'العلوم', status: 'active', order: 4 },
                 { id: 5, name: 'التربية الإسلامية', status: 'active', order: 5 }
             ],
+            // تم إزالة بيانات القيادة الوسطى
             visits: [],
             performance: [],
             distinguishedTeachers: [],
@@ -2803,7 +2357,7 @@
             // إعدادات الترتيب
             sortSettings: {
                 senior_leadership: { field: 'order', direction: 'asc' },
-                middle_leadership: { field: 'order', direction: 'asc' },
+                leadership: { field: 'order', direction: 'asc' },
                 teacher: { field: 'order', direction: 'asc' }
             },
             // بيانات تقرير الجودة
@@ -2873,15 +2427,6 @@
                     { department: 'التربية الرياضية', strengths: 'تنظيم الحصص - الاهتمام بالسلامة', improvements: 'تنويع الألعاب - تفعيل المنافسات' },
                     { department: 'نظام الفصل', strengths: 'تنظيم البيئة الصفية - متابعة الطلاب', improvements: 'تحسين التواصل مع أولياء الأمور - توثيق المتابعة' }
                 ]
-            },
-            // بيانات إعدادات التقرير - الجديدة
-            reportSettings: {
-                schoolName: '',
-                schoolManagers: [],
-                assistantManagers: [],
-                visitors: [],
-                ministryLogo: '',
-                reportFooter: 'إعداد المدير/ة المساعد/ة /يعتمد، مدير/ة المدرسة'
             }
         };
 
@@ -2902,7 +2447,6 @@
                     // إظهار أو إخفاء تبويب إدارة المستخدمين بناءً على الصلاحية
                     if (user.role === 'admin') {
                         document.getElementById('usersTab').style.display = 'block';
-                        document.getElementById('reportSettingsTab').style.display = 'block';
                     }
                     
                     renderData();
@@ -2936,9 +2480,6 @@
             
             // إعداد قسم تقرير الجودة
             setupQualityReport();
-            
-            // إعداد قسم إعدادات التقرير
-            setupReportSettings();
         });
 
         // تحميل البيانات من localStorage
@@ -3012,483 +2553,6 @@
             if (sectionId === 'quality-report') {
                 setupQualityReport();
             }
-            
-            // إذا كان قسم إعدادات التقرير، عرض الإعدادات
-            if (sectionId === 'report-settings') {
-                renderReportSettings();
-            }
-        }
-
-        // إعداد قسم إعدادات التقرير
-        function setupReportSettings() {
-            // إعداد علامات التبويب
-            document.querySelectorAll('.settings-tab').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    // إزالة النشاط من جميع الأزرار
-                    document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
-                    
-                    // إضافة النشاط للزر المحدد
-                    this.classList.add('active');
-                    
-                    // إخفاء جميع المحتويات
-                    document.querySelectorAll('.settings-tab-content').forEach(content => content.classList.remove('active'));
-                    
-                    // إظهار المحتوى المحدد
-                    const tabId = this.getAttribute('data-tab');
-                    document.getElementById(tabId).classList.add('active');
-                });
-            });
-            
-            // إعداد أزرار الإضافة
-            document.getElementById('addSchoolManager').addEventListener('click', function() {
-                showAddReportSettingModal('schoolManager');
-            });
-            
-            document.getElementById('addAssistantManager').addEventListener('click', function() {
-                showAddReportSettingModal('assistantManager');
-            });
-            
-            document.getElementById('addVisitor').addEventListener('click', function() {
-                showAddReportSettingModal('visitor');
-            });
-            
-            // إعداد نموذج إعدادات التقرير
-            document.getElementById('cancelReportSetting').addEventListener('click', closeReportSettingsModal);
-            document.querySelector('#reportSettingsModal .close-modal').addEventListener('click', closeReportSettingsModal);
-            document.getElementById('reportSettingsForm').addEventListener('submit', saveReportSetting);
-            
-            // إعداد زر حفظ الإعدادات
-            document.getElementById('saveReportSettings').addEventListener('click', saveReportSettings);
-            
-            // إعداد تحميل الشعار
-            document.getElementById('logoUploadArea').addEventListener('click', function() {
-                document.getElementById('logoUpload').click();
-            });
-            
-            document.getElementById('logoUpload').addEventListener('change', handleLogoUpload);
-            
-            // إعداد معاينة التذييل
-            document.getElementById('reportFooter').addEventListener('input', updateFooterPreview);
-            
-            // تحميل الإعدادات المحفوظة
-            loadReportSettings();
-            
-            // تعبئة البيانات في النموذج
-            document.getElementById('schoolName').value = appData.reportSettings.schoolName;
-            document.getElementById('reportFooter').value = appData.reportSettings.reportFooter;
-            
-            // عرض الشعار إذا كان موجوداً
-            if (appData.reportSettings.ministryLogo) {
-                document.getElementById('logoPreview').src = appData.reportSettings.ministryLogo;
-                document.getElementById('logoPreview').style.display = 'block';
-                document.getElementById('logoUploadArea').classList.add('active');
-            }
-            
-            // تحديث معاينة التذييل
-            updateFooterPreview();
-            
-            // عرض الإعدادات
-            renderReportSettings();
-        }
-
-        // تحميل إعدادات التقرير
-        function loadReportSettings() {
-            const savedSettings = localStorage.getItem('reportSettings');
-            if (savedSettings) {
-                try {
-                    const settingsData = JSON.parse(savedSettings);
-                    Object.assign(appData.reportSettings, settingsData);
-                } catch (e) {
-                    console.error('خطأ في تحميل الإعدادات المحفوظة:', e);
-                }
-            }
-        }
-
-        // حفظ إعدادات التقرير
-        function saveReportSettings() {
-            appData.reportSettings.schoolName = document.getElementById('schoolName').value;
-            appData.reportSettings.reportFooter = document.getElementById('reportFooter').value;
-            
-            try {
-                localStorage.setItem('reportSettings', JSON.stringify(appData.reportSettings));
-                alert('تم حفظ الإعدادات بنجاح');
-            } catch (e) {
-                alert('حدث خطأ أثناء حفظ الإعدادات');
-                console.error('خطأ في الحفظ:', e);
-            }
-        }
-
-        // معالجة تحميل الشعار
-        function handleLogoUpload(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                appData.reportSettings.ministryLogo = e.target.result;
-                document.getElementById('logoPreview').src = e.target.result;
-                document.getElementById('logoPreview').style.display = 'block';
-                document.getElementById('logoUploadArea').classList.add('active');
-                saveReportSettings();
-            };
-            reader.readAsDataURL(file);
-        }
-
-        // تحديث معاينة التذييل
-        function updateFooterPreview() {
-            const footerText = document.getElementById('reportFooter').value;
-            document.getElementById('footerPreview').textContent = footerText;
-        }
-
-        // عرض نموذج إضافة إعداد
-        function showAddReportSettingModal(type) {
-            let title = '';
-            
-            switch(type) {
-                case 'schoolManager':
-                    title = 'إضافة مدير/ة المدرسة';
-                    break;
-                case 'assistantManager':
-                    title = 'إضافة مدير/ة مساعد/ة';
-                    break;
-                case 'visitor':
-                    title = 'إضافة زائر';
-                    break;
-            }
-            
-            document.getElementById('reportSettingsModalTitle').textContent = title;
-            document.getElementById('reportSettingsForm').reset();
-            document.getElementById('settingId').value = '';
-            document.getElementById('settingType').value = type;
-            
-            // إظهار أو إخفاء حقل الدور
-            if (type === 'visitor') {
-                document.getElementById('settingRoleGroup').style.display = 'block';
-            } else {
-                document.getElementById('settingRoleGroup').style.display = 'none';
-            }
-            
-            document.getElementById('reportSettingsModal').style.display = 'flex';
-        }
-
-        // إغلاق نافذة إعدادات التقرير
-        function closeReportSettingsModal() {
-            document.getElementById('reportSettingsModal').style.display = 'none';
-        }
-
-        // حفظ إعداد
-        function saveReportSetting(e) {
-            e.preventDefault();
-            
-            const settingId = document.getElementById('settingId').value;
-            const name = document.getElementById('settingName').value;
-            const type = document.getElementById('settingType').value;
-            const role = document.getElementById('settingRole').value;
-            
-            let targetArray;
-            
-            switch(type) {
-                case 'schoolManager':
-                    targetArray = appData.reportSettings.schoolManagers;
-                    break;
-                case 'assistantManager':
-                    targetArray = appData.reportSettings.assistantManagers;
-                    break;
-                case 'visitor':
-                    targetArray = appData.reportSettings.visitors;
-                    break;
-            }
-            
-            if (settingId) {
-                // تعديل إعداد موجود
-                const settingIndex = targetArray.findIndex(s => s.id === parseInt(settingId));
-                if (settingIndex !== -1) {
-                    targetArray[settingIndex].name = name;
-                    if (type === 'visitor') {
-                        targetArray[settingIndex].role = role;
-                    }
-                }
-            } else {
-                // إضافة إعداد جديد
-                const newSetting = {
-                    id: Math.max(...targetArray.map(s => s.id), 0) + 1,
-                    name: name,
-                    order: targetArray.length + 1
-                };
-                
-                if (type === 'visitor') {
-                    newSetting.role = role;
-                }
-                
-                targetArray.push(newSetting);
-            }
-            
-            saveDataToStorage();
-            closeReportSettingsModal();
-            renderReportSettings();
-            
-            alert('تم حفظ الإعداد بنجاح');
-        }
-
-        // عرض إعدادات التقرير
-        function renderReportSettings() {
-            renderSchoolManagersTable();
-            renderAssistantManagersTable();
-            renderVisitorsTable();
-        }
-
-        // عرض جدول مديري المدرسة
-        function renderSchoolManagersTable() {
-            const table = document.getElementById('schoolManagersTable');
-            table.innerHTML = '';
-            
-            appData.reportSettings.schoolManagers.forEach((manager, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${manager.name}</td>
-                    <td>
-                        <div class="user-actions">
-                            <button class="btn btn-xs btn-secondary edit-report-setting" data-id="${manager.id}" data-type="schoolManager">تعديل</button>
-                            <button class="btn btn-xs btn-danger delete-report-setting" data-id="${manager.id}" data-type="schoolManager">حذف</button>
-                            <button class="btn btn-xs btn-warning move-up-report-setting" data-id="${manager.id}" data-type="schoolManager">▲</button>
-                            <button class="btn btn-xs btn-warning move-down-report-setting" data-id="${manager.id}" data-type="schoolManager">▼</button>
-                        </div>
-                    </td>
-                `;
-                table.appendChild(row);
-            });
-            
-            // إضافة معالجي الأحداث للأزرار
-            document.querySelectorAll('.edit-report-setting').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const settingId = parseInt(this.getAttribute('data-id'));
-                    const type = this.getAttribute('data-type');
-                    editReportSetting(settingId, type);
-                });
-            });
-            
-            document.querySelectorAll('.delete-report-setting').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const settingId = parseInt(this.getAttribute('data-id'));
-                    const type = this.getAttribute('data-type');
-                    deleteReportSetting(settingId, type);
-                });
-            });
-            
-            document.querySelectorAll('.move-up-report-setting').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const settingId = parseInt(this.getAttribute('data-id'));
-                    const type = this.getAttribute('data-type');
-                    moveReportSettingUp(settingId, type);
-                });
-            });
-            
-            document.querySelectorAll('.move-down-report-setting').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const settingId = parseInt(this.getAttribute('data-id'));
-                    const type = this.getAttribute('data-type');
-                    moveReportSettingDown(settingId, type);
-                });
-            });
-        }
-
-        // عرض جدول المديرين المساعدين
-        function renderAssistantManagersTable() {
-            const table = document.getElementById('assistantManagersTable');
-            table.innerHTML = '';
-            
-            appData.reportSettings.assistantManagers.forEach((manager, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${manager.name}</td>
-                    <td>
-                        <div class="user-actions">
-                            <button class="btn btn-xs btn-secondary edit-report-setting" data-id="${manager.id}" data-type="assistantManager">تعديل</button>
-                            <button class="btn btn-xs btn-danger delete-report-setting" data-id="${manager.id}" data-type="assistantManager">حذف</button>
-                            <button class="btn btn-xs btn-warning move-up-report-setting" data-id="${manager.id}" data-type="assistantManager">▲</button>
-                            <button class="btn btn-xs btn-warning move-down-report-setting" data-id="${manager.id}" data-type="assistantManager">▼</button>
-                        </div>
-                    </td>
-                `;
-                table.appendChild(row);
-            });
-        }
-
-        // عرض جدول الزوار
-        function renderVisitorsTable() {
-            const table = document.getElementById('visitorsTable');
-            table.innerHTML = '';
-            
-            appData.reportSettings.visitors.forEach((visitor, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${visitor.name}</td>
-                    <td>${visitor.role}</td>
-                    <td>
-                        <div class="user-actions">
-                            <button class="btn btn-xs btn-secondary edit-report-setting" data-id="${visitor.id}" data-type="visitor">تعديل</button>
-                            <button class="btn btn-xs btn-danger delete-report-setting" data-id="${visitor.id}" data-type="visitor">حذف</button>
-                            <button class="btn btn-xs btn-warning move-up-report-setting" data-id="${visitor.id}" data-type="visitor">▲</button>
-                            <button class="btn btn-xs btn-warning move-down-report-setting" data-id="${visitor.id}" data-type="visitor">▼</button>
-                        </div>
-                    </td>
-                `;
-                table.appendChild(row);
-            });
-        }
-
-        // تعديل إعداد
-        function editReportSetting(settingId, type) {
-            let targetArray, setting;
-            
-            switch(type) {
-                case 'schoolManager':
-                    targetArray = appData.reportSettings.schoolManagers;
-                    break;
-                case 'assistantManager':
-                    targetArray = appData.reportSettings.assistantManagers;
-                    break;
-                case 'visitor':
-                    targetArray = appData.reportSettings.visitors;
-                    break;
-            }
-            
-            setting = targetArray.find(s => s.id === settingId);
-            if (!setting) return;
-            
-            let title = '';
-            
-            switch(type) {
-                case 'schoolManager':
-                    title = 'تعديل مدير/ة المدرسة';
-                    break;
-                case 'assistantManager':
-                    title = 'تعديل مدير/ة مساعد/ة';
-                    break;
-                case 'visitor':
-                    title = 'تعديل زائر';
-                    break;
-            }
-            
-            document.getElementById('reportSettingsModalTitle').textContent = title;
-            document.getElementById('settingId').value = setting.id;
-            document.getElementById('settingName').value = setting.name;
-            document.getElementById('settingType').value = type;
-            
-            // إظهار أو إخفاء حقل الدور
-            if (type === 'visitor') {
-                document.getElementById('settingRoleGroup').style.display = 'block';
-                document.getElementById('settingRole').value = setting.role;
-            } else {
-                document.getElementById('settingRoleGroup').style.display = 'none';
-            }
-            
-            document.getElementById('reportSettingsModal').style.display = 'flex';
-        }
-
-        // حذف إعداد
-        function deleteReportSetting(settingId, type) {
-            if (confirm('هل أنت متأكد من حذف هذا الإعداد؟')) {
-                let targetArray;
-                
-                switch(type) {
-                    case 'schoolManager':
-                        targetArray = appData.reportSettings.schoolManagers;
-                        break;
-                    case 'assistantManager':
-                        targetArray = appData.reportSettings.assistantManagers;
-                        break;
-                    case 'visitor':
-                        targetArray = appData.reportSettings.visitors;
-                        break;
-                }
-                
-                targetArray = targetArray.filter(s => s.id !== settingId);
-                
-                // تحديث الترتيب
-                targetArray.forEach((item, index) => {
-                    item.order = index + 1;
-                });
-                
-                saveDataToStorage();
-                renderReportSettings();
-                
-                alert('تم حذف الإعداد بنجاح');
-            }
-        }
-
-        // نقل إعداد لأعلى
-        function moveReportSettingUp(settingId, type) {
-            let targetArray;
-            
-            switch(type) {
-                case 'schoolManager':
-                    targetArray = appData.reportSettings.schoolManagers;
-                    break;
-                case 'assistantManager':
-                    targetArray = appData.reportSettings.assistantManagers;
-                    break;
-                case 'visitor':
-                    targetArray = appData.reportSettings.visitors;
-                    break;
-            }
-            
-            const setting = targetArray.find(s => s.id === settingId);
-            if (!setting || setting.order <= 1) return;
-            
-            const prevSetting = targetArray.find(s => s.order === setting.order - 1);
-            if (prevSetting) {
-                // تبادل الترتيب
-                const tempOrder = setting.order;
-                setting.order = prevSetting.order;
-                prevSetting.order = tempOrder;
-                
-                // إعادة ترتيب المصفوفة
-                targetArray.sort((a, b) => a.order - b.order);
-                
-                saveDataToStorage();
-                renderReportSettings();
-            }
-        }
-
-        // نقل إعداد لأسفل
-        function moveReportSettingDown(settingId, type) {
-            let targetArray;
-            
-            switch(type) {
-                case 'schoolManager':
-                    targetArray = appData.reportSettings.schoolManagers;
-                    break;
-                case 'assistantManager':
-                    targetArray = appData.reportSettings.assistantManagers;
-                    break;
-                case 'visitor':
-                    targetArray = appData.reportSettings.visitors;
-                    break;
-            }
-            
-            const setting = targetArray.find(s => s.id === settingId);
-            if (!setting) return;
-            
-            const maxOrder = Math.max(...targetArray.map(s => s.order));
-            if (setting.order >= maxOrder) return;
-            
-            const nextSetting = targetArray.find(s => s.order === setting.order + 1);
-            if (nextSetting) {
-                // تبادل الترتيب
-                const tempOrder = setting.order;
-                setting.order = nextSetting.order;
-                nextSetting.order = tempOrder;
-                
-                // إعادة ترتيب المصفوفة
-                targetArray.sort((a, b) => a.order - b.order);
-                
-                saveDataToStorage();
-                renderReportSettings();
-            }
         }
 
         // معالج تسجيل الدخول
@@ -3518,7 +2582,6 @@
                 // إظهار أو إخفاء تبويب إدارة المستخدمين بناءً على الصلاحية
                 if (user.role === 'admin') {
                     document.getElementById('usersTab').style.display = 'block';
-                    document.getElementById('reportSettingsTab').style.display = 'block';
                 }
                 
                 renderData();
@@ -3615,41 +2678,15 @@
             });
             
             // تحديث اسم المدرسة في التقرير
-            document.getElementById('schoolNameCover').textContent = `لمدرسة ${appData.reportSettings.schoolName || 'ــــــــــــــــــــــــــــــــــ'}`;
-            
-            // تحديث أسماء الموقعين
-            if (appData.reportSettings.assistantManagers.length > 0) {
-                document.getElementById('assistantManagerName').textContent = appData.reportSettings.assistantManagers[0].name;
-            }
-            
-            if (appData.reportSettings.schoolManagers.length > 0) {
-                document.getElementById('schoolManagerName').textContent = appData.reportSettings.schoolManagers[0].name;
-            }
+            document.getElementById('schoolNameHeader').textContent = `لمدرسة ${appData.qualityReportData.schoolName || 'ــــــــــــــــــــــــــــــــــ'}`;
             
             // تحديث الشهر الحالي
             const currentMonth = new Date().toLocaleDateString('ar-EG', { month: 'long' });
-            document.getElementById('reportMonthCoverText').textContent = `شهر ${currentMonth}`;
+            document.getElementById('reportMonthHeader').textContent = `شهر ${currentMonth}`;
             document.querySelectorAll('.report-section-title').forEach(title => {
                 if (title.textContent.includes('شهر')) {
                     title.textContent = title.textContent.replace('____________', currentMonth);
                 }
-            });
-
-            // تحديث الشعار
-            if (appData.reportSettings.ministryLogo) {
-                document.getElementById('ministryLogoPreview').src = appData.reportSettings.ministryLogo;
-                document.getElementById('ministryLogoPreview').style.display = 'block';
-            }
-
-            // تحديث اختيار الشهر
-            document.getElementById('reportMonthCover').addEventListener('change', function() {
-                const selectedMonth = this.value;
-                document.getElementById('reportMonthCoverText').textContent = `شهر ${selectedMonth}`;
-                document.querySelectorAll('.report-section-title').forEach(title => {
-                    if (title.textContent.includes('شهر')) {
-                        title.textContent = title.textContent.replace(/شهر\s+\S+/, `شهر ${selectedMonth}`);
-                    }
-                });
             });
 
             // تحميل البيانات المحفوظة
@@ -3668,7 +2705,7 @@
             renderTeachersNeedCareReportTable();
             renderQualityReportTable();
 
-            // إعداد أزرار التحميل مع تأثيرات الضغط
+            // إعداد أزرار التحميل مع تأثيرات الضغط - إصلاح المشكلة
             const wordBtn = document.getElementById('downloadWordReport');
             const saveBtn = document.getElementById('saveQualityReport');
 
@@ -3758,7 +2795,7 @@
                     ...appData.qualityReportData,
                     id: reportId,
                     createdAt: new Date().toISOString(),
-                    reportMonth: document.getElementById('reportMonthCover').value || new Date().toLocaleDateString('ar-EG', { month: 'long' })
+                    reportMonth: new Date().toLocaleDateString('ar-EG', { month: 'long' })
                 };
                 
                 // الحصول على التقارير المحفوظة سابقاً
@@ -3994,9 +3031,6 @@
                 document.getElementById('middleLeadershipVisits').value = appData.qualityReportData.middleLeadershipVisits;
                 document.getElementById('totalClassVisits').value = appData.qualityReportData.totalClassVisits;
                 
-                // تحديث اختيار الشهر
-                document.getElementById('reportMonthCover').value = report.reportMonth;
-                
                 // إعادة تعبئة الجداول
                 renderMiddleLeadershipReportTable();
                 renderTeacherVisitsReportTable();
@@ -4069,7 +3103,7 @@
                 
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
-                const currentMonth = document.getElementById('reportMonthCover').value || new Date().toLocaleDateString('ar-EG', { month: 'long' });
+                const currentMonth = new Date().toLocaleDateString('ar-EG', { month: 'long' });
                 a.href = url;
                 a.download = `تقرير_جودة_التعليم_${currentMonth}.doc`;
                 
@@ -4086,7 +3120,7 @@
 
         // إنشاء محتوى Word للتقرير
         function generateWordReportContent() {
-            const currentMonth = document.getElementById('reportMonthCover').value || new Date().toLocaleDateString('ar-EG', { month: 'long' });
+            const currentMonth = new Date().toLocaleDateString('ar-EG', { month: 'long' });
             const currentDate = new Date().toLocaleDateString('ar-EG');
             
             let content = `
@@ -4148,45 +3182,15 @@
                         color: #6c757d;
                         margin-top: 10px;
                     }
-                    .cover {
-                        background: linear-gradient(135deg, #1e3c72, #2a5298);
-                        color: white;
-                        padding: 3rem;
-                        text-align: center;
-                        margin-bottom: 30px;
-                        border-radius: 10px;
-                    }
-                    .cover-title {
-                        font-size: 2.5rem;
-                        margin-bottom: 1rem;
-                        font-weight: bold;
-                    }
-                    .cover-subtitle {
-                        font-size: 1.5rem;
-                        margin-bottom: 2rem;
-                        opacity: 0.9;
-                    }
-                    .cover-info {
-                        font-size: 1.2rem;
-                        margin-bottom: 1rem;
-                    }
-                    .footer {
-                        text-align: center;
-                        margin-top: 40px;
-                        border-top: 1px solid #ddd;
-                        padding-top: 15px;
-                        font-style: italic;
-                        color: #6c757d;
-                    }
                 </style>
             </head>
             <body>
-                <div class="cover">
-                    <div class="cover-title">تقرير متابعة جودة التعليم والتعلم</div>
-                    <div class="cover-subtitle">للقيادة العليا والوسطى</div>
-                    <div class="cover-info">لمدرسة ${appData.reportSettings.schoolName || 'ــــــــــــــــــــــــــــــــــ'}</div>
-                    <div class="cover-info">شهر ${currentMonth}</div>
-                    <div class="cover-info">العام الدراسي 2025 / 2026م</div>
+                <div class="header">
+                    <div class="title">تقرير متابعة جودة التعليم والتعلم للقيادة العليا والوسطى</div>
+                    <div class="subtitle">لمدرسة ${appData.qualityReportData.schoolName || 'ــــــــــــــــــــــــــــــــــ'}</div>
+                    <div class="subtitle">شهر ${currentMonth}</div>
+                    <div class="subtitle">العام الدراسي 2025 / 2026م</div>
+                    <div class="subtitle">إعداد المدير/ة المساعد/ة /يعتمد، مدير/ة المدرسة</div>
                 </div>
             `;
             
@@ -4357,9 +3361,9 @@
             content += `</tbody></table>`;
             
             // تذييل التقرير
-            content += `<div class="footer">
-                <p>${appData.reportSettings.reportFooter}</p>
+            content += `<div style="margin-top: 40px; text-align: center; border-top: 1px solid #ddd; padding-top: 15px;">
                 <p>تم إنشاء هذا التقرير بتاريخ ${currentDate}</p>
+                <p>إعداد المدير/ة المساعد/ة /يعتمد، مدير/ة المدرسة</p>
             </div>`;
             
             content += `</body></html>`;
@@ -4430,45 +3434,15 @@
                         color: #6c757d;
                         margin-top: 10px;
                     }
-                    .cover {
-                        background: linear-gradient(135deg, #1e3c72, #2a5298);
-                        color: white;
-                        padding: 3rem;
-                        text-align: center;
-                        margin-bottom: 30px;
-                        border-radius: 10px;
-                    }
-                    .cover-title {
-                        font-size: 2.5rem;
-                        margin-bottom: 1rem;
-                        font-weight: bold;
-                    }
-                    .cover-subtitle {
-                        font-size: 1.5rem;
-                        margin-bottom: 2rem;
-                        opacity: 0.9;
-                    }
-                    .cover-info {
-                        font-size: 1.2rem;
-                        margin-bottom: 1rem;
-                    }
-                    .footer {
-                        text-align: center;
-                        margin-top: 40px;
-                        border-top: 1px solid #ddd;
-                        padding-top: 15px;
-                        font-style: italic;
-                        color: #6c757d;
-                    }
                 </style>
             </head>
             <body>
-                <div class="cover">
-                    <div class="cover-title">تقرير متابعة جودة التعليم والتعلم</div>
-                    <div class="cover-subtitle">للقيادة العليا والوسطى</div>
-                    <div class="cover-info">لمدرسة ${report.schoolName || 'ــــــــــــــــــــــــــــــــــ'}</div>
-                    <div class="cover-info">شهر ${report.reportMonth}</div>
-                    <div class="cover-info">العام الدراسي 2025 / 2026م</div>
+                <div class="header">
+                    <div class="title">تقرير متابعة جودة التعليم والتعلم للقيادة العليا والوسطى</div>
+                    <div class="subtitle">لمدرسة ${report.schoolName || 'ــــــــــــــــــــــــــــــــــ'}</div>
+                    <div class="subtitle">شهر ${report.reportMonth}</div>
+                    <div class="subtitle">العام الدراسي 2025 / 2026م</div>
+                    <div class="subtitle">إعداد المدير/ة المساعد/ة /يعتمد، مدير/ة المدرسة</div>
                 </div>
             `;
             
@@ -4639,9 +3613,9 @@
             content += `</tbody></table>`;
             
             // تذييل التقرير
-            content += `<div class="footer">
-                <p>${appData.reportSettings.reportFooter}</p>
+            content += `<div style="margin-top: 40px; text-align: center; border-top: 1px solid #ddd; padding-top: 15px;">
                 <p>تم إنشاء هذا التقرير بتاريخ ${currentDate}</p>
+                <p>إعداد المدير/ة المساعد/ة /يعتمد، مدير/ة المدرسة</p>
             </div>`;
             
             content += `</body></html>`;
@@ -4928,8 +3902,8 @@
                 showAddUserModal('senior_leadership');
             });
             
-            document.getElementById('addMiddleLeadership').addEventListener('click', function() {
-                showAddUserModal('middle_leadership');
+            document.getElementById('addLeadership').addEventListener('click', function() {
+                showAddUserModal('leadership');
             });
             
             document.getElementById('addTeacher').addEventListener('click', function() {
@@ -4941,8 +3915,8 @@
                 exportUsersToCSV('senior_leadership');
             });
             
-            document.getElementById('exportMiddleLeadership').addEventListener('click', function() {
-                exportUsersToCSV('middle_leadership');
+            document.getElementById('exportLeadership').addEventListener('click', function() {
+                exportUsersToCSV('leadership');
             });
             
             document.getElementById('exportTeachers').addEventListener('click', function() {
@@ -4954,8 +3928,8 @@
                 document.getElementById('seniorLeadershipFile').click();
             });
             
-            document.getElementById('importMiddleLeadership').addEventListener('click', function() {
-                document.getElementById('middleLeadershipFile').click();
+            document.getElementById('importLeadership').addEventListener('click', function() {
+                document.getElementById('leadershipFile').click();
             });
             
             document.getElementById('importTeachers').addEventListener('click', function() {
@@ -4964,7 +3938,7 @@
             
             // معالجة اختيار الملفات - تم تحديثها
             document.getElementById('seniorLeadershipFile').addEventListener('change', handleCSVUpload);
-            document.getElementById('middleLeadershipFile').addEventListener('change', handleCSVUpload);
+            document.getElementById('leadershipFile').addEventListener('change', handleCSVUpload);
             document.getElementById('teachersFile').addEventListener('change', handleCSVUpload);
             
             // إعداد نموذج إضافة/تعديل المستخدم
@@ -4983,14 +3957,14 @@
                 bulkAction('senior_leadership', 'deactivate');
             });
             
-            document.getElementById('bulkDeleteMiddle').addEventListener('click', function() {
-                bulkAction('middle_leadership', 'delete');
+            document.getElementById('bulkDelete').addEventListener('click', function() {
+                bulkAction('leadership', 'delete');
             });
-            document.getElementById('bulkActivateMiddle').addEventListener('click', function() {
-                bulkAction('middle_leadership', 'activate');
+            document.getElementById('bulkActivate').addEventListener('click', function() {
+                bulkAction('leadership', 'activate');
             });
-            document.getElementById('bulkDeactivateMiddle').addEventListener('click', function() {
-                bulkAction('middle_leadership', 'deactivate');
+            document.getElementById('bulkDeactivate').addEventListener('click', function() {
+                bulkAction('leadership', 'deactivate');
             });
             
             document.getElementById('bulkDeleteTeachers').addEventListener('click', function() {
@@ -5007,8 +3981,8 @@
             document.getElementById('selectAllUsersSenior').addEventListener('change', function() {
                 toggleSelectAll('senior_leadership', this.checked);
             });
-            document.getElementById('selectAllUsersMiddle').addEventListener('change', function() {
-                toggleSelectAll('middle_leadership', this.checked);
+            document.getElementById('selectAllUsers').addEventListener('change', function() {
+                toggleSelectAll('leadership', this.checked);
             });
             document.getElementById('selectAllUsersTeachers').addEventListener('change', function() {
                 toggleSelectAll('teacher', this.checked);
@@ -5041,9 +4015,9 @@
             if (role === 'senior_leadership') {
                 tableId = 'seniorLeadershipTable';
                 users = appData.users.filter(user => user.role === 'senior_leadership');
-            } else if (role === 'middle_leadership') {
-                tableId = 'middleLeadershipTable';
-                users = appData.users.filter(user => user.role === 'middle_leadership');
+            } else if (role === 'leadership') {
+                tableId = 'leadershipTable';
+                users = appData.users.filter(user => user.role === 'leadership');
             } else if (role === 'teacher') {
                 tableId = 'teachersTable';
                 users = appData.users.filter(user => user.role === 'teacher');
@@ -5334,8 +4308,8 @@
             
             if (role === 'senior_leadership') {
                 tableId = 'seniorLeadershipTable';
-            } else if (role === 'middle_leadership') {
-                tableId = 'middleLeadershipTable';
+            } else if (role === 'leadership') {
+                tableId = 'leadershipTable';
             } else if (role === 'teacher') {
                 tableId = 'teachersTable';
             }
@@ -5353,8 +4327,8 @@
             
             if (role === 'senior_leadership') {
                 tableId = 'seniorLeadershipTable';
-            } else if (role === 'middle_leadership') {
-                tableId = 'middleLeadershipTable';
+            } else if (role === 'leadership') {
+                tableId = 'leadershipTable';
             } else if (role === 'teacher') {
                 tableId = 'teachersTable';
             }
@@ -5365,7 +4339,7 @@
             // تمكين/تعطيل أزرار الإجراءات الجماعية بناءً على التحديد
             const bulkButtons = document.querySelectorAll(`#${role} .bulk-actions button`);
             bulkButtons.forEach(button => {
-                if (button.id !== 'selectAllUsersSenior' && button.id !== 'selectAllUsersMiddle' && button.id !== 'selectAllUsersTeachers') {
+                if (button.id !== 'selectAllUsersSenior' && button.id !== 'selectAllUsers' && button.id !== 'selectAllUsersTeachers') {
                     button.disabled = !hasSelected;
                 }
             });
@@ -5377,8 +4351,8 @@
             
             if (role === 'senior_leadership') {
                 tableId = 'seniorLeadershipTable';
-            } else if (role === 'middle_leadership') {
-                tableId = 'middleLeadershipTable';
+            } else if (role === 'leadership') {
+                tableId = 'leadershipTable';
             } else if (role === 'teacher') {
                 tableId = 'teachersTable';
             }
@@ -5789,8 +4763,8 @@
             
             if (fileType === 'seniorLeadershipFile') {
                 userRole = 'senior_leadership';
-            } else if (fileType === 'middleLeadershipFile') {
-                userRole = 'middle_leadership';
+            } else if (fileType === 'leadershipFile') {
+                userRole = 'leadership';
             } else if (fileType === 'teachersFile') {
                 userRole = 'teacher';
             }
@@ -5818,7 +4792,7 @@
                         let position = '';
                         let phone = '';
                         
-                        if (userRole === 'senior_leadership' || userRole === 'middle_leadership') {
+                        if (userRole === 'senior_leadership' || userRole === 'leadership') {
                             position = cols[2]?.trim() || 'موظف';
                             phone = cols[3]?.trim() || '';
                         } else if (userRole === 'teacher') {
@@ -5886,9 +4860,9 @@
             if (role === 'senior_leadership') {
                 csvContent = BOM + 'الترتيب,الاسم,الوظيفة,رقم الهاتف\n';
                 fileName = 'قائمة_القيادة_العليا.csv';
-            } else if (role === 'middle_leadership') {
+            } else if (role === 'leadership') {
                 csvContent = BOM + 'الترتيب,الاسم,الوظيفة,رقم الهاتف\n';
-                fileName = 'قائمة_القيادة_الوسطى.csv';
+                fileName = 'قائمة_القيادة.csv';
             } else if (role === 'teacher') {
                 csvContent = BOM + 'الترتيب,الاسم,القسم\n';
                 fileName = 'قائمة_المعلمات.csv';
@@ -5935,7 +4909,7 @@
                 'supervisor': 'مشرف',
                 'teacher': 'معلم',
                 'senior_leadership': 'القيادة العليا',
-                'middle_leadership': 'القيادة الوسطى'
+                'leadership': 'القيادة'
             };
             return roles[role] || role;
         }
@@ -5949,7 +4923,6 @@
                 'teachers': 'المعلمين المتميزين',
                 'reports': 'التقارير النوعية',
                 'qualityReport': 'تقرير جودة التعليم',
-                'reportSettings': 'إعدادات التقرير',
                 'users': 'إدارة المستخدمين'
             };
             return permissions[permission] || permission;
@@ -5964,11 +4937,10 @@
                 teachers: { view: false, edit: false },
                 reports: { view: false, edit: false },
                 qualityReport: { view: false, edit: false },
-                reportSettings: { view: false, edit: false },
                 users: { view: false, edit: false },
                 departments: {
                     'القيادة العليا': { view: false, edit: false },
-                    'القيادة الوسطى': { view: false, edit: false }
+                    'القيادة': { view: false, edit: false }
                 }
             };
             
@@ -5989,12 +4961,12 @@
                 basePermissions.visits = { view: true, edit: true };
                 basePermissions.qualityReport = { view: true, edit: true };
                 basePermissions.departments['القيادة العليا'] = { view: true, edit: true };
-            } else if (role === 'middle_leadership') {
-                // القيادة الوسطى لديها صلاحيات محدودة
+            } else if (role === 'leadership') {
+                // القيادة لديها صلاحيات محدودة
                 basePermissions.dashboard = { view: true, edit: false };
                 basePermissions.visits = { view: true, edit: true };
                 basePermissions.qualityReport = { view: true, edit: true };
-                basePermissions.departments['القيادة الوسطى'] = { view: true, edit: true };
+                basePermissions.departments['القيادة'] = { view: true, edit: true };
             }
             
             return basePermissions;
@@ -6245,11 +5217,11 @@
                         });
                     }
                 });
-            } else if (department === 'القيادة الوسطى') {
-                // عرض زيارات القيادة الوسطى حسب المستخدمين
-                const middleLeadershipUsers = appData.users.filter(u => u.role === 'middle_leadership' && u.hasAccess);
+            } else if (department === 'القيادة') {
+                // عرض زيارات القيادة حسب المستخدمين
+                const leadershipUsers = appData.users.filter(u => u.role === 'leadership' && u.hasAccess);
                 
-                middleLeadershipUsers.forEach(user => {
+                leadershipUsers.forEach(user => {
                     const userVisits = appData.visits.filter(visit => visit.visitor === user.name);
                     
                     if (userVisits.length > 0) {
