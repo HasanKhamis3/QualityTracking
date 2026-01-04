@@ -2606,15 +2606,18 @@
             <form id="visitForm">
                 <input type="hidden" id="visitId">
                 <div class="form-group">
-                    <label for="visitTeacherSelect">اسم المعلم</label>
-                    <select id="visitTeacherSelect" required>
-                        <option value="">اختر اسم المعلم</option>
-                        <!-- سيتم ملؤها تلقائياً -->
+                    <label for="visitDepartmentSelect">القسم</label>
+                    <select id="visitDepartmentSelect" required>
+                        <option value="">اختر القسم</option>
+                        <!-- سيتم ملؤها تلقائياً من الاعدادات -->
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="visitTeacherDepartment">القسم</label>
-                    <input type="text" id="visitTeacherDepartment" readonly style="background-color: #f8f9fa;">
+                    <label for="visitTeacherSelect">اسم المعلم</label>
+                    <select id="visitTeacherSelect" required disabled>
+                        <option value="">اختر اسم المعلم</option>
+                        <!-- سيتم ملؤها تلقائياً بناءً على القسم -->
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="visitDate">تاريخ الزيارة</label>
@@ -2705,6 +2708,10 @@
             </div>
             <div id="csvImportContent">
                 <!-- سيتم ملؤها بالبيانات -->
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-success" id="confirmImport">إضافة المحددين</button>
+                <button class="btn btn-secondary" id="cancelImport">إلغاء</button>
             </div>
         </div>
     </div>
@@ -2854,8 +2861,31 @@
             // تحديث قائمة الشهور في تقرير الجودة
             const reportMonthSelector = document.getElementById('reportMonthSelector');
             if (reportMonthSelector) {
-                reportMonthSelector.innerHTML = `<option value="${currentMonth}">${currentMonth} (الحالي)</option>` + 
-                    months.map(month => `<option value="${month}">${month}</option>`).join('');
+                // أولاً، الحصول على الشهور الموجودة في التقارير المحفوظة
+                const existingMonths = [...new Set(appData.savedQualityReports.map(report => report.reportMonth))];
+                
+                // بدء بإنشاء الخيارات
+                let options = '';
+                
+                // إضافة الخيار الحالي أولاً إذا لم يكن موجوداً في التقارير المحفوظة
+                if (!existingMonths.includes(currentMonth)) {
+                    options += `<option value="${currentMonth}">${currentMonth} (الحالي)</option>`;
+                }
+                
+                // إضافة الشهور من التقارير المحفوظة
+                existingMonths.forEach(month => {
+                    options += `<option value="${month}">${month}</option>`;
+                });
+                
+                // إضافة بقية الشهور التي ليست في القائمة
+                months.forEach(month => {
+                    if (!existingMonths.includes(month) && month !== currentMonth) {
+                        options += `<option value="${month}">${month}</option>`;
+                    }
+                });
+                
+                reportMonthSelector.innerHTML = options;
+                reportMonthSelector.value = currentMonth;
             }
             
             // تحديث الإعدادات
@@ -3519,6 +3549,11 @@
             document.getElementById('cancelVisit').addEventListener('click', () => closeModal('visitModal'));
             document.getElementById('visitForm').addEventListener('submit', saveVisit);
             
+            // إضافة حدث لتحديث قائمة المعلمات عند تغيير القسم في نموذج الزيارة
+            document.getElementById('visitDepartmentSelect').addEventListener('change', function() {
+                updateTeachersListForVisit(this.value);
+            });
+            
             // نموذج إضافة معلمة
             document.getElementById('cancelUser').addEventListener('click', () => closeModal('userModal'));
             document.getElementById('userForm').addEventListener('submit', saveTeacher);
@@ -3526,6 +3561,10 @@
             // نموذج القسم
             document.getElementById('cancelDepartment').addEventListener('click', () => closeModal('departmentModal'));
             document.getElementById('departmentForm').addEventListener('submit', saveDepartment);
+            
+            // نموذج استيراد CSV
+            document.getElementById('cancelImport').addEventListener('click', () => closeModal('csvImportModal'));
+            document.getElementById('confirmImport').addEventListener('click', confirmCSVImport);
         }
 
         // إغلاق النموذج
@@ -3670,26 +3709,48 @@
 
         // تحميل قائمة المعلمات للزيارات
         function loadTeachersForVisits() {
-            const teachers = appData.users.filter(u => u.role === 'teacher' && u.active);
-            const selectElement = document.getElementById('visitTeacherSelect');
+            // تحديث قائمة الأقسام في نموذج الزيارة
+            const departmentSelect = document.getElementById('visitDepartmentSelect');
+            departmentSelect.innerHTML = '<option value="">اختر القسم</option>';
             
-            if (selectElement) {
-                selectElement.innerHTML = '<option value="">اختر اسم المعلم</option>';
+            // إضافة قسم القيادة العليا والقيادة الوسطى كخيارات
+            const visitDepartments = ['القيادة العليا', 'القيادة الوسطى'];
+            visitDepartments.forEach(dept => {
+                const option = document.createElement('option');
+                option.value = dept;
+                option.textContent = dept;
+                departmentSelect.appendChild(option);
+            });
+            
+            // تحديث قائمة المعلمات عند تغيير القسم
+            updateTeachersListForVisit(departmentSelect.value);
+        }
+
+        // تحديث قائمة المعلمات بناءً على القسم المختار
+        function updateTeachersListForVisit(department) {
+            const teacherSelect = document.getElementById('visitTeacherSelect');
+            teacherSelect.innerHTML = '<option value="">اختر اسم المعلم</option>';
+            
+            if (department) {
+                // تفعيل القائمة
+                teacherSelect.disabled = false;
+                
+                // الحصول على المعلمات المنتميات للقسم المختار
+                const teachers = appData.users.filter(u => u.role === 'teacher' && u.active);
                 
                 teachers.forEach(teacher => {
-                    const option = document.createElement('option');
-                    option.value = teacher.id;
-                    option.textContent = teacher.name;
-                    option.setAttribute('data-department', teacher.department || '');
-                    selectElement.appendChild(option);
+                    // في حالة اختيار قسم القيادة العليا أو الوسطى، نعرض جميع المعلمات
+                    if (department === 'القيادة العليا' || department === 'القيادة الوسطى') {
+                        const option = document.createElement('option');
+                        option.value = teacher.id;
+                        option.textContent = teacher.name;
+                        option.setAttribute('data-department', teacher.department || '');
+                        teacherSelect.appendChild(option);
+                    }
                 });
-                
-                // إضافة حدث تغيير لتحديث القسم تلقائياً
-                selectElement.addEventListener('change', function() {
-                    const selectedOption = this.options[this.selectedIndex];
-                    const department = selectedOption.getAttribute('data-department') || '';
-                    document.getElementById('visitTeacherDepartment').value = department;
-                });
+            } else {
+                // تعطيل القائمة إذا لم يتم اختيار قسم
+                teacherSelect.disabled = true;
             }
         }
 
@@ -3699,8 +3760,8 @@
             document.getElementById('visitForm').reset();
             document.getElementById('visitId').value = '';
             
-            // تعيين القسم حسب القسم النشط
-            const activeDepartment = document.querySelector('#visitsSubSections .sub-section-btn.active').getAttribute('data-department');
+            // تحميل قائمة الأقسام
+            loadTeachersForVisits();
             
             // تعيين اسم الزائر الحالي
             document.getElementById('visitorName').value = appData.currentUser?.name || '';
@@ -3708,9 +3769,6 @@
             // تعيين تاريخ اليوم كافتراضي
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('visitDate').value = today;
-            
-            // تحميل قائمة المعلمات
-            loadTeachersForVisits();
             
             document.getElementById('visitModal').style.display = 'flex';
         }
@@ -3725,24 +3783,33 @@
             
             document.getElementById('visitId').value = visit.id;
             
-            // تحميل قائمة المعلمات
+            // تحميل قائمة الأقسام
             loadTeachersForVisits();
             
             // تعيين القيم الحالية
             setTimeout(() => {
-                const teacherSelect = document.getElementById('visitTeacherSelect');
-                for (let i = 0; i < teacherSelect.options.length; i++) {
-                    if (teacherSelect.options[i].textContent === visit.teacher) {
-                        teacherSelect.selectedIndex = i;
-                        break;
-                    }
-                }
+                // تعيين القسم
+                const departmentSelect = document.getElementById('visitDepartmentSelect');
+                departmentSelect.value = visit.department;
                 
-                document.getElementById('visitTeacherDepartment').value = visit.department;
-                document.getElementById('visitDate').value = visit.date;
-                document.getElementById('evaluation').value = visit.evaluation;
-                document.getElementById('visitorName').value = visit.visitor;
-                document.getElementById('notes').value = visit.notes || '';
+                // تحديث قائمة المعلمات بناءً على القسم
+                updateTeachersListForVisit(visit.department);
+                
+                // تعيين المعلم بعد أن يتم تحديث القائمة
+                setTimeout(() => {
+                    const teacherSelect = document.getElementById('visitTeacherSelect');
+                    for (let i = 0; i < teacherSelect.options.length; i++) {
+                        if (teacherSelect.options[i].textContent === visit.teacher) {
+                            teacherSelect.selectedIndex = i;
+                            break;
+                        }
+                    }
+                    
+                    document.getElementById('visitDate').value = visit.date;
+                    document.getElementById('evaluation').value = visit.evaluation;
+                    document.getElementById('visitorName').value = visit.visitor;
+                    document.getElementById('notes').value = visit.notes || '';
+                }, 100);
             }, 100);
             
             document.getElementById('visitModal').style.display = 'flex';
@@ -3753,21 +3820,23 @@
             e.preventDefault();
             
             const visitId = document.getElementById('visitId').value;
+            const department = document.getElementById('visitDepartmentSelect').value;
             const teacherSelect = document.getElementById('visitTeacherSelect');
             const teacherName = teacherSelect.options[teacherSelect.selectedIndex]?.textContent || '';
-            const department = document.getElementById('visitTeacherDepartment').value;
             const visitDate = document.getElementById('visitDate').value;
             const evaluation = document.getElementById('evaluation').value;
             const visitorName = document.getElementById('visitorName').value;
             const notes = document.getElementById('notes').value;
             
+            if (!department) {
+                alert('يرجى اختيار القسم');
+                return;
+            }
+            
             if (!teacherName || teacherName === 'اختر اسم المعلم') {
                 alert('يرجى اختيار اسم المعلم');
                 return;
             }
-            
-            // الحصول على القسم النشط
-            const activeDepartment = document.querySelector('#visitsSubSections .sub-section-btn.active').getAttribute('data-department');
             
             if (visitId) {
                 // تحديث زيارة موجودة
@@ -3776,7 +3845,7 @@
                     appData.visits[visitIndex] = {
                         id: parseInt(visitId),
                         teacher: teacherName,
-                        department: activeDepartment,
+                        department: department,
                         date: visitDate,
                         evaluation,
                         visitor: visitorName,
@@ -3790,7 +3859,7 @@
                 const newVisit = {
                     id: Date.now(),
                     teacher: teacherName,
-                    department: activeDepartment,
+                    department: department,
                     date: visitDate,
                     evaluation,
                     visitor: visitorName,
@@ -3805,7 +3874,7 @@
             closeModal('visitModal');
             
             // تحديث العرض
-            renderVisitsByDepartment(activeDepartment);
+            renderVisitsByDepartment(department);
             renderDashboard();
             
             alert('تم حفظ الزيارة بنجاح');
@@ -5253,13 +5322,14 @@
             return basePermissions;
         }
 
-        // تصدير المستخدمين إلى CSV
+        // تصدير المستخدمين إلى CSV مع إصلاح مشكلة العربية
         function exportUsersToCSV(role) {
             const users = appData.users.filter(user => user.role === role);
             
             let csvContent = '';
             let fileName = '';
             
+            // إضافة BOM لضمان دعم اللغة العربية
             const BOM = '\uFEFF';
             
             if (role === 'senior_leadership') {
@@ -5275,9 +5345,9 @@
             
             users.forEach(user => {
                 if (role === 'teacher') {
-                    csvContent += `${user.name},${user.department || user.position || ''}\n`;
+                    csvContent += `"${user.name}","${user.department || user.position || ''}"\n`;
                 } else {
-                    csvContent += `${user.name},${user.position || ''},${user.phone || ''}\n`;
+                    csvContent += `"${user.name}","${user.position || ''}","${user.phone || ''}"\n`;
                 }
             });
             
@@ -5288,7 +5358,7 @@
 
         // تنزيل ملف CSV
         function downloadCSV(content, fileName) {
-            const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+            const blob = new Blob([content], { type: 'text/csv;charset=UTF-8' });
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
             link.setAttribute('href', url);
@@ -5303,10 +5373,11 @@
         function exportSystemLog() {
             const logs = appData.activityLog;
             
+            // إضافة BOM لضمان دعم اللغة العربية
             let csvContent = '\uFEFF' + 'التاريخ,الوقت,المستخدم,الإجراء,التفاصيل\n';
             
             logs.forEach(log => {
-                csvContent += `${log.date},${log.time},${log.userName},${log.action},${log.details}\n`;
+                csvContent += `"${log.date}","${log.time}","${log.userName}","${log.action}","${log.details}"\n`;
             });
             
             downloadCSV(csvContent, 'سجل_النظام.csv');
@@ -5601,7 +5672,237 @@
             }
         }
 
-        // عرض التقارير
+        // ==================== دوال استيراد CSV ====================
+
+        // معالجة استيراد CSV
+        function handleCSVUpload(event, role) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const csvData = e.target.result;
+                parseCSVData(csvData, role);
+            };
+            reader.readAsText(file, 'UTF-8');
+            
+            // إعادة تعيين قيمة الإدخال للسماح بتحميل نفس الملف مرة أخرى
+            event.target.value = '';
+        }
+
+        // تحليل بيانات CSV
+        function parseCSVData(csvData, role) {
+            const rows = csvData.split('\n');
+            const headers = rows[0].split(',').map(header => header.trim().replace(/"/g, ''));
+            
+            const importedData = [];
+            
+            for (let i = 1; i < rows.length; i++) {
+                if (rows[i].trim() === '') continue;
+                
+                const cells = rows[i].split(',').map(cell => cell.trim().replace(/"/g, ''));
+                const rowData = {};
+                
+                headers.forEach((header, index) => {
+                    rowData[header] = cells[index] || '';
+                });
+                
+                importedData.push(rowData);
+            }
+            
+            showCSVImportPreview(importedData, role);
+        }
+
+        // عرض معاينة بيانات CSV
+        function showCSVImportPreview(data, role) {
+            const modalContent = document.getElementById('csvImportContent');
+            modalContent.innerHTML = '';
+            
+            if (data.length === 0) {
+                modalContent.innerHTML = '<p>لا توجد بيانات في الملف</p>';
+                document.getElementById('csvImportModal').style.display = 'flex';
+                return;
+            }
+            
+            // إعداد قائمة الاختيار
+            const selectionList = document.createElement('div');
+            selectionList.className = 'user-selection-list';
+            
+            data.forEach((item, index) => {
+                const selectionItem = document.createElement('div');
+                selectionItem.className = 'user-selection-item';
+                
+                let displayText = '';
+                if (role === 'teacher') {
+                    displayText = `الاسم: ${item['الاسم'] || item['اسم'] || ''} | القسم: ${item['القسم'] || ''}`;
+                } else {
+                    displayText = `الاسم: ${item['الاسم'] || item['اسم'] || ''} | الوظيفة: ${item['الوظيفة'] || ''} | الهاتف: ${item['رقم الهاتف'] || item['الهاتف'] || ''}`;
+                }
+                
+                selectionItem.innerHTML = `
+                    <input type="checkbox" class="import-user-checkbox" data-index="${index}" checked>
+                    <span>${displayText}</span>
+                `;
+                selectionList.appendChild(selectionItem);
+            });
+            
+            // إضافة زر تحديد الكل
+            const selectAllDiv = document.createElement('div');
+            selectAllDiv.className = 'user-selection-item';
+            selectAllDiv.innerHTML = `
+                <input type="checkbox" id="selectAllImport" checked>
+                <label for="selectAllImport">تحديد الكل</label>
+            `;
+            
+            modalContent.appendChild(selectAllDiv);
+            modalContent.appendChild(selectionList);
+            
+            // إضافة جدول معاينة
+            const previewTable = document.createElement('table');
+            previewTable.className = 'csv-preview-table';
+            
+            // رأس الجدول
+            const headers = Object.keys(data[0]);
+            const thead = document.createElement('thead');
+            let headerRow = '<tr>';
+            headers.forEach(header => {
+                headerRow += `<th>${header}</th>`;
+            });
+            headerRow += '</tr>';
+            thead.innerHTML = headerRow;
+            previewTable.appendChild(thead);
+            
+            // جسم الجدول (أول 5 صفوف فقط للمعاينة)
+            const tbody = document.createElement('tbody');
+            const previewRows = Math.min(5, data.length);
+            
+            for (let i = 0; i < previewRows; i++) {
+                let row = '<tr>';
+                headers.forEach(header => {
+                    row += `<td>${data[i][header] || ''}</td>`;
+                });
+                row += '</tr>';
+                tbody.innerHTML += row;
+            }
+            
+            previewTable.appendChild(tbody);
+            modalContent.appendChild(previewTable);
+            
+            // عرض إجمالي الصفوف
+            const totalInfo = document.createElement('p');
+            totalInfo.textContent = `إجمالي الصفوف: ${data.length} (يتم عرض أول ${previewRows} صفوف للمعاينة)`;
+            modalContent.appendChild(totalInfo);
+            
+            // إضافة معالجي الأحداث
+            document.getElementById('selectAllImport').addEventListener('change', function(e) {
+                const checkboxes = document.querySelectorAll('.import-user-checkbox');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = e.target.checked;
+                });
+            });
+            
+            // حفظ البيانات المؤقتة للاستيراد
+            window.tempImportData = { data, role };
+            
+            document.getElementById('csvImportModal').style.display = 'flex';
+        }
+
+        // تأكيد استيراد بيانات CSV
+        function confirmCSVImport() {
+            if (!window.tempImportData) return;
+            
+            const { data, role } = window.tempImportData;
+            const checkboxes = document.querySelectorAll('.import-user-checkbox:checked');
+            
+            if (checkboxes.length === 0) {
+                alert('يرجى تحديد عناصر للإضافة');
+                return;
+            }
+            
+            const selectedIndices = Array.from(checkboxes).map(cb => parseInt(cb.getAttribute('data-index')));
+            const selectedData = selectedIndices.map(index => data[index]);
+            
+            let addedCount = 0;
+            let skippedCount = 0;
+            
+            selectedData.forEach(item => {
+                // التحقق من عدم تكرار البيانات
+                let exists = false;
+                
+                if (role === 'teacher') {
+                    const name = item['الاسم'] || item['اسم'] || '';
+                    const department = item['القسم'] || '';
+                    
+                    exists = appData.users.some(u => 
+                        u.role === 'teacher' && 
+                        u.name === name && 
+                        u.department === department
+                    );
+                    
+                    if (!exists && name) {
+                        const newUser = {
+                            id: Date.now() + Math.random(),
+                            name: name,
+                            role: 'teacher',
+                            avatar: name.charAt(0),
+                            active: true,
+                            hasAccess: false,
+                            department: department
+                        };
+                        appData.users.push(newUser);
+                        addedCount++;
+                    } else {
+                        skippedCount++;
+                    }
+                } else if (role === 'senior_leadership' || role === 'leadership') {
+                    const name = item['الاسم'] || item['اسم'] || '';
+                    const position = item['الوظيفة'] || '';
+                    const phone = item['رقم الهاتف'] || item['الهاتف'] || '';
+                    
+                    exists = appData.users.some(u => 
+                        u.role === role && 
+                        u.name === name
+                    );
+                    
+                    if (!exists && name) {
+                        const newUser = {
+                            id: Date.now() + Math.random(),
+                            name: name,
+                            role: role,
+                            avatar: name.charAt(0),
+                            active: true,
+                            hasAccess: false,
+                            position: position,
+                            phone: phone
+                        };
+                        appData.users.push(newUser);
+                        addedCount++;
+                    } else {
+                        skippedCount++;
+                    }
+                }
+            });
+            
+            saveAllData();
+            closeModal('csvImportModal');
+            
+            // تحديث الجدول المعروض
+            const activeSection = document.querySelector('#userSubTabs a.active').getAttribute('data-user-section');
+            if (activeSection === role) {
+                renderUserManagementTable(role);
+            }
+            
+            logActivity('استيراد CSV', `قام ${appData.currentUser.name} باستيراد ${addedCount} عنصر من ملف CSV لـ ${getRoleName(role)}`);
+            
+            alert(`تم إضافة ${addedCount} عنصر بنجاح${skippedCount > 0 ? `، وتم تخطي ${skippedCount} عنصر مكرر` : ''}`);
+            
+            // تنظيف البيانات المؤقتة
+            window.tempImportData = null;
+        }
+
+        // ==================== دوال إضافية ====================
+
+        // حفظ التقارير
         function renderReports() {
             // يمكن إضافة منطق عرض التقارير هنا إذا لزم الأمر
         }
