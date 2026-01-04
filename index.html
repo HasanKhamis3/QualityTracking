@@ -1857,6 +1857,15 @@
             justify-content: center;
             margin-top: 20px;
         }
+        
+        /* تصفية المستخدم في سجل النظام */
+        .log-filter-user {
+            margin-top: 10px;
+        }
+        
+        .log-filter-user select {
+            width: 200px;
+        }
     </style>
 </head>
 <body>
@@ -2217,18 +2226,7 @@
                                 <div class="form-group">
                                     <label for="reportMonth">الشهر الافتراضي للتقرير</label>
                                     <select id="reportMonth" class="form-control">
-                                        <option value="يناير">يناير</option>
-                                        <option value="فبراير">فبراير</option>
-                                        <option value="مارس">مارس</option>
-                                        <option value="أبريل">أبريل</option>
-                                        <option value="مايو">مايو</option>
-                                        <option value="يونيو">يونيو</option>
-                                        <option value="يوليو">يوليو</option>
-                                        <option value="أغسطس">أغسطس</option>
-                                        <option value="سبتمبر">سبتمبر</option>
-                                        <option value="أكتوبر">أكتوبر</option>
-                                        <option value="نوفمبر">نوفمبر</option>
-                                        <option value="ديسمبر">ديسمبر</option>
+                                        <!-- سيتم إضافة الشهر الحالي تلقائياً -->
                                     </select>
                                 </div>
                                 
@@ -2387,6 +2385,14 @@
                                             <option value="visit">الزيارات</option>
                                             <option value="report">التقارير</option>
                                             <option value="settings">الإعدادات</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="log-filter-user">
+                                        <label for="logUserFilter">تصفية حسب المستخدم:</label>
+                                        <select id="logUserFilter" class="form-control">
+                                            <option value="all">جميع المستخدمين</option>
+                                            <!-- سيتم تعبئته تلقائياً -->
                                         </select>
                                     </div>
                                     
@@ -3456,6 +3462,7 @@
             document.getElementById('clearSystemLog').addEventListener('click', clearSystemLog);
             document.getElementById('exportSystemLog').addEventListener('click', exportSystemLog);
             document.getElementById('logFilter').addEventListener('change', renderSystemActivityLog);
+            document.getElementById('logUserFilter').addEventListener('change', renderSystemActivityLog);
         }
 
         // إعداد تقرير الجودة
@@ -3931,13 +3938,9 @@
                 return;
             }
             
-            const monthsOrder = [
-                'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
-                'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
-            ];
-            
+            // فرز التقارير من الجديد إلى القديم بناءً على تاريخ الإنشاء
             const sortedReports = [...appData.savedQualityReports].sort((a, b) => {
-                return monthsOrder.indexOf(a.reportMonth) - monthsOrder.indexOf(b.reportMonth);
+                return new Date(b.createdDate) - new Date(a.createdDate);
             });
             
             sortedReports.forEach(report => {
@@ -4014,8 +4017,11 @@
             if (!logContainer) return;
             
             const filter = document.getElementById('logFilter').value;
+            const userFilter = document.getElementById('logUserFilter').value;
+            
             let filteredActivities = appData.activityLog;
             
+            // تصفية حسب نوع النشاط
             if (filter !== 'all') {
                 const filterMap = {
                     'user': 'مستخدم',
@@ -4028,6 +4034,11 @@
                     log.action.includes(filterMap[filter]) || 
                     log.details.includes(filterMap[filter])
                 );
+            }
+            
+            // تصفية حسب المستخدم
+            if (userFilter !== 'all') {
+                filteredActivities = filteredActivities.filter(log => log.userName === userFilter);
             }
             
             filteredActivities = filteredActivities.slice(0, 50);
@@ -4065,6 +4076,36 @@
                 `;
                 logContainer.appendChild(logItem);
             });
+            
+            // تحديث قائمة تصفية المستخدمين
+            updateUserFilterList();
+        }
+
+        // تحديث قائمة تصفية المستخدمين
+        function updateUserFilterList() {
+            const userFilterSelect = document.getElementById('logUserFilter');
+            if (!userFilterSelect) return;
+            
+            // حفظ التحديد الحالي
+            const currentSelection = userFilterSelect.value;
+            
+            // الحصول على جميع أسماء المستخدمين الفريدة
+            const uniqueUsers = [...new Set(appData.activityLog.map(log => log.userName))];
+            
+            // تحديث القائمة
+            userFilterSelect.innerHTML = '<option value="all">جميع المستخدمين</option>';
+            
+            uniqueUsers.forEach(userName => {
+                const option = document.createElement('option');
+                option.value = userName;
+                option.textContent = userName;
+                userFilterSelect.appendChild(option);
+            });
+            
+            // استعادة التحديد السابق إذا كان لا يزال موجوداً
+            if (currentSelection && Array.from(userFilterSelect.options).some(opt => opt.value === currentSelection)) {
+                userFilterSelect.value = currentSelection;
+            }
         }
 
         // ==================== دوال معالجة البيانات ====================
@@ -4264,7 +4305,14 @@
 
         // حفظ إعدادات التوقيعات
         function saveSignatureSettings() {
+            const assistantManager = document.getElementById('assistantManager').value;
+            const schoolManager = document.getElementById('schoolManager').value;
+            
+            appData.settings.reportSettings.assistantManager = assistantManager;
+            appData.settings.reportSettings.schoolManager = schoolManager;
+            
             saveAllData();
+            updateReportPreview();
             
             logActivity('تعديل إعدادات', `قام ${appData.currentUser.name} بتعديل إعدادات التوقيعات`);
             
@@ -4504,7 +4552,10 @@
         function loadSettingsData() {
             document.getElementById('schoolName').value = appData.settings.schoolName || '';
             document.getElementById('academicYear').value = appData.settings.academicYear || '2025 / 2026م';
-            document.getElementById('reportMonth').value = appData.settings.reportSettings.defaultMonth || 'سبتمبر';
+            
+            // تحديث قائمة الأشهر مع إضافة الشهر الحالي
+            updateMonthsList();
+            
             document.getElementById('reportFooterText').value = appData.settings.footer.text || '';
             document.getElementById('footerAlignment').value = appData.settings.footer.alignment || 'center';
             document.getElementById('footerFontSize').value = appData.settings.footer.fontSize || '12pt';
@@ -4513,6 +4564,45 @@
             loadSignatureLists();
             loadVisitorsOrder();
             updateReportPreview();
+        }
+
+        // تحديث قائمة الأشهر مع الشهر الحالي
+        function updateMonthsList() {
+            const reportMonthSelect = document.getElementById('reportMonth');
+            if (!reportMonthSelect) return;
+            
+            // حفظ التحديد الحالي
+            const currentSelection = reportMonthSelect.value;
+            
+            // الأشهر العربية
+            const arabicMonths = [
+                'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+                'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
+            ];
+            
+            // الحصول على الشهر الحالي
+            const currentDate = new Date();
+            const currentMonthIndex = currentDate.getMonth(); // 0-11
+            const currentMonthArabic = arabicMonths[currentMonthIndex];
+            
+            // تحديث القائمة
+            reportMonthSelect.innerHTML = `<option value="${currentMonthArabic}">${currentMonthArabic} (الحالي)</option>`;
+            
+            arabicMonths.forEach(month => {
+                if (month !== currentMonthArabic) {
+                    const option = document.createElement('option');
+                    option.value = month;
+                    option.textContent = month;
+                    reportMonthSelect.appendChild(option);
+                }
+            });
+            
+            // استعادة التحديد السابق إذا لم يكن فارغاً
+            if (currentSelection && Array.from(reportMonthSelect.options).some(opt => opt.value === currentSelection)) {
+                reportMonthSelect.value = currentSelection;
+            } else if (appData.settings.reportSettings.defaultMonth) {
+                reportMonthSelect.value = appData.settings.reportSettings.defaultMonth;
+            }
         }
 
         // تحديث عرض الشعار
@@ -4550,6 +4640,163 @@
                 alert('تم حفظ الشعار بنجاح');
             };
             reader.readAsDataURL(file);
+        }
+
+        // تحميل قائمة التوقيعات
+        function loadSignatureLists() {
+            const assistantManagerSelect = document.getElementById('assistantManager');
+            const schoolManagerSelect = document.getElementById('schoolManager');
+            
+            if (!assistantManagerSelect || !schoolManagerSelect) return;
+            
+            // حفظ التحديد الحالي
+            const currentAssistant = assistantManagerSelect.value;
+            const currentSchoolManager = schoolManagerSelect.value;
+            
+            // الحصول على قائمة القيادة العليا
+            const seniorLeadership = appData.users.filter(user => user.role === 'senior_leadership' && user.active);
+            
+            // تحديث قوائم الاختيار
+            assistantManagerSelect.innerHTML = '<option value="">اختر اسم المدير المساعد</option>';
+            schoolManagerSelect.innerHTML = '<option value="">اختر اسم مدير المدرسة</option>';
+            
+            seniorLeadership.forEach(user => {
+                const option1 = document.createElement('option');
+                option1.value = user.name;
+                option1.textContent = user.name;
+                assistantManagerSelect.appendChild(option1);
+                
+                const option2 = document.createElement('option');
+                option2.value = user.name;
+                option2.textContent = user.name;
+                schoolManagerSelect.appendChild(option2);
+            });
+            
+            // استعادة التحديد السابق
+            if (currentAssistant && appData.settings.reportSettings.assistantManager) {
+                assistantManagerSelect.value = appData.settings.reportSettings.assistantManager;
+            }
+            
+            if (currentSchoolManager && appData.settings.reportSettings.schoolManager) {
+                schoolManagerSelect.value = appData.settings.reportSettings.schoolManager;
+            }
+        }
+
+        // تحميل ترتيب الزوار
+        function loadVisitorsOrder() {
+            const seniorVisitorsList = document.getElementById('seniorVisitorsList');
+            const middleVisitorsList = document.getElementById('middleVisitorsList');
+            
+            if (!seniorVisitorsList || !middleVisitorsList) return;
+            
+            // الحصول على قائمة المستخدمين النشطين
+            const seniorLeadership = appData.users.filter(user => user.role === 'senior_leadership' && user.active);
+            const middleLeadership = appData.users.filter(user => user.role === 'leadership' && user.active);
+            
+            // إذا لم يكن هناك ترتيب محفوظ، أنشئ ترتيباً افتراضياً
+            if (appData.settings.visitorsOrder.senior.length === 0) {
+                appData.settings.visitorsOrder.senior = seniorLeadership.map(user => user.name);
+            }
+            
+            if (appData.settings.visitorsOrder.middle.length === 0) {
+                appData.settings.visitorsOrder.middle = middleLeadership.map(user => user.name);
+            }
+            
+            // عرض قائمة القيادة العليا
+            seniorVisitorsList.innerHTML = '';
+            appData.settings.visitorsOrder.senior.forEach((visitorName, index) => {
+                const visitorItem = document.createElement('div');
+                visitorItem.className = 'visitor-item';
+                visitorItem.innerHTML = `
+                    <div class="visitor-info">
+                        <div class="visitor-order">
+                            <span class="order-number">${index + 1}</span>
+                            <span>${visitorName}</span>
+                        </div>
+                    </div>
+                    <div class="order-controls-settings">
+                        <button class="order-btn move-up-visitor" data-type="senior" data-index="${index}">▲</button>
+                        <button class="order-btn move-down-visitor" data-type="senior" data-index="${index}">▼</button>
+                    </div>
+                `;
+                seniorVisitorsList.appendChild(visitorItem);
+            });
+            
+            // عرض قائمة القيادة الوسطى
+            middleVisitorsList.innerHTML = '';
+            appData.settings.visitorsOrder.middle.forEach((visitorName, index) => {
+                const visitorItem = document.createElement('div');
+                visitorItem.className = 'visitor-item';
+                visitorItem.innerHTML = `
+                    <div class="visitor-info">
+                        <div class="visitor-order">
+                            <span class="order-number">${index + 1}</span>
+                            <span>${visitorName}</span>
+                        </div>
+                    </div>
+                    <div class="order-controls-settings">
+                        <button class="order-btn move-up-visitor" data-type="middle" data-index="${index}">▲</button>
+                        <button class="order-btn move-down-visitor" data-type="middle" data-index="${index}">▼</button>
+                    </div>
+                `;
+                middleVisitorsList.appendChild(visitorItem);
+            });
+            
+            // إضافة معالجي الأحداث لأزرار الترتيب
+            document.querySelectorAll('.move-up-visitor').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const type = this.getAttribute('data-type');
+                    const index = parseInt(this.getAttribute('data-index'));
+                    moveVisitorUp(type, index);
+                });
+            });
+            
+            document.querySelectorAll('.move-down-visitor').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const type = this.getAttribute('data-type');
+                    const index = parseInt(this.getAttribute('data-index'));
+                    moveVisitorDown(type, index);
+                });
+            });
+            
+            // إضافة حدث تحديث القائمة
+            document.getElementById('refreshVisitorsList')?.addEventListener('click', loadVisitorsOrder);
+            
+            // إضافة حدث حفظ الترتيب
+            document.getElementById('saveVisitorsOrder')?.addEventListener('click', saveVisitorsOrder);
+        }
+
+        // نقل زائر لأعلى
+        function moveVisitorUp(type, index) {
+            if (index <= 0) return;
+            
+            const visitors = appData.settings.visitorsOrder[type];
+            const temp = visitors[index];
+            visitors[index] = visitors[index - 1];
+            visitors[index - 1] = temp;
+            
+            loadVisitorsOrder();
+        }
+
+        // نقل زائر لأسفل
+        function moveVisitorDown(type, index) {
+            const visitors = appData.settings.visitorsOrder[type];
+            if (index >= visitors.length - 1) return;
+            
+            const temp = visitors[index];
+            visitors[index] = visitors[index + 1];
+            visitors[index + 1] = temp;
+            
+            loadVisitorsOrder();
+        }
+
+        // حفظ ترتيب الزوار
+        function saveVisitorsOrder() {
+            saveAllData();
+            
+            logActivity('حفظ ترتيب', `قام ${appData.currentUser.name} بحفظ ترتيب الزوار`);
+            
+            alert('تم حفظ ترتيب الزوار بنجاح');
         }
 
         // تحديث معاينة التقرير
@@ -4590,17 +4837,23 @@
                 academicYear: appData.settings.academicYear || '2025 / 2026م',
                 createdDate: currentDate,
                 lastModified: currentDate,
-                data: appData.qualityReportData
+                data: JSON.parse(JSON.stringify(appData.qualityReportData)) // نسخة عميقة
             };
+            
+            // تحديث بيانات التقرير بالمعلومات الحالية
+            newReport.data.schoolName = appData.settings.schoolName || '';
             
             const existingIndex = appData.savedQualityReports.findIndex(report => report.reportMonth === selectedMonth);
             if (existingIndex !== -1) {
-                appData.savedQualityReports[existingIndex] = newReport;
+                if (confirm('يوجد تقرير محفوظ لهذا الشهر بالفعل. هل تريد استبداله؟')) {
+                    appData.savedQualityReports[existingIndex] = newReport;
+                } else {
+                    return;
+                }
             } else {
                 appData.savedQualityReports.push(newReport);
             }
             
-            appData.qualityReportData.id = newReport.id;
             saveAllData();
             
             renderSavedReportsList();
@@ -4972,6 +5225,69 @@
             setupReportButtons();
         }
 
+        // عرض تقرير للتحرير
+        function displayQualityReportForEditing(report) {
+            const container = document.getElementById('qualityReportContainer');
+            container.innerHTML = '';
+            
+            // إنشاء واجهة تحرير مبسطة
+            const editContainer = document.createElement('div');
+            editContainer.className = 'a4-page-container';
+            editContainer.innerHTML = `
+                <div class="section-header">
+                    <h2 class="section-title">تحرير تقرير شهر ${report.reportMonth}</h2>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editableSchoolName">اسم المدرسة</label>
+                    <input type="text" id="editableSchoolName" class="form-control" value="${report.schoolName || ''}" placeholder="أدخل اسم المدرسة">
+                </div>
+                
+                <div class="form-group">
+                    <label for="editableReportMonth">شهر التقرير</label>
+                    <select id="editableReportMonth" class="form-control">
+                        ${getMonthsOptions(report.reportMonth)}
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editableAcademicYear">العام الدراسي</label>
+                    <input type="text" id="editableAcademicYear" class="form-control" value="${report.academicYear || '2025 / 2026م'}">
+                </div>
+                
+                <div class="form-group">
+                    <label for="editableFooter">تذييل التقرير</label>
+                    <textarea id="editableFooter" class="form-control" rows="4" placeholder="أدخل نص التذييل">${appData.settings.footer.text || ''}</textarea>
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-success" id="saveEditedReport">حفظ التعديلات</button>
+                    <button class="btn btn-secondary" id="cancelEditReport">إلغاء التعديل</button>
+                </div>
+            `;
+            
+            container.appendChild(editContainer);
+            
+            // إعداد أزرار التقرير
+            setupReportButtons();
+        }
+
+        // الحصول على خيارات الأشهر
+        function getMonthsOptions(selectedMonth) {
+            const arabicMonths = [
+                'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+                'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
+            ];
+            
+            let options = '';
+            arabicMonths.forEach(month => {
+                const selected = month === selectedMonth ? 'selected' : '';
+                options += `<option value="${month}" ${selected}>${month}</option>`;
+            });
+            
+            return options;
+        }
+
         // إعداد الحقول القابلة للتحرير
         function setupEditableFields() {
             // إضافة معالجي الأحداث لحقول الإدخال
@@ -5072,6 +5388,16 @@
             downloadCSV(csvContent, fileName);
             
             logActivity('تصدير بيانات', `قام ${appData.currentUser.name} بتصدير قائمة ${getRoleName(role)}`);
+        }
+
+        // الحصول على اسم الدور
+        function getRoleName(role) {
+            const roleNames = {
+                'senior_leadership': 'القيادة العليا',
+                'leadership': 'القيادة الوسطى',
+                'teacher': 'المعلمات'
+            };
+            return roleNames[role] || role;
         }
 
         // تنزيل ملف CSV
