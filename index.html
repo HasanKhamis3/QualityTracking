@@ -1857,15 +1857,6 @@
             justify-content: center;
             margin-top: 20px;
         }
-        
-        /* تصفية المستخدم في سجل النظام */
-        .log-filter-user {
-            margin-top: 10px;
-        }
-        
-        .log-filter-user select {
-            width: 200px;
-        }
     </style>
 </head>
 <body>
@@ -2121,7 +2112,14 @@
                     
                     <!-- قسم إنشاء التقرير -->
                     <div id="create-report" class="report-sub-section active">
+                        <!-- التقرير النشط حالياً -->
                         <div class="saved-reports-section">
+                            <h3>التقرير النشط</h3>
+                            <div id="activeReportInfo" style="padding: 15px; background: #f8f9fa; border-radius: var(--border-radius); margin-bottom: 20px;">
+                                <p>لا يوجد تقرير نشط حالياً</p>
+                            </div>
+                            
+                            <!-- قسم التقارير المحفوظة -->
                             <h3>التقارير المحفوظة</h3>
                             <div class="saved-reports-list" id="savedReportsList">
                                 <!-- سيتم تعبئته ديناميكياً -->
@@ -2130,25 +2128,14 @@
                             <div class="month-generation">
                                 <label for="reportMonthSelector">اختر الشهر:</label>
                                 <select id="reportMonthSelector">
-                                    <option value="يناير">يناير</option>
-                                    <option value="فبراير">فبراير</option>
-                                    <option value="مارس">مارس</option>
-                                    <option value="أبريل">أبريل</option>
-                                    <option value="مايو">مايو</option>
-                                    <option value="يونيو">يونيو</option>
-                                    <option value="يوليو">يوليو</option>
-                                    <option value="أغسطس">أغسطس</option>
-                                    <option value="سبتمبر">سبتمبر</option>
-                                    <option value="أكتوبر">أكتوبر</option>
-                                    <option value="نوفمبر">نوفمبر</option>
-                                    <option value="ديسمبر">ديسمبر</option>
+                                    <!-- سيتم تعبئته ديناميكياً -->
                                 </select>
                                 <button class="btn btn-success" id="generateReportBtn">إنشاء تقرير جديد</button>
                             </div>
                         </div>
 
                         <!-- محتوى التقرير -->
-                        <div id="qualityReportContainer" class="a4-page-container">
+                        <div id="qualityReportContainer" class="a4-page-container" style="display: none;">
                             <!-- سيتم إنشاء صفحات التقرير هنا ديناميكياً -->
                         </div>
                     </div>
@@ -2226,7 +2213,7 @@
                                 <div class="form-group">
                                     <label for="reportMonth">الشهر الافتراضي للتقرير</label>
                                     <select id="reportMonth" class="form-control">
-                                        <!-- سيتم إضافة الشهر الحالي تلقائياً -->
+                                        <!-- سيتم تعبئته ديناميكياً -->
                                     </select>
                                 </div>
                                 
@@ -2328,7 +2315,6 @@
                                     </div>
                                     
                                     <div class="btn-group" style="margin-top: 20px;">
-                                        <button class="btn btn-sm" id="refreshVisitorsList">تحديث القائمة</button>
                                         <button class="btn btn-sm btn-success" id="saveVisitorsOrder">حفظ الترتيب</button>
                                     </div>
                                 </div>
@@ -2381,18 +2367,8 @@
                                         <label for="logFilter">تصفية السجل:</label>
                                         <select id="logFilter" class="form-control">
                                             <option value="all">جميع الأنشطة</option>
-                                            <option value="user">المستخدمين</option>
-                                            <option value="visit">الزيارات</option>
-                                            <option value="report">التقارير</option>
-                                            <option value="settings">الإعدادات</option>
-                                        </select>
-                                    </div>
-                                    
-                                    <div class="log-filter-user">
-                                        <label for="logUserFilter">تصفية حسب المستخدم:</label>
-                                        <select id="logUserFilter" class="form-control">
-                                            <option value="all">جميع المستخدمين</option>
-                                            <!-- سيتم تعبئته تلقائياً -->
+                                            <option value="user">جميع المستخدمين</option>
+                                            <!-- سيتم تعبئته ديناميكياً -->
                                         </select>
                                     </div>
                                     
@@ -2851,7 +2827,42 @@
             loadAllData();
             setupEventListeners();
             initializeApp();
+            
+            // إعداد اختيار الشهر الحالي افتراضياً
+            setupCurrentMonth();
         });
+
+        // إعداد الشهر الحالي
+        function setupCurrentMonth() {
+            const months = [
+                'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+                'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
+            ];
+            
+            const currentDate = new Date();
+            const currentMonthIndex = currentDate.getMonth();
+            const currentMonth = months[currentMonthIndex];
+            
+            // تحديث قائمة الشهور في الإعدادات
+            const reportMonthSelect = document.getElementById('reportMonth');
+            if (reportMonthSelect) {
+                reportMonthSelect.innerHTML = `<option value="${currentMonth}">${currentMonth} (الحالي)</option>` + 
+                    months.map(month => `<option value="${month}">${month}</option>`).join('');
+                reportMonthSelect.value = currentMonth;
+            }
+            
+            // تحديث قائمة الشهور في تقرير الجودة
+            const reportMonthSelector = document.getElementById('reportMonthSelector');
+            if (reportMonthSelector) {
+                reportMonthSelector.innerHTML = `<option value="${currentMonth}">${currentMonth} (الحالي)</option>` + 
+                    months.map(month => `<option value="${month}">${month}</option>`).join('');
+            }
+            
+            // تحديث الإعدادات
+            if (appData.settings) {
+                appData.settings.reportSettings.defaultMonth = currentMonth;
+            }
+        }
 
         // تحميل جميع البيانات
         function loadAllData() {
@@ -3301,6 +3312,11 @@
             } else if (sectionId === 'visits') {
                 // تحميل قائمة المعلمات عند فتح قسم الزيارات
                 loadTeachersForVisits();
+                // عرض الزيارات للقسم النشط
+                const activeDepartment = document.querySelector('#visitsSubSections .sub-section-btn.active');
+                if (activeDepartment) {
+                    renderVisitsByDepartment(activeDepartment.getAttribute('data-department'));
+                }
             }
             
             logActivity('تنقل', `انتقل إلى قسم ${getSectionName(sectionId)}`);
@@ -3323,7 +3339,7 @@
 
         // إعداد الأزرار العامة
         function setupGeneralButtons() {
-            // أزرار الزيارات
+            // أزرار الزيارات - إصلاح الزر
             document.getElementById('addVisitBtn').addEventListener('click', showAddVisitModal);
             
             // أزرار الأقسام الفرعية للزيارات
@@ -3462,7 +3478,9 @@
             document.getElementById('clearSystemLog').addEventListener('click', clearSystemLog);
             document.getElementById('exportSystemLog').addEventListener('click', exportSystemLog);
             document.getElementById('logFilter').addEventListener('change', renderSystemActivityLog);
-            document.getElementById('logUserFilter').addEventListener('change', renderSystemActivityLog);
+            
+            // ترتيب الزوار
+            document.getElementById('saveVisitorsOrder').addEventListener('click', saveVisitorsOrder);
         }
 
         // إعداد تقرير الجودة
@@ -3543,7 +3561,12 @@
             const recentVisitsTable = document.getElementById('recentVisitsTable');
             recentVisitsTable.innerHTML = '';
             
-            appData.visits.slice(0, 5).forEach(visit => {
+            // عرض آخر 5 زيارات
+            const recentVisits = [...appData.visits]
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .slice(0, 5);
+            
+            recentVisits.forEach(visit => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${visit.teacher}</td>
@@ -3561,76 +3584,87 @@
             const visitsContent = document.getElementById('visitsContent');
             visitsContent.innerHTML = '';
             
-            const userRole = department === 'القيادة العليا' ? 'senior_leadership' : 'leadership';
-            const users = appData.users.filter(u => u.role === userRole && u.hasAccess);
+            // الحصول على الزيارات الخاصة بالقسم المحدد
+            const departmentVisits = appData.visits.filter(visit => visit.department === department);
             
-            users.forEach(user => {
-                const userVisits = appData.visits.filter(visit => visit.visitor === user.name && visit.department === department);
-                
-                if (userVisits.length > 0) {
-                    const userSection = document.createElement('div');
-                    userSection.className = 'department-section';
-                    userSection.innerHTML = `
-                        <h3 class="department-title">${user.name}</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>م</th>
-                                    <th>اسم المعلم</th>
-                                    <th>القسم</th>
-                                    <th>تاريخ الزيارة</th>
-                                    <th>تقييم الزيارة</th>
-                                    <th>الملاحظات</th>
-                                    <th>الإجراءات</th>
-                                </tr>
-                            </thead>
-                            <tbody id="visits-${user.id}">
-                            </tbody>
-                        </table>
-                    `;
-                    visitsContent.appendChild(userSection);
-                    
-                    const userVisitsTable = document.getElementById(`visits-${user.id}`);
-                    userVisits.forEach((visit, index) => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${index + 1}</td>
-                            <td>${visit.teacher}</td>
-                            <td>${visit.department}</td>
-                            <td>${visit.date}</td>
-                            <td>${visit.evaluation}</td>
-                            <td>${visit.notes}</td>
-                            <td>
-                                <button class="btn btn-sm btn-warning view-visit" data-id="${visit.id}">معاينة</button>
-                                <button class="btn btn-sm btn-secondary edit-visit" data-id="${visit.id}">تعديل</button>
-                                <button class="btn btn-sm btn-danger delete-visit" data-id="${visit.id}">حذف</button>
-                            </td>
-                        `;
-                        userVisitsTable.appendChild(row);
-                    });
-                    
-                    // إضافة معالجي الأحداث للأزرار
-                    userVisitsTable.querySelectorAll('.view-visit').forEach(btn => {
-                        btn.addEventListener('click', () => {
-                            const visitId = parseInt(btn.getAttribute('data-id'));
-                            viewVisit(visitId);
-                        });
-                    });
-                    
-                    userVisitsTable.querySelectorAll('.edit-visit').forEach(btn => {
-                        btn.addEventListener('click', () => {
-                            const visitId = parseInt(btn.getAttribute('data-id'));
-                            editVisit(visitId);
-                        });
-                    });
-                    
-                    userVisitsTable.querySelectorAll('.delete-visit').forEach(btn => {
-                        btn.addEventListener('click', () => {
-                            const visitId = parseInt(btn.getAttribute('data-id'));
-                            deleteVisit(visitId);
-                        });
-                    });
+            if (departmentVisits.length === 0) {
+                visitsContent.innerHTML = `
+                    <div class="no-data" style="text-align: center; padding: 40px; color: var(--gray);">
+                        <i class="fas fa-chalkboard-teacher" style="font-size: 48px; margin-bottom: 20px;"></i>
+                        <h3>لا توجد زيارات مسجلة لهذا القسم</h3>
+                        <p>قم بإضافة زيارة جديدة باستخدام زر "إضافة زيارة"</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // تجميع الزيارات حسب الزائر
+            const visitsByVisitor = {};
+            departmentVisits.forEach(visit => {
+                if (!visitsByVisitor[visit.visitor]) {
+                    visitsByVisitor[visit.visitor] = [];
                 }
+                visitsByVisitor[visit.visitor].push(visit);
+            });
+            
+            // عرض الزيارات لكل زائر
+            Object.keys(visitsByVisitor).forEach(visitorName => {
+                const visitorVisits = visitsByVisitor[visitorName];
+                
+                const userSection = document.createElement('div');
+                userSection.className = 'department-section';
+                userSection.innerHTML = `
+                    <h3 class="department-title">${visitorName}</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>م</th>
+                                <th>اسم المعلم</th>
+                                <th>القسم</th>
+                                <th>تاريخ الزيارة</th>
+                                <th>تقييم الزيارة</th>
+                                <th>الملاحظات</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="visits-${visitorName.replace(/\s+/g, '-')}">
+                        </tbody>
+                    </table>
+                `;
+                visitsContent.appendChild(userSection);
+                
+                const userVisitsTable = document.getElementById(`visits-${visitorName.replace(/\s+/g, '-')}`);
+                visitorVisits.forEach((visit, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${visit.teacher}</td>
+                        <td>${visit.department}</td>
+                        <td>${visit.date}</td>
+                        <td>${visit.evaluation}</td>
+                        <td>${visit.notes}</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning edit-visit" data-id="${visit.id}">تعديل</button>
+                            <button class="btn btn-sm btn-danger delete-visit" data-id="${visit.id}">حذف</button>
+                        </td>
+                    `;
+                    userVisitsTable.appendChild(row);
+                });
+                
+                // إضافة معالجي الأحداث للأزرار
+                userVisitsTable.querySelectorAll('.edit-visit').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const visitId = parseInt(btn.getAttribute('data-id'));
+                        editVisit(visitId);
+                    });
+                });
+                
+                userVisitsTable.querySelectorAll('.delete-visit').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const visitId = parseInt(btn.getAttribute('data-id'));
+                        deleteVisit(visitId);
+                    });
+                });
             });
         }
 
@@ -3656,6 +3690,143 @@
                     const department = selectedOption.getAttribute('data-department') || '';
                     document.getElementById('visitTeacherDepartment').value = department;
                 });
+            }
+        }
+
+        // عرض نموذج إضافة زيارة
+        function showAddVisitModal() {
+            document.getElementById('visitModalTitle').textContent = 'إضافة زيارة صفية';
+            document.getElementById('visitForm').reset();
+            document.getElementById('visitId').value = '';
+            
+            // تعيين القسم حسب القسم النشط
+            const activeDepartment = document.querySelector('#visitsSubSections .sub-section-btn.active').getAttribute('data-department');
+            
+            // تعيين اسم الزائر الحالي
+            document.getElementById('visitorName').value = appData.currentUser?.name || '';
+            
+            // تعيين تاريخ اليوم كافتراضي
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('visitDate').value = today;
+            
+            // تحميل قائمة المعلمات
+            loadTeachersForVisits();
+            
+            document.getElementById('visitModal').style.display = 'flex';
+        }
+
+        // تحرير زيارة
+        function editVisit(visitId) {
+            const visit = appData.visits.find(v => v.id === visitId);
+            if (!visit) return;
+            
+            document.getElementById('visitModalTitle').textContent = 'تعديل زيارة صفية';
+            document.getElementById('visitForm').reset();
+            
+            document.getElementById('visitId').value = visit.id;
+            
+            // تحميل قائمة المعلمات
+            loadTeachersForVisits();
+            
+            // تعيين القيم الحالية
+            setTimeout(() => {
+                const teacherSelect = document.getElementById('visitTeacherSelect');
+                for (let i = 0; i < teacherSelect.options.length; i++) {
+                    if (teacherSelect.options[i].textContent === visit.teacher) {
+                        teacherSelect.selectedIndex = i;
+                        break;
+                    }
+                }
+                
+                document.getElementById('visitTeacherDepartment').value = visit.department;
+                document.getElementById('visitDate').value = visit.date;
+                document.getElementById('evaluation').value = visit.evaluation;
+                document.getElementById('visitorName').value = visit.visitor;
+                document.getElementById('notes').value = visit.notes || '';
+            }, 100);
+            
+            document.getElementById('visitModal').style.display = 'flex';
+        }
+
+        // حفظ الزيارة
+        function saveVisit(e) {
+            e.preventDefault();
+            
+            const visitId = document.getElementById('visitId').value;
+            const teacherSelect = document.getElementById('visitTeacherSelect');
+            const teacherName = teacherSelect.options[teacherSelect.selectedIndex]?.textContent || '';
+            const department = document.getElementById('visitTeacherDepartment').value;
+            const visitDate = document.getElementById('visitDate').value;
+            const evaluation = document.getElementById('evaluation').value;
+            const visitorName = document.getElementById('visitorName').value;
+            const notes = document.getElementById('notes').value;
+            
+            if (!teacherName || teacherName === 'اختر اسم المعلم') {
+                alert('يرجى اختيار اسم المعلم');
+                return;
+            }
+            
+            // الحصول على القسم النشط
+            const activeDepartment = document.querySelector('#visitsSubSections .sub-section-btn.active').getAttribute('data-department');
+            
+            if (visitId) {
+                // تحديث زيارة موجودة
+                const visitIndex = appData.visits.findIndex(v => v.id === parseInt(visitId));
+                if (visitIndex !== -1) {
+                    appData.visits[visitIndex] = {
+                        id: parseInt(visitId),
+                        teacher: teacherName,
+                        department: activeDepartment,
+                        date: visitDate,
+                        evaluation,
+                        visitor: visitorName,
+                        notes
+                    };
+                    
+                    logActivity('تعديل زيارة', `قام ${appData.currentUser.name} بتعديل زيارة للمعلم ${teacherName}`);
+                }
+            } else {
+                // إضافة زيارة جديدة
+                const newVisit = {
+                    id: Date.now(),
+                    teacher: teacherName,
+                    department: activeDepartment,
+                    date: visitDate,
+                    evaluation,
+                    visitor: visitorName,
+                    notes
+                };
+                appData.visits.push(newVisit);
+                
+                logActivity('إضافة زيارة', `قام ${appData.currentUser.name} بإضافة زيارة جديدة للمعلم ${teacherName}`);
+            }
+            
+            saveAllData();
+            closeModal('visitModal');
+            
+            // تحديث العرض
+            renderVisitsByDepartment(activeDepartment);
+            renderDashboard();
+            
+            alert('تم حفظ الزيارة بنجاح');
+        }
+
+        // حذف زيارة
+        function deleteVisit(visitId) {
+            if (confirm('هل أنت متأكد من حذف هذه الزيارة؟')) {
+                const visit = appData.visits.find(v => v.id === visitId);
+                appData.visits = appData.visits.filter(v => v.id !== visitId);
+                saveAllData();
+                
+                const activeDepartment = document.querySelector('#visitsSubSections .sub-section-btn.active').getAttribute('data-department');
+                renderVisitsByDepartment(activeDepartment);
+                renderDashboard();
+                
+                if (visit) {
+                    logActivity('حذف زيارة', `قام ${appData.currentUser.name} بحذف زيارة للمعلم ${visit.teacher}`);
+                }
+                
+                alert('تم حذف الزيارة بنجاح');
             }
         }
 
@@ -3922,7 +4093,7 @@
             });
         }
 
-        // عرض قائمة التقارير المحفوظة
+        // عرض قائمة التقارير المحفوظة - تم التعديل لترتيبها من الأحدث إلى الأقدم
         function renderSavedReportsList() {
             const savedReportsList = document.getElementById('savedReportsList');
             savedReportsList.innerHTML = '';
@@ -3938,9 +4109,12 @@
                 return;
             }
             
-            // فرز التقارير من الجديد إلى القديم بناءً على تاريخ الإنشاء
+            // ترتيب التقارير من الأحدث إلى الأقدم حسب تاريخ الإنشاء
             const sortedReports = [...appData.savedQualityReports].sort((a, b) => {
-                return new Date(b.createdDate) - new Date(a.createdDate);
+                // تحويل التواريخ إلى كائنات Date للمقارنة
+                const dateA = new Date(a.createdDate.split('/').reverse().join('-'));
+                const dateB = new Date(b.createdDate.split('/').reverse().join('-'));
+                return dateB - dateA; // ترتيب تنازلي (من الأحدث إلى الأقدم)
             });
             
             sortedReports.forEach(report => {
@@ -4011,34 +4185,45 @@
             });
         }
 
-        // عرض سجل أنشطة النظام
+        // عرض سجل أنشطة النظام مع الفلتر - تم التعديل
         function renderSystemActivityLog() {
             const logContainer = document.getElementById('systemActivityLog');
             if (!logContainer) return;
             
             const filter = document.getElementById('logFilter').value;
-            const userFilter = document.getElementById('logUserFilter').value;
-            
             let filteredActivities = appData.activityLog;
             
-            // تصفية حسب نوع النشاط
-            if (filter !== 'all') {
-                const filterMap = {
-                    'user': 'مستخدم',
-                    'visit': 'زيارة',
-                    'report': 'تقرير',
-                    'settings': 'إعدادات'
-                };
-                
-                filteredActivities = appData.activityLog.filter(log => 
-                    log.action.includes(filterMap[filter]) || 
-                    log.details.includes(filterMap[filter])
-                );
-            }
+            // تحديث قائمة الفلتر بالمستخدمين
+            updateLogFilterUsers();
             
-            // تصفية حسب المستخدم
-            if (userFilter !== 'all') {
-                filteredActivities = filteredActivities.filter(log => log.userName === userFilter);
+            if (filter !== 'all') {
+                if (filter === 'user') {
+                    // عرض جميع الأنشطة الخاصة بالمستخدمين
+                    filteredActivities = appData.activityLog.filter(log => 
+                        log.action.includes('مستخدم') || 
+                        log.details.includes('مستخدم') ||
+                        log.action.includes('تسجيل دخول') ||
+                        log.action.includes('تسجيل خروج')
+                    );
+                } else if (filter.startsWith('user_')) {
+                    // عرض أنشطة مستخدم محدد
+                    const userId = parseInt(filter.split('_')[1]);
+                    filteredActivities = appData.activityLog.filter(log => log.userId === userId);
+                } else {
+                    // الفلاتر الأخرى
+                    const filterMap = {
+                        'visit': 'زيارة',
+                        'report': 'تقرير',
+                        'settings': 'إعدادات'
+                    };
+                    
+                    if (filterMap[filter]) {
+                        filteredActivities = appData.activityLog.filter(log => 
+                            log.action.includes(filterMap[filter]) || 
+                            log.details.includes(filterMap[filter])
+                        );
+                    }
+                }
             }
             
             filteredActivities = filteredActivities.slice(0, 50);
@@ -4076,100 +4261,50 @@
                 `;
                 logContainer.appendChild(logItem);
             });
-            
-            // تحديث قائمة تصفية المستخدمين
-            updateUserFilterList();
         }
 
-        // تحديث قائمة تصفية المستخدمين
-        function updateUserFilterList() {
-            const userFilterSelect = document.getElementById('logUserFilter');
-            if (!userFilterSelect) return;
+        // تحديث فلتر المستخدمين في سجل النظام
+        function updateLogFilterUsers() {
+            const logFilter = document.getElementById('logFilter');
+            if (!logFilter) return;
             
-            // حفظ التحديد الحالي
-            const currentSelection = userFilterSelect.value;
+            // حفظ القيمة الحالية
+            const currentValue = logFilter.value;
             
-            // الحصول على جميع أسماء المستخدمين الفريدة
-            const uniqueUsers = [...new Set(appData.activityLog.map(log => log.userName))];
+            // الحصول على المستخدمين الفريدين من السجل
+            const uniqueUsers = [];
+            const userIds = new Set();
             
-            // تحديث القائمة
-            userFilterSelect.innerHTML = '<option value="all">جميع المستخدمين</option>';
-            
-            uniqueUsers.forEach(userName => {
-                const option = document.createElement('option');
-                option.value = userName;
-                option.textContent = userName;
-                userFilterSelect.appendChild(option);
+            appData.activityLog.forEach(log => {
+                if (!userIds.has(log.userId)) {
+                    userIds.add(log.userId);
+                    uniqueUsers.push({
+                        id: log.userId,
+                        name: log.userName
+                    });
+                }
             });
             
-            // استعادة التحديد السابق إذا كان لا يزال موجوداً
-            if (currentSelection && Array.from(userFilterSelect.options).some(opt => opt.value === currentSelection)) {
-                userFilterSelect.value = currentSelection;
+            // تحديث قائمة الفلتر
+            const options = logFilter.querySelectorAll('option');
+            // إزالة خيارات المستخدمين الحالية (بعد "جميع المستخدمين")
+            for (let i = options.length - 1; i > 1; i--) {
+                logFilter.removeChild(options[i]);
             }
+            
+            // إضافة خيارات المستخدمين الجدد
+            uniqueUsers.forEach(user => {
+                const option = document.createElement('option');
+                option.value = `user_${user.id}`;
+                option.textContent = user.name;
+                logFilter.appendChild(option);
+            });
+            
+            // استعادة القيمة الحالية
+            logFilter.value = currentValue;
         }
 
         // ==================== دوال معالجة البيانات ====================
-
-        // حفظ الزيارة
-        function saveVisit(e) {
-            e.preventDefault();
-            
-            const visitId = document.getElementById('visitId').value;
-            const teacherSelect = document.getElementById('visitTeacherSelect');
-            const teacherId = teacherSelect.value;
-            const teacherName = teacherSelect.options[teacherSelect.selectedIndex].text;
-            const department = document.getElementById('visitTeacherDepartment').value;
-            const visitDate = document.getElementById('visitDate').value;
-            const evaluation = document.getElementById('evaluation').value;
-            const visitorName = document.getElementById('visitorName').value;
-            const notes = document.getElementById('notes').value;
-            
-            if (!teacherId) {
-                alert('يرجى اختيار اسم المعلم');
-                return;
-            }
-            
-            if (visitId) {
-                const visitIndex = appData.visits.findIndex(v => v.id === parseInt(visitId));
-                if (visitIndex !== -1) {
-                    appData.visits[visitIndex] = {
-                        id: parseInt(visitId),
-                        teacher: teacherName,
-                        teacherId: parseInt(teacherId),
-                        department,
-                        date: visitDate,
-                        evaluation,
-                        visitor: visitorName,
-                        notes
-                    };
-                    
-                    logActivity('تعديل زيارة', `قام ${appData.currentUser.name} بتعديل زيارة للمعلم ${teacherName}`);
-                }
-            } else {
-                const newVisit = {
-                    id: Date.now(),
-                    teacher: teacherName,
-                    teacherId: parseInt(teacherId),
-                    department,
-                    date: visitDate,
-                    evaluation,
-                    visitor: visitorName,
-                    notes
-                };
-                appData.visits.push(newVisit);
-                
-                logActivity('إضافة زيارة', `قام ${appData.currentUser.name} بإضافة زيارة جديدة للمعلم ${teacherName}`);
-            }
-            
-            saveAllData();
-            closeModal('visitModal');
-            
-            const activeDepartment = document.querySelector('#visitsSubSections .sub-section-btn.active').getAttribute('data-department');
-            renderVisitsByDepartment(activeDepartment);
-            renderDashboard();
-            
-            alert('تم حفظ الزيارة بنجاح');
-        }
 
         // حفظ المعلمة
         function saveTeacher(e) {
@@ -4335,23 +4470,6 @@
 
         // ==================== دوال عرض النماذج ====================
 
-        // عرض نموذج إضافة زيارة
-        function showAddVisitModal() {
-            document.getElementById('visitModalTitle').textContent = 'إضافة زيارة صفية';
-            document.getElementById('visitForm').reset();
-            document.getElementById('visitId').value = '';
-            document.getElementById('visitorName').value = appData.currentUser.name;
-            document.getElementById('visitTeacherDepartment').value = '';
-            
-            const activeDepartment = document.querySelector('#visitsSubSections .sub-section-btn.active').getAttribute('data-department');
-            document.getElementById('department').value = activeDepartment;
-            
-            // تحميل قائمة المعلمات
-            loadTeachersForVisits();
-            
-            document.getElementById('visitModal').style.display = 'flex';
-        }
-
         // عرض نموذج إضافة معلمة
         function showAddTeacherModal() {
             document.getElementById('userModalTitle').textContent = 'إضافة معلمة جديدة';
@@ -4383,179 +4501,12 @@
             document.getElementById('departmentModal').style.display = 'flex';
         }
 
-        // ==================== دوال معالجة CSV ====================
-
-        // معالجة استيراد CSV
-        function handleCSVUpload(e, role) {
-            const file = e.target.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const csvData = e.target.result;
-                    const rows = csvData.split('\n');
-                    const headers = rows[0].split(',').map(h => h.trim());
-                    
-                    const usersToImport = [];
-                    
-                    for (let i = 1; i < rows.length; i++) {
-                        if (rows[i].trim() === '') continue;
-                        
-                        const cols = rows[i].split(',').map(c => c.trim());
-                        if (cols.length < 2) continue;
-                        
-                        const name = cols[0] || `مستخدم ${i}`;
-                        let position = '';
-                        let phone = '';
-                        
-                        if (role === 'senior_leadership' || role === 'leadership') {
-                            position = cols[1] || 'موظف';
-                            phone = cols[2] || '';
-                        } else if (role === 'teacher') {
-                            position = cols[1] || 'معلم';
-                            phone = '';
-                        }
-                        
-                        if (!appData.users.some(u => u.name === name && u.role === role)) {
-                            usersToImport.push({
-                                name,
-                                position,
-                                phone,
-                                role
-                            });
-                        }
-                    }
-                    
-                    if (usersToImport.length > 0) {
-                        showCSVImportPreview(usersToImport, role);
-                    } else {
-                        alert('لا توجد بيانات جديدة للاستيراد');
-                    }
-                } catch (error) {
-                    console.error('خطأ في معالجة ملف CSV:', error);
-                    alert('حدث خطأ أثناء معالجة ملف CSV. يرجى التحقق من تنسيق الملف. تأكد من أن الملف بصيغة CSV وأن البيانات مفصولة بفواصل.');
-                }
-            };
-            
-            reader.readAsText(file, 'UTF-8');
-            e.target.value = '';
-        }
-
-        // عرض معاينة استيراد CSV
-        function showCSVImportPreview(usersToImport, role) {
-            const importContent = document.getElementById('csvImportContent');
-            importContent.innerHTML = `
-                <h4>معاينة بيانات الاستيراد (${usersToImport.length} مستخدم)</h4>
-                <p>يرجى تحديد المستخدمين الذين ترغب في استيرادهم:</p>
-                
-                <div class="csv-import-preview">
-                    <table class="csv-preview-table">
-                        <thead>
-                            <tr>
-                                <th><input type="checkbox" id="selectAllImport"> تحديد الكل</th>
-                                <th>الاسم</th>
-                                <th>${role === 'teacher' ? 'القسم' : 'الوظيفة'}</th>
-                                ${role !== 'teacher' ? '<th>رقم الهاتف</th>' : ''}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${usersToImport.map((user, index) => `
-                                <tr>
-                                    <td><input type="checkbox" class="import-user-checkbox" data-index="${index}" checked></td>
-                                    <td>${user.name}</td>
-                                    <td>${user.position}</td>
-                                    ${role !== 'teacher' ? `<td>${user.phone}</td>` : ''}
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div class="btn-group">
-                    <button class="btn btn-success" id="confirmImport">استيراد المحددين</button>
-                    <button class="btn btn-secondary" id="cancelImport">إلغاء</button>
-                </div>
-            `;
-            
-            document.getElementById('csvImportModal').style.display = 'flex';
-            
-            // تحديد الكل
-            document.getElementById('selectAllImport').addEventListener('change', function(e) {
-                const checkboxes = document.querySelectorAll('.import-user-checkbox');
-                checkboxes.forEach(cb => cb.checked = e.target.checked);
-            });
-            
-            // تأكيد الاستيراد
-            document.getElementById('confirmImport').addEventListener('click', () => {
-                const selectedIndexes = Array.from(document.querySelectorAll('.import-user-checkbox:checked'))
-                    .map(cb => parseInt(cb.getAttribute('data-index')));
-                
-                if (selectedIndexes.length === 0) {
-                    alert('يرجى تحديد مستخدمين على الأقل للاستيراد');
-                    return;
-                }
-                
-                const selectedUsers = selectedIndexes.map(idx => usersToImport[idx]);
-                importUsers(selectedUsers, role);
-                closeModal('csvImportModal');
-            });
-            
-            // إلغاء الاستيراد
-            document.getElementById('cancelImport').addEventListener('click', () => {
-                closeModal('csvImportModal');
-            });
-        }
-
-        // استيراد المستخدمين
-        function importUsers(users, role) {
-            let importedCount = 0;
-            
-            users.forEach(userData => {
-                if (!appData.users.some(u => u.name === userData.name && u.role === role)) {
-                    const newUser = {
-                        id: Date.now() + Math.random(),
-                        name: userData.name,
-                        position: userData.position,
-                        phone: userData.phone || '',
-                        role: role,
-                        avatar: userData.name.charAt(0),
-                        active: true,
-                        hasAccess: role !== 'teacher',
-                        department: role === 'teacher' ? userData.position : '',
-                        permissions: role === 'teacher' ? {} : createDefaultPermissions(role)
-                    };
-                    
-                    if (role !== 'teacher') {
-                        newUser.username = generateUsername(userData.name);
-                        newUser.password = '123456';
-                    }
-                    
-                    appData.users.push(newUser);
-                    importedCount++;
-                }
-            });
-            
-            saveAllData();
-            
-            const activeSection = document.querySelector('#userSubTabs a.active').getAttribute('data-user-section');
-            renderUserManagementTable(activeSection);
-            
-            logActivity('استيراد مستخدمين', `قام ${appData.currentUser.name} باستيراد ${importedCount} مستخدم جديد`);
-            
-            alert(`تم استيراد ${importedCount} مستخدم جديد بنجاح`);
-        }
-
         // ==================== دوال الإعدادات ====================
 
         // تحميل بيانات الإعدادات
         function loadSettingsData() {
             document.getElementById('schoolName').value = appData.settings.schoolName || '';
             document.getElementById('academicYear').value = appData.settings.academicYear || '2025 / 2026م';
-            
-            // تحديث قائمة الأشهر مع إضافة الشهر الحالي
-            updateMonthsList();
-            
             document.getElementById('reportFooterText').value = appData.settings.footer.text || '';
             document.getElementById('footerAlignment').value = appData.settings.footer.alignment || 'center';
             document.getElementById('footerFontSize').value = appData.settings.footer.fontSize || '12pt';
@@ -4564,45 +4515,6 @@
             loadSignatureLists();
             loadVisitorsOrder();
             updateReportPreview();
-        }
-
-        // تحديث قائمة الأشهر مع الشهر الحالي
-        function updateMonthsList() {
-            const reportMonthSelect = document.getElementById('reportMonth');
-            if (!reportMonthSelect) return;
-            
-            // حفظ التحديد الحالي
-            const currentSelection = reportMonthSelect.value;
-            
-            // الأشهر العربية
-            const arabicMonths = [
-                'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
-                'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
-            ];
-            
-            // الحصول على الشهر الحالي
-            const currentDate = new Date();
-            const currentMonthIndex = currentDate.getMonth(); // 0-11
-            const currentMonthArabic = arabicMonths[currentMonthIndex];
-            
-            // تحديث القائمة
-            reportMonthSelect.innerHTML = `<option value="${currentMonthArabic}">${currentMonthArabic} (الحالي)</option>`;
-            
-            arabicMonths.forEach(month => {
-                if (month !== currentMonthArabic) {
-                    const option = document.createElement('option');
-                    option.value = month;
-                    option.textContent = month;
-                    reportMonthSelect.appendChild(option);
-                }
-            });
-            
-            // استعادة التحديد السابق إذا لم يكن فارغاً
-            if (currentSelection && Array.from(reportMonthSelect.options).some(opt => opt.value === currentSelection)) {
-                reportMonthSelect.value = currentSelection;
-            } else if (appData.settings.reportSettings.defaultMonth) {
-                reportMonthSelect.value = appData.settings.reportSettings.defaultMonth;
-            }
         }
 
         // تحديث عرض الشعار
@@ -4644,23 +4556,16 @@
 
         // تحميل قائمة التوقيعات
         function loadSignatureLists() {
+            const seniorUsers = appData.users.filter(user => user.role === 'senior_leadership' && user.active);
             const assistantManagerSelect = document.getElementById('assistantManager');
             const schoolManagerSelect = document.getElementById('schoolManager');
             
-            if (!assistantManagerSelect || !schoolManagerSelect) return;
-            
-            // حفظ التحديد الحالي
-            const currentAssistant = assistantManagerSelect.value;
-            const currentSchoolManager = schoolManagerSelect.value;
-            
-            // الحصول على قائمة القيادة العليا
-            const seniorLeadership = appData.users.filter(user => user.role === 'senior_leadership' && user.active);
-            
-            // تحديث قوائم الاختيار
+            // تفريغ القوائم الحالية
             assistantManagerSelect.innerHTML = '<option value="">اختر اسم المدير المساعد</option>';
             schoolManagerSelect.innerHTML = '<option value="">اختر اسم مدير المدرسة</option>';
             
-            seniorLeadership.forEach(user => {
+            // إضافة المستخدمين إلى القوائم
+            seniorUsers.forEach(user => {
                 const option1 = document.createElement('option');
                 option1.value = user.name;
                 option1.textContent = user.name;
@@ -4672,12 +4577,12 @@
                 schoolManagerSelect.appendChild(option2);
             });
             
-            // استعادة التحديد السابق
-            if (currentAssistant && appData.settings.reportSettings.assistantManager) {
+            // تعيين القيم المحفوظة
+            if (appData.settings.reportSettings.assistantManager) {
                 assistantManagerSelect.value = appData.settings.reportSettings.assistantManager;
             }
             
-            if (currentSchoolManager && appData.settings.reportSettings.schoolManager) {
+            if (appData.settings.reportSettings.schoolManager) {
                 schoolManagerSelect.value = appData.settings.reportSettings.schoolManager;
             }
         }
@@ -4687,62 +4592,66 @@
             const seniorVisitorsList = document.getElementById('seniorVisitorsList');
             const middleVisitorsList = document.getElementById('middleVisitorsList');
             
-            if (!seniorVisitorsList || !middleVisitorsList) return;
+            // تفريغ القوائم الحالية
+            seniorVisitorsList.innerHTML = '';
+            middleVisitorsList.innerHTML = '';
             
-            // الحصول على قائمة المستخدمين النشطين
-            const seniorLeadership = appData.users.filter(user => user.role === 'senior_leadership' && user.active);
-            const middleLeadership = appData.users.filter(user => user.role === 'leadership' && user.active);
+            // الحصول على المستخدمين النشطين
+            const seniorUsers = appData.users.filter(user => user.role === 'senior_leadership' && user.active);
+            const middleUsers = appData.users.filter(user => user.role === 'leadership' && user.active);
             
-            // إذا لم يكن هناك ترتيب محفوظ، أنشئ ترتيباً افتراضياً
-            if (appData.settings.visitorsOrder.senior.length === 0) {
-                appData.settings.visitorsOrder.senior = seniorLeadership.map(user => user.name);
+            // تحميل الترتيب المحفوظ أو استخدام الترتيب الافتراضي
+            let seniorOrder = appData.settings.visitorsOrder.senior;
+            let middleOrder = appData.settings.visitorsOrder.middle;
+            
+            // إذا لم يكن هناك ترتيب محفوظ، استخدام جميع المستخدمين
+            if (!seniorOrder || seniorOrder.length === 0) {
+                seniorOrder = seniorUsers.map(user => user.name);
             }
             
-            if (appData.settings.visitorsOrder.middle.length === 0) {
-                appData.settings.visitorsOrder.middle = middleLeadership.map(user => user.name);
+            if (!middleOrder || middleOrder.length === 0) {
+                middleOrder = middleUsers.map(user => user.name);
             }
             
             // عرض قائمة القيادة العليا
-            seniorVisitorsList.innerHTML = '';
-            appData.settings.visitorsOrder.senior.forEach((visitorName, index) => {
+            seniorOrder.forEach((visitorName, index) => {
                 const visitorItem = document.createElement('div');
                 visitorItem.className = 'visitor-item';
                 visitorItem.innerHTML = `
                     <div class="visitor-info">
-                        <div class="visitor-order">
-                            <span class="order-number">${index + 1}</span>
-                            <span>${visitorName}</span>
-                        </div>
+                        <div class="order-number">${index + 1}</div>
+                        <span>${visitorName}</span>
                     </div>
-                    <div class="order-controls-settings">
-                        <button class="order-btn move-up-visitor" data-type="senior" data-index="${index}">▲</button>
-                        <button class="order-btn move-down-visitor" data-type="senior" data-index="${index}">▼</button>
+                    <div class="visitor-order">
+                        <div class="order-controls-settings">
+                            <button class="order-btn move-up-visitor" data-type="senior" data-index="${index}">▲</button>
+                            <button class="order-btn move-down-visitor" data-type="senior" data-index="${index}">▼</button>
+                        </div>
                     </div>
                 `;
                 seniorVisitorsList.appendChild(visitorItem);
             });
             
             // عرض قائمة القيادة الوسطى
-            middleVisitorsList.innerHTML = '';
-            appData.settings.visitorsOrder.middle.forEach((visitorName, index) => {
+            middleOrder.forEach((visitorName, index) => {
                 const visitorItem = document.createElement('div');
                 visitorItem.className = 'visitor-item';
                 visitorItem.innerHTML = `
                     <div class="visitor-info">
-                        <div class="visitor-order">
-                            <span class="order-number">${index + 1}</span>
-                            <span>${visitorName}</span>
-                        </div>
+                        <div class="order-number">${index + 1}</div>
+                        <span>${visitorName}</span>
                     </div>
-                    <div class="order-controls-settings">
-                        <button class="order-btn move-up-visitor" data-type="middle" data-index="${index}">▲</button>
-                        <button class="order-btn move-down-visitor" data-type="middle" data-index="${index}">▼</button>
+                    <div class="visitor-order">
+                        <div class="order-controls-settings">
+                            <button class="order-btn move-up-visitor" data-type="middle" data-index="${index}">▲</button>
+                            <button class="order-btn move-down-visitor" data-type="middle" data-index="${index}">▼</button>
+                        </div>
                     </div>
                 `;
                 middleVisitorsList.appendChild(visitorItem);
             });
             
-            // إضافة معالجي الأحداث لأزرار الترتيب
+            // إضافة معالجي الأحداث لأزرار التحريك
             document.querySelectorAll('.move-up-visitor').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const type = this.getAttribute('data-type');
@@ -4758,40 +4667,58 @@
                     moveVisitorDown(type, index);
                 });
             });
-            
-            // إضافة حدث تحديث القائمة
-            document.getElementById('refreshVisitorsList')?.addEventListener('click', loadVisitorsOrder);
-            
-            // إضافة حدث حفظ الترتيب
-            document.getElementById('saveVisitorsOrder')?.addEventListener('click', saveVisitorsOrder);
         }
 
-        // نقل زائر لأعلى
+        // تحريك زائر لأعلى
         function moveVisitorUp(type, index) {
             if (index <= 0) return;
             
-            const visitors = appData.settings.visitorsOrder[type];
-            const temp = visitors[index];
-            visitors[index] = visitors[index - 1];
-            visitors[index - 1] = temp;
+            const orderArray = type === 'senior' ? appData.settings.visitorsOrder.senior : appData.settings.visitorsOrder.middle;
             
+            // تبديل المواقع
+            [orderArray[index], orderArray[index - 1]] = [orderArray[index - 1], orderArray[index]];
+            
+            // حفظ التغييرات
+            saveAllData();
+            
+            // إعادة تحميل القائمة
             loadVisitorsOrder();
         }
 
-        // نقل زائر لأسفل
+        // تحريك زائر لأسفل
         function moveVisitorDown(type, index) {
-            const visitors = appData.settings.visitorsOrder[type];
-            if (index >= visitors.length - 1) return;
+            const orderArray = type === 'senior' ? appData.settings.visitorsOrder.senior : appData.settings.visitorsOrder.middle;
             
-            const temp = visitors[index];
-            visitors[index] = visitors[index + 1];
-            visitors[index + 1] = temp;
+            if (index >= orderArray.length - 1) return;
             
+            // تبديل المواقع
+            [orderArray[index], orderArray[index + 1]] = [orderArray[index + 1], orderArray[index]];
+            
+            // حفظ التغييرات
+            saveAllData();
+            
+            // إعادة تحميل القائمة
             loadVisitorsOrder();
         }
 
         // حفظ ترتيب الزوار
         function saveVisitorsOrder() {
+            // الحصول على الترتيب الحالي من القوائم المعروضة
+            const seniorItems = document.querySelectorAll('#seniorVisitorsList .visitor-item');
+            const middleItems = document.querySelectorAll('#middleVisitorsList .visitor-item');
+            
+            const seniorOrder = Array.from(seniorItems).map(item => 
+                item.querySelector('.visitor-info span').textContent
+            );
+            
+            const middleOrder = Array.from(middleItems).map(item => 
+                item.querySelector('.visitor-info span').textContent
+            );
+            
+            // حفظ الترتيب
+            appData.settings.visitorsOrder.senior = seniorOrder;
+            appData.settings.visitorsOrder.middle = middleOrder;
+            
             saveAllData();
             
             logActivity('حفظ ترتيب', `قام ${appData.currentUser.name} بحفظ ترتيب الزوار`);
@@ -4837,23 +4764,17 @@
                 academicYear: appData.settings.academicYear || '2025 / 2026م',
                 createdDate: currentDate,
                 lastModified: currentDate,
-                data: JSON.parse(JSON.stringify(appData.qualityReportData)) // نسخة عميقة
+                data: JSON.parse(JSON.stringify(appData.qualityReportData)) // نسخة عميقة من البيانات
             };
-            
-            // تحديث بيانات التقرير بالمعلومات الحالية
-            newReport.data.schoolName = appData.settings.schoolName || '';
             
             const existingIndex = appData.savedQualityReports.findIndex(report => report.reportMonth === selectedMonth);
             if (existingIndex !== -1) {
-                if (confirm('يوجد تقرير محفوظ لهذا الشهر بالفعل. هل تريد استبداله؟')) {
-                    appData.savedQualityReports[existingIndex] = newReport;
-                } else {
-                    return;
-                }
+                appData.savedQualityReports[existingIndex] = newReport;
             } else {
                 appData.savedQualityReports.push(newReport);
             }
             
+            appData.qualityReportData.id = newReport.id;
             saveAllData();
             
             renderSavedReportsList();
@@ -4887,7 +4808,7 @@
                 return;
             }
             
-            displayQualityReportForEditing(report);
+            displayQualityReport(report);
             
             logActivity('تعديل تقرير', `قام ${appData.currentUser.name} بفتح تقرير شهر ${report.reportMonth} للتعديل`);
             
@@ -4898,6 +4819,18 @@
         function displayQualityReport(report) {
             const container = document.getElementById('qualityReportContainer');
             container.innerHTML = '';
+            
+            // إظهار حاوية التقرير
+            container.style.display = 'block';
+            
+            // تحديث معلومات التقرير النشط
+            const activeReportInfo = document.getElementById('activeReportInfo');
+            if (activeReportInfo) {
+                activeReportInfo.innerHTML = `
+                    <h4>تقرير شهر ${report.reportMonth}</h4>
+                    <p>تم الإنشاء: ${report.createdDate} | آخر تعديل: ${report.lastModified}</p>
+                `;
+            }
             
             // الصفحة 1: الغلاف - مطابقة للصورة 01
             const coverPage = document.createElement('div');
@@ -4926,15 +4859,19 @@
                 
                 <div class="preparer-info">
                     <div class="preparer-text">إعداد المدير/ة المساعد/ة</div>
+                    <div style="margin-top: 10pt;">${appData.settings.reportSettings.assistantManager || '___________________'}</div>
                 </div>
                 
                 <div class="approver-info">
                     <div class="approver-text">يعتمد، مدير/ة المدرسة</div>
+                    <div style="margin-top: 10pt;">${appData.settings.reportSettings.schoolManager || '___________________'}</div>
                 </div>
                 
                 <div class="department-info">
                     إدارة العمليات التعليمية المنطقة (1) رئيس مدارس. أفنان محمد أمين
                 </div>
+                
+                <div class="page-counter">صفحة 1</div>
             `;
             container.appendChild(coverPage);
             
@@ -4987,6 +4924,8 @@
                 <div class="department-info">
                     إدارة العمليات التعليمية المنطقة (1) رئيس مدارس. أفنان محمد أمين
                 </div>
+                
+                <div class="page-counter">صفحة 2</div>
             `;
             container.appendChild(pageTwo);
             
@@ -5011,11 +4950,11 @@
                         ${Array(5).fill().map((_, i) => `
                             <tr>
                                 <td>${i + 1}</td>
-                                <td><input type="text" style="width: 100%;"></td>
-                                <td><input type="text" style="width: 100%;"></td>
-                                <td><input type="text" style="width: 100%;"></td>
-                                <td><input type="text" style="width: 100%;"></td>
-                                <td><input type="text" style="width: 100%;"></td>
+                                <td><input type="text" style="width: 100%;" placeholder="اسم المعلم"></td>
+                                <td><input type="text" style="width: 100%;" placeholder="القسم"></td>
+                                <td><input type="text" style="width: 100%;" placeholder="التاريخ"></td>
+                                <td><input type="text" style="width: 100%;" placeholder="التقييم"></td>
+                                <td><input type="text" style="width: 100%;" placeholder="اسم الزائر"></td>
                             </tr>
                         `).join('')}
                     </tbody>
@@ -5034,7 +4973,7 @@
                     
                     <div class="summary-item" style="margin-top: 14.175pt;">
                         <span class="summary-label">مجموع الزيارات =</span>
-                        <span class="summary-value">1</span>
+                        <span class="summary-value">0</span>
                     </div>
                     
                     <div class="signature-line">
@@ -5044,7 +4983,7 @@
                     
                     <div class="summary-item" style="margin-top: 14.175pt;">
                         <span class="summary-label">مجموع الزيارات =</span>
-                        <span class="summary-value">1</span>
+                        <span class="summary-value">0</span>
                     </div>
                     
                     <div class="signature-line">
@@ -5054,7 +4993,7 @@
                     
                     <div class="summary-item" style="margin-top: 14.175pt;">
                         <span class="summary-label">مجموع الزيارات =</span>
-                        <span class="summary-value">1</span>
+                        <span class="summary-value">0</span>
                     </div>
                     
                     <div class="signature-line">
@@ -5066,6 +5005,8 @@
                 <div class="department-info">
                     إدارة العمليات التعليمية المنطقة (1) رئيس مدارس. أفنان محمد أمين
                 </div>
+                
+                <div class="page-counter">صفحة 3</div>
             `;
             container.appendChild(pageThree);
             
@@ -5108,6 +5049,8 @@
                 <div class="department-info">
                     إدارة العمليات التعليمية المنطقة (1) رئيس مدارس. أفنان محمد أمين
                 </div>
+                
+                <div class="page-counter">صفحة 4</div>
             `;
             container.appendChild(pageFour);
             
@@ -5131,10 +5074,10 @@
                         ${Array(3).fill().map((_, i) => `
                             <tr>
                                 <td>${i + 1}</td>
-                                <td><input type="text" style="width: 100%;"></td>
-                                <td><input type="text" style="width: 100%;"></td>
-                                <td><textarea style="width: 100%; height: 50px;"></textarea></td>
-                                <td><input type="text" style="width: 100%;"></td>
+                                <td><input type="text" style="width: 100%;" placeholder="اسم المعلم"></td>
+                                <td><input type="text" style="width: 100%;" placeholder="التقدير"></td>
+                                <td><textarea style="width: 100%; height: 50px;" placeholder="المبررات"></textarea></td>
+                                <td><input type="text" style="width: 100%;" placeholder="القسم"></td>
                             </tr>
                         `).join('')}
                     </tbody>
@@ -5143,6 +5086,8 @@
                 <div class="department-info">
                     إدارة العمليات التعليمية المنطقة (1) رئيس مدارس. أفنان محمد أمين
                 </div>
+                
+                <div class="page-counter">صفحة 5</div>
             `;
             container.appendChild(pageFive);
             
@@ -5166,10 +5111,10 @@
                         ${Array(3).fill().map((_, i) => `
                             <tr>
                                 <td>${i + 1}</td>
-                                <td><input type="text" style="width: 100%;"></td>
-                                <td><input type="text" style="width: 100%;"></td>
-                                <td><textarea style="width: 100%; height: 50px;"></textarea></td>
-                                <td><input type="text" style="width: 100%;"></td>
+                                <td><input type="text" style="width: 100%;" placeholder="اسم المعلم"></td>
+                                <td><input type="text" style="width: 100%;" placeholder="التقدير"></td>
+                                <td><textarea style="width: 100%; height: 50px;" placeholder="المبررات"></textarea></td>
+                                <td><input type="text" style="width: 100%;" placeholder="القسم"></td>
                             </tr>
                         `).join('')}
                     </tbody>
@@ -5178,6 +5123,8 @@
                 <div class="department-info">
                     إدارة العمليات التعليمية المنطقة (1) رئيس مدارس. أفنان محمد أمين
                 </div>
+                
+                <div class="page-counter">صفحة 6</div>
             `;
             container.appendChild(pageSix);
             
@@ -5215,6 +5162,8 @@
                 <div class="department-info">
                     إدارة العمليات التعليمية المنطقة (1) رئيس مدارس. أفنان محمد أمين
                 </div>
+                
+                <div class="page-counter">صفحة 7</div>
             `;
             container.appendChild(pageSeven);
             
@@ -5225,76 +5174,23 @@
             setupReportButtons();
         }
 
-        // عرض تقرير للتحرير
-        function displayQualityReportForEditing(report) {
-            const container = document.getElementById('qualityReportContainer');
-            container.innerHTML = '';
-            
-            // إنشاء واجهة تحرير مبسطة
-            const editContainer = document.createElement('div');
-            editContainer.className = 'a4-page-container';
-            editContainer.innerHTML = `
-                <div class="section-header">
-                    <h2 class="section-title">تحرير تقرير شهر ${report.reportMonth}</h2>
-                </div>
-                
-                <div class="form-group">
-                    <label for="editableSchoolName">اسم المدرسة</label>
-                    <input type="text" id="editableSchoolName" class="form-control" value="${report.schoolName || ''}" placeholder="أدخل اسم المدرسة">
-                </div>
-                
-                <div class="form-group">
-                    <label for="editableReportMonth">شهر التقرير</label>
-                    <select id="editableReportMonth" class="form-control">
-                        ${getMonthsOptions(report.reportMonth)}
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="editableAcademicYear">العام الدراسي</label>
-                    <input type="text" id="editableAcademicYear" class="form-control" value="${report.academicYear || '2025 / 2026م'}">
-                </div>
-                
-                <div class="form-group">
-                    <label for="editableFooter">تذييل التقرير</label>
-                    <textarea id="editableFooter" class="form-control" rows="4" placeholder="أدخل نص التذييل">${appData.settings.footer.text || ''}</textarea>
-                </div>
-                
-                <div class="btn-group">
-                    <button class="btn btn-success" id="saveEditedReport">حفظ التعديلات</button>
-                    <button class="btn btn-secondary" id="cancelEditReport">إلغاء التعديل</button>
-                </div>
-            `;
-            
-            container.appendChild(editContainer);
-            
-            // إعداد أزرار التقرير
-            setupReportButtons();
-        }
-
-        // الحصول على خيارات الأشهر
-        function getMonthsOptions(selectedMonth) {
-            const arabicMonths = [
-                'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
-                'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
-            ];
-            
-            let options = '';
-            arabicMonths.forEach(month => {
-                const selected = month === selectedMonth ? 'selected' : '';
-                options += `<option value="${month}" ${selected}>${month}</option>`;
-            });
-            
-            return options;
-        }
-
         // إعداد الحقول القابلة للتحرير
         function setupEditableFields() {
             // إضافة معالجي الأحداث لحقول الإدخال
             document.querySelectorAll('#qualityReportContainer input, #qualityReportContainer textarea').forEach(input => {
                 input.addEventListener('change', function() {
-                    // هنا يمكنك إضافة منطق لحفظ التغييرات
-                    console.log('تم تغيير القيمة:', this.value);
+                    // حفظ التغييرات في التقرير النشط
+                    const reportId = appData.qualityReportData?.id;
+                    if (reportId) {
+                        const reportIndex = appData.savedQualityReports.findIndex(r => r.id === reportId);
+                        if (reportIndex !== -1) {
+                            appData.savedQualityReports[reportIndex].lastModified = new Date().toLocaleDateString('ar-SA');
+                            saveAllData();
+                            
+                            // تحديث قائمة التقارير المحفوظة
+                            renderSavedReportsList();
+                        }
+                    }
                 });
             });
         }
@@ -5390,16 +5286,6 @@
             logActivity('تصدير بيانات', `قام ${appData.currentUser.name} بتصدير قائمة ${getRoleName(role)}`);
         }
 
-        // الحصول على اسم الدور
-        function getRoleName(role) {
-            const roleNames = {
-                'senior_leadership': 'القيادة العليا',
-                'leadership': 'القيادة الوسطى',
-                'teacher': 'المعلمات'
-            };
-            return roleNames[role] || role;
-        }
-
         // تنزيل ملف CSV
         function downloadCSV(content, fileName) {
             const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
@@ -5444,25 +5330,6 @@
         }
 
         // ==================== دوال الحذف والتعديل ====================
-
-        // حذف زيارة
-        function deleteVisit(visitId) {
-            if (confirm('هل أنت متأكد من حذف هذه الزيارة؟')) {
-                const visit = appData.visits.find(v => v.id === visitId);
-                appData.visits = appData.visits.filter(v => v.id !== visitId);
-                saveAllData();
-                
-                const activeDepartment = document.querySelector('#visitsSubSections .sub-section-btn.active').getAttribute('data-department');
-                renderVisitsByDepartment(activeDepartment);
-                renderDashboard();
-                
-                if (visit) {
-                    logActivity('حذف زيارة', `قام ${appData.currentUser.name} بحذف زيارة للمعلم ${visit.teacher}`);
-                }
-                
-                alert('تم حذف الزيارة بنجاح');
-            }
-        }
 
         // حذف مستخدم
         function deleteUser(userId) {
@@ -5713,6 +5580,35 @@
             logActivity('حفظ تقارير', `قام ${appData.currentUser.name} بحفظ بيانات التقارير`);
             
             alert('تم حفظ بيانات التقارير بنجاح');
+        }
+
+        // الحصول على اسم الدور
+        function getRoleName(role) {
+            const roleNames = {
+                'senior_leadership': 'القيادة العليا',
+                'leadership': 'القيادة الوسطى',
+                'teacher': 'المعلمات'
+            };
+            return roleNames[role] || role;
+        }
+
+        // عرض الزيارات (لحل مشكلة العرض)
+        function renderVisits() {
+            // عند فتح قسم الزيارات، عرض القسم النشط
+            const activeDepartment = document.querySelector('#visitsSubSections .sub-section-btn.active');
+            if (activeDepartment) {
+                renderVisitsByDepartment(activeDepartment.getAttribute('data-department'));
+            }
+        }
+
+        // عرض التقارير
+        function renderReports() {
+            // يمكن إضافة منطق عرض التقارير هنا إذا لزم الأمر
+        }
+
+        // عرض المعلمين
+        function renderTeachers() {
+            // يمكن إضافة منطق عرض المعلمين هنا إذا لزم الأمر
         }
     </script>
 </body>
