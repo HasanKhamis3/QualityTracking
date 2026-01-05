@@ -2861,25 +2861,12 @@
             // تحديث قائمة الشهور في تقرير الجودة
             const reportMonthSelector = document.getElementById('reportMonthSelector');
             if (reportMonthSelector) {
-                // أولاً، الحصول على الشهور الموجودة في التقارير المحفوظة
-                const existingMonths = [...new Set(appData.savedQualityReports.map(report => report.reportMonth))];
-                
                 // بدء بإنشاء الخيارات
-                let options = '';
+                let options = `<option value="${currentMonth}">${currentMonth} (الحالي)</option>`;
                 
-                // إضافة الخيار الحالي أولاً إذا لم يكن موجوداً في التقارير المحفوظة
-                if (!existingMonths.includes(currentMonth)) {
-                    options += `<option value="${currentMonth}">${currentMonth} (الحالي)</option>`;
-                }
-                
-                // إضافة الشهور من التقارير المحفوظة
-                existingMonths.forEach(month => {
-                    options += `<option value="${month}">${month}</option>`;
-                });
-                
-                // إضافة بقية الشهور التي ليست في القائمة
+                // إضافة بقية الشهور
                 months.forEach(month => {
-                    if (!existingMonths.includes(month) && month !== currentMonth) {
+                    if (month !== currentMonth) {
                         options += `<option value="${month}">${month}</option>`;
                     }
                 });
@@ -5351,14 +5338,8 @@
                 }
             });
             
-            downloadCSV(csvContent, fileName);
-            
-            logActivity('تصدير بيانات', `قام ${appData.currentUser.name} بتصدير قائمة ${getRoleName(role)}`);
-        }
-
-        // تنزيل ملف CSV
-        function downloadCSV(content, fileName) {
-            const blob = new Blob([content], { type: 'text/csv;charset=UTF-8' });
+            // استخدام Blob مع الترميز الصحيح
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
             link.setAttribute('href', url);
@@ -5367,6 +5348,9 @@
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            logActivity('تصدير بيانات', `قام ${appData.currentUser.name} بتصدير قائمة ${getRoleName(role)}`);
         }
 
         // تصدير سجل النظام
@@ -5380,7 +5364,17 @@
                 csvContent += `"${log.date}","${log.time}","${log.userName}","${log.action}","${log.details}"\n`;
             });
             
-            downloadCSV(csvContent, 'سجل_النظام.csv');
+            // استخدام Blob مع الترميز الصحيح
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'سجل_النظام.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
             
             logActivity('تصدير سجل', `قام ${appData.currentUser.name} بتصدير سجل النظام`);
             
@@ -5692,25 +5686,38 @@
 
         // تحليل بيانات CSV
         function parseCSVData(csvData, role) {
-            const rows = csvData.split('\n');
-            const headers = rows[0].split(',').map(header => header.trim().replace(/"/g, ''));
-            
-            const importedData = [];
-            
-            for (let i = 1; i < rows.length; i++) {
-                if (rows[i].trim() === '') continue;
+            // استخدام مكتبة XLSX لتحليل الملف بشكل صحيح
+            try {
+                const workbook = XLSX.read(csvData, { type: 'binary' });
+                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                const data = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
                 
-                const cells = rows[i].split(',').map(cell => cell.trim().replace(/"/g, ''));
-                const rowData = {};
+                if (data.length < 2) {
+                    alert('الملف لا يحتوي على بيانات');
+                    return;
+                }
                 
-                headers.forEach((header, index) => {
-                    rowData[header] = cells[index] || '';
-                });
+                // تحويل البيانات إلى التنسيق المناسب
+                const headers = data[0];
+                const importedData = [];
                 
-                importedData.push(rowData);
+                for (let i = 1; i < data.length; i++) {
+                    const row = data[i];
+                    if (!row || row.length === 0) continue;
+                    
+                    const rowData = {};
+                    headers.forEach((header, index) => {
+                        rowData[header] = row[index] || '';
+                    });
+                    
+                    importedData.push(rowData);
+                }
+                
+                showCSVImportPreview(importedData, role);
+            } catch (error) {
+                console.error('خطأ في تحليل ملف CSV:', error);
+                alert('خطأ في تحليل الملف. يرجى التأكد من صحة تنسيق الملف.');
             }
-            
-            showCSVImportPreview(importedData, role);
         }
 
         // عرض معاينة بيانات CSV
