@@ -2136,7 +2136,7 @@
                     <!-- علامات التبويب الداخلية -->
                     <div class="quality-report-tabs">
                         <button class="quality-report-tab active" data-report-section="create-report">إنشاء تقرير</button>
-                        <button class="quality-report-tab" data-report-section="reports-log">سجل التقارير</button>
+                        <button class="quality-report-tab" data-report-section="saved-reports">التقارير المحفوظة</button>
                     </div>
                     
                     <!-- قسم إنشاء التقرير -->
@@ -2146,12 +2146,6 @@
                             <h3>التقرير النشط</h3>
                             <div id="activeReportInfo" style="padding: 15px; background: #f8f9fa; border-radius: var(--border-radius); margin-bottom: 20px;">
                                 <p>لا يوجد تقرير نشط حالياً</p>
-                            </div>
-                            
-                            <!-- قسم التقارير المحفوظة -->
-                            <h3>التقارير المحفوظة</h3>
-                            <div class="saved-reports-list" id="savedReportsList">
-                                <!-- سيتم تعبئته ديناميكياً -->
                             </div>
                             
                             <div class="month-generation">
@@ -2169,12 +2163,20 @@
                         </div>
                     </div>
                     
-                    <!-- قسم سجل التقارير -->
-                    <div id="reports-log" class="report-sub-section">
-                        <div class="activity-log-section">
-                            <h3>سجل التقارير</h3>
-                            <div class="activity-log-container" id="reportsActivityLog">
+                    <!-- قسم التقارير المحفوظة -->
+                    <div id="saved-reports" class="report-sub-section">
+                        <div class="saved-reports-section">
+                            <h3>التقارير المحفوظة</h3>
+                            <div class="saved-reports-list" id="savedReportsList">
                                 <!-- سيتم تعبئته ديناميكياً -->
+                            </div>
+                            
+                            <div class="month-generation">
+                                <label for="savedReportsMonthFilter">تصفية حسب الشهر:</label>
+                                <select id="savedReportsMonthFilter">
+                                    <option value="all">جميع الأشهر</option>
+                                    <!-- سيتم تعبئته ديناميكياً -->
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -2904,6 +2906,16 @@
                 reportMonthSelector.value = currentMonth;
             }
             
+            // تحديث فلتر الأشهر في التقارير المحفوظة
+            const savedReportsMonthFilter = document.getElementById('savedReportsMonthFilter');
+            if (savedReportsMonthFilter) {
+                let filterOptions = `<option value="all">جميع الأشهر</option>`;
+                months.forEach(month => {
+                    filterOptions += `<option value="${month}">${month}</option>`;
+                });
+                savedReportsMonthFilter.innerHTML = filterOptions;
+            }
+            
             // تحديث الإعدادات
             if (appData.settings) {
                 appData.settings.reportSettings.defaultMonth = currentMonth;
@@ -3203,7 +3215,7 @@
 
         // العودة إلى قائمة التقارير
         function backToReportsList() {
-            document.querySelector('.quality-report-tab[data-report-section="create-report"]')?.click();
+            document.querySelector('.quality-report-tab[data-report-section="saved-reports"]')?.click();
             logActivity('عرض قائمة', `قام ${appData.currentUser?.name || 'مستخدم'} بالعودة لقائمة التقارير`);
         }
 
@@ -3352,7 +3364,6 @@
                 renderPerformanceChart();
             } else if (sectionId === 'quality-report') {
                 renderSavedReportsList();
-                renderReportsActivityLog();
             } else if (sectionId === 'settings') {
                 loadSettingsData();
             } else if (sectionId === 'visits') {
@@ -3550,6 +3561,9 @@
             
             // إنشاء تقرير
             document.getElementById('generateReportBtn').addEventListener('click', generateNewReport);
+            
+            // فلتر التقارير المحفوظة حسب الشهر
+            document.getElementById('savedReportsMonthFilter')?.addEventListener('change', filterSavedReportsByMonth);
         }
 
         // إعداد النماذج المنبثقة
@@ -3598,7 +3612,6 @@
             renderTeachers();
             renderReports();
             renderSavedReportsList();
-            renderReportsActivityLog();
         }
 
         // عرض لوحة التحكم
@@ -3723,24 +3736,14 @@
             });
         }
 
-        // تحميل قائمة المعلمات للزيارات - **إصلاح: جلب المعلمات من قاعدة البيانات**
+        // تحميل قائمة المعلمات للزيارات - **التعديل: إزالة "القيادة العليا" و "القيادة الوسطى" من القائمة**
         function loadTeachersForVisits() {
             // تحديث قائمة الأقسام في نموذج الزيارة
             const departmentSelect = document.getElementById('visitDepartmentSelect');
             departmentSelect.innerHTML = '<option value="">اختر القسم</option>';
             
-            // إضافة قسم القيادة العليا والقيادة الوسطى كخيارات
-            const visitDepartments = ['القيادة العليا', 'القيادة الوسطى'];
-            
-            // **إصلاح: جلب جميع الأقسام من إدارة أقسام المواد**
-            visitDepartments.forEach(dept => {
-                const option = document.createElement('option');
-                option.value = dept;
-                option.textContent = dept;
-                departmentSelect.appendChild(option);
-            });
-            
-            // **إضافة: جلب أقسام المواد من إدارة المستخدمين**
+            // **التعديل: إزالة قسمي "القيادة العليا" و "القيادة الوسطى"**
+            // **إضافة: جلب أقسام المواد فقط من إدارة المستخدمين**
             appData.departments.forEach(dept => {
                 if (dept.status === 'active') {
                     const option = document.createElement('option');
@@ -3768,11 +3771,8 @@
                 
                 // **إصلاح: تصفية المعلمات حسب القسم المختار**
                 const filteredTeachers = teachers.filter(teacher => {
-                    // إذا كان القسم المختار هو "القيادة العليا" أو "القيادة الوسطى"، نعرض جميع المعلمات
-                    if (department === 'القيادة العليا' || department === 'القيادة الوسطى') {
-                        return true;
-                    }
-                    // إذا كان القسم المختار من أقسام المواد، نعرض فقط المعلمات المنتمين لذلك القسم
+                    // **التعديل: إزالة الشروط الخاصة بـ"القيادة العليا" و "القيادة الوسطى"**
+                    // نعرض فقط المعلمات المنتمين للقسم المختار من أقسام المواد
                     return teacher.department === department;
                 });
                 
@@ -4206,7 +4206,7 @@
             });
         }
 
-        // عرض قائمة التقارير المحفوظة - **إصلاح: ترتيب التقارير من الأحدث إلى الأقدم**
+        // عرض قائمة التقارير المحفوظة - **التعديل: عرض التقارير المحفوظة فقط**
         function renderSavedReportsList() {
             const savedReportsList = document.getElementById('savedReportsList');
             savedReportsList.innerHTML = '';
@@ -4240,11 +4240,13 @@
                 reportItem.innerHTML = `
                     <div class="saved-report-info">
                         <h4>تقرير شهر ${report.reportMonth}</h4>
+                        <p>المدرسة: ${report.schoolName || 'غير محدد'}</p>
                         <p>تم الإنشاء: ${report.createdDate} | آخر تعديل: ${report.lastModified}</p>
                     </div>
                     <div class="saved-report-actions">
                         <button class="btn btn-sm btn-success view-report" data-id="${report.id}">عرض</button>
                         <button class="btn btn-sm btn-warning edit-report" data-id="${report.id}">تعديل</button>
+                        <button class="btn btn-sm btn-danger delete-report" data-id="${report.id}">حذف</button>
                     </div>
                 `;
                 savedReportsList.appendChild(reportItem);
@@ -4264,41 +4266,49 @@
                     editSavedReport(reportId);
                 });
             });
+            
+            document.querySelectorAll('.delete-report').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const reportId = parseInt(btn.getAttribute('data-id'));
+                    deleteSavedReport(reportId);
+                });
+            });
         }
 
-        // عرض سجل أنشطة التقارير
-        function renderReportsActivityLog() {
-            const logContainer = document.getElementById('reportsActivityLog');
-            if (!logContainer) return;
-            
-            const reportActivities = appData.activityLog.filter(log => 
-                log.action.includes('تقرير') || log.details.includes('تقرير')
-            ).slice(0, 20);
-            
-            logContainer.innerHTML = '';
-            
-            if (reportActivities.length === 0) {
-                logContainer.innerHTML = '<div class="activity-log-item"><p>لا توجد أنشطة مسجلة للتقارير</p></div>';
-                return;
+        // حذف تقرير محفوظ
+        function deleteSavedReport(reportId) {
+            if (confirm('هل أنت متأكد من حذف هذا التقرير؟ لا يمكن التراجع عن هذا الإجراء.')) {
+                const report = appData.savedQualityReports.find(r => r.id === reportId);
+                appData.savedQualityReports = appData.savedQualityReports.filter(r => r.id !== reportId);
+                saveAllData();
+                
+                renderSavedReportsList();
+                
+                if (report) {
+                    logActivity('حذف تقرير', `قام ${appData.currentUser.name} بحذف تقرير شهر ${report.reportMonth}`);
+                }
+                
+                alert('تم حذف التقرير بنجاح');
             }
+        }
+
+        // تصفية التقارير المحفوظة حسب الشهر
+        function filterSavedReportsByMonth() {
+            const filterValue = document.getElementById('savedReportsMonthFilter').value;
+            const savedReportsList = document.getElementById('savedReportsList');
             
-            reportActivities.forEach(activity => {
-                const logItem = document.createElement('div');
-                logItem.className = 'activity-log-item';
-                logItem.innerHTML = `
-                    <div class="activity-log-icon">
-                        <i class="fas fa-file-alt"></i>
-                    </div>
-                    <div class="activity-log-content">
-                        <div class="activity-log-header">
-                            <span class="activity-log-user">${activity.userName}</span>
-                            <span class="activity-log-time">${activity.timestamp}</span>
-                        </div>
-                        <div class="activity-log-action">${activity.action}</div>
-                        <div class="activity-log-details">${activity.details}</div>
-                    </div>
-                `;
-                logContainer.appendChild(logItem);
+            if (!savedReportsList) return;
+            
+            const reportItems = savedReportsList.querySelectorAll('.saved-report-item');
+            
+            reportItems.forEach(item => {
+                const reportMonth = item.querySelector('h4').textContent.replace('تقرير شهر ', '');
+                
+                if (filterValue === 'all' || reportMonth === filterValue) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
             });
         }
 
@@ -4945,6 +4955,7 @@
             if (activeReportInfo) {
                 activeReportInfo.innerHTML = `
                     <h4>تقرير شهر ${report.reportMonth}</h4>
+                    <p>المدرسة: ${report.schoolName || 'غير محدد'}</p>
                     <p>تم الإنشاء: ${report.createdDate} | آخر تعديل: ${report.lastModified}</p>
                 `;
             }
