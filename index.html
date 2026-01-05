@@ -2887,7 +2887,7 @@
                 reportMonthSelect.value = currentMonth;
             }
             
-            // تحديث قائمة الشهور في تقرير الجودة
+            // تحديث قائمة الشهور في تقرير الجودة - **إصلاح: جلب قائمة الأشهر بشكل صحيح**
             const reportMonthSelector = document.getElementById('reportMonthSelector');
             if (reportMonthSelector) {
                 // بدء بإنشاء الخيارات
@@ -3723,7 +3723,7 @@
             });
         }
 
-        // تحميل قائمة المعلمات للزيارات
+        // تحميل قائمة المعلمات للزيارات - **إصلاح: جلب المعلمات من قاعدة البيانات**
         function loadTeachersForVisits() {
             // تحديث قائمة الأقسام في نموذج الزيارة
             const departmentSelect = document.getElementById('visitDepartmentSelect');
@@ -3731,6 +3731,8 @@
             
             // إضافة قسم القيادة العليا والقيادة الوسطى كخيارات
             const visitDepartments = ['القيادة العليا', 'القيادة الوسطى'];
+            
+            // **إصلاح: جلب جميع الأقسام من إدارة أقسام المواد**
             visitDepartments.forEach(dept => {
                 const option = document.createElement('option');
                 option.value = dept;
@@ -3738,11 +3740,21 @@
                 departmentSelect.appendChild(option);
             });
             
+            // **إضافة: جلب أقسام المواد من إدارة المستخدمين**
+            appData.departments.forEach(dept => {
+                if (dept.status === 'active') {
+                    const option = document.createElement('option');
+                    option.value = dept.name;
+                    option.textContent = dept.name;
+                    departmentSelect.appendChild(option);
+                }
+            });
+            
             // تحديث قائمة المعلمات عند تغيير القسم
             updateTeachersListForVisit(departmentSelect.value);
         }
 
-        // تحديث قائمة المعلمات بناءً على القسم المختار
+        // تحديث قائمة المعلمات بناءً على القسم المختار - **إصلاح: جلب المعلمات من قسم المعلمات**
         function updateTeachersListForVisit(department) {
             const teacherSelect = document.getElementById('visitTeacherSelect');
             teacherSelect.innerHTML = '<option value="">اختر اسم المعلم</option>';
@@ -3754,16 +3766,32 @@
                 // الحصول على المعلمات المنتميات للقسم المختار
                 const teachers = appData.users.filter(u => u.role === 'teacher' && u.active);
                 
-                teachers.forEach(teacher => {
-                    // في حالة اختيار قسم القيادة العليا أو الوسطى، نعرض جميع المعلمات
+                // **إصلاح: تصفية المعلمات حسب القسم المختار**
+                const filteredTeachers = teachers.filter(teacher => {
+                    // إذا كان القسم المختار هو "القيادة العليا" أو "القيادة الوسطى"، نعرض جميع المعلمات
                     if (department === 'القيادة العليا' || department === 'القيادة الوسطى') {
-                        const option = document.createElement('option');
-                        option.value = teacher.id;
-                        option.textContent = teacher.name;
-                        option.setAttribute('data-department', teacher.department || '');
-                        teacherSelect.appendChild(option);
+                        return true;
                     }
+                    // إذا كان القسم المختار من أقسام المواد، نعرض فقط المعلمات المنتمين لذلك القسم
+                    return teacher.department === department;
                 });
+                
+                filteredTeachers.forEach(teacher => {
+                    const option = document.createElement('option');
+                    option.value = teacher.id;
+                    option.textContent = teacher.name;
+                    option.setAttribute('data-department', teacher.department || '');
+                    teacherSelect.appendChild(option);
+                });
+                
+                // إضافة رسالة إذا لم يكن هناك معلمات في القسم
+                if (filteredTeachers.length === 0) {
+                    const option = document.createElement('option');
+                    option.value = '';
+                    option.textContent = 'لا توجد معلمات في هذا القسم';
+                    option.disabled = true;
+                    teacherSelect.appendChild(option);
+                }
             } else {
                 // تعطيل القائمة إذا لم يتم اختيار قسم
                 teacherSelect.disabled = true;
@@ -4178,7 +4206,7 @@
             });
         }
 
-        // عرض قائمة التقارير المحفوظة - تم التعديل لترتيبها من الأحدث إلى الأقدم
+        // عرض قائمة التقارير المحفوظة - **إصلاح: ترتيب التقارير من الأحدث إلى الأقدم**
         function renderSavedReportsList() {
             const savedReportsList = document.getElementById('savedReportsList');
             savedReportsList.innerHTML = '';
@@ -4194,12 +4222,16 @@
                 return;
             }
             
-            // ترتيب التقارير من الأحدث إلى الأقدم حسب تاريخ الإنشاء
+            // **إصلاح: ترتيب التقارير من الأحدث إلى الأقدم حسب تاريخ الإنشاء**
             const sortedReports = [...appData.savedQualityReports].sort((a, b) => {
                 // تحويل التواريخ إلى كائنات Date للمقارنة
-                const dateA = new Date(a.createdDate.split('/').reverse().join('-'));
-                const dateB = new Date(b.createdDate.split('/').reverse().join('-'));
-                return dateB - dateA; // ترتيب تنازلي (من الأحدث إلى الأقدم)
+                try {
+                    const dateA = new Date(a.createdDate.split('/').reverse().join('-'));
+                    const dateB = new Date(b.createdDate.split('/').reverse().join('-'));
+                    return dateB - dateA; // ترتيب تنازلي (من الأحدث إلى الأقدم)
+                } catch (error) {
+                    return 0; // في حالة خطأ في التواريخ، لا نقوم بالترتيب
+                }
             });
             
             sortedReports.forEach(report => {
@@ -4270,7 +4302,7 @@
             });
         }
 
-        // عرض سجل أنشطة النظام مع الفلتر - تم التعديل
+        // عرض سجل أنشطة النظام مع الفلتر
         function renderSystemActivityLog() {
             const logContainer = document.getElementById('systemActivityLog');
             if (!logContainer) return;
