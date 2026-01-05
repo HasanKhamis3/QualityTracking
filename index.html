@@ -1637,20 +1637,22 @@
 
         /* نماذج CSV الاستيراد */
         .csv-import-modal {
-            max-width: 600px;
+            max-width: 800px;
         }
 
         .csv-import-preview {
-            max-height: 300px;
+            max-height: 400px;
             overflow-y: auto;
             margin: 15px 0;
             border: 1px solid #ddd;
             border-radius: var(--border-radius);
+            background: white;
         }
 
         .csv-preview-table {
             width: 100%;
             border-collapse: collapse;
+            font-size: 12px;
         }
 
         .csv-preview-table th,
@@ -1658,10 +1660,31 @@
             padding: 8px;
             border: 1px solid #ddd;
             text-align: right;
+            white-space: nowrap;
         }
 
         .csv-preview-table th {
             background-color: #f8f9fa;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+        }
+
+        .csv-preview-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .csv-preview-table tr:hover {
+            background-color: #f0f0f0;
+        }
+
+        .user-selection-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            margin: 15px 0;
+            padding: 10px;
         }
 
         .user-selection-item {
@@ -1669,6 +1692,7 @@
             align-items: center;
             padding: 8px;
             border-bottom: 1px solid #eee;
+            gap: 10px;
         }
 
         .user-selection-item:last-child {
@@ -1676,7 +1700,12 @@
         }
 
         .user-selection-item input {
-            margin-left: 10px;
+            margin: 0;
+            width: auto;
+        }
+
+        .user-selection-item span {
+            flex: 1;
         }
 
         /* سجل النظام */
