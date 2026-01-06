@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -165,6 +166,118 @@
             font-size: 1.4rem;
             color: var(--primary);
             font-weight: 700;
+        }
+
+        /* نماذج منبثقة محسنة */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 600px;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 20px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light);
+        }
+
+        .modal-title {
+            font-size: 1.4rem;
+            color: var(--primary);
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--gray);
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .close-modal:hover {
+            background-color: #f0f0f0;
+            color: var(--danger);
+        }
+
+        /* تحسين تنسيق النماذج داخل النماذج المنبثقة */
+        .modal-content .form-group {
+            margin-bottom: 15px;
+        }
+
+        .modal-content label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .modal-content input,
+        .modal-content select,
+        .modal-content textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            background-color: #fff;
+        }
+
+        .modal-content input:focus,
+        .modal-content select:focus,
+        .modal-content textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(44, 90, 160, 0.1);
+        }
+
+        .modal-content .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: flex-end;
+        }
+
+        /* تحسين مظهر النماذج المنبثقة الصغيرة */
+        #userModal .modal-content,
+        #visitModal .modal-content,
+        #departmentModal .modal-content {
+            max-width: 500px;
+        }
+
+        /* تحسين محاذاة النص في النماذج */
+        .modal-content {
+            text-align: right;
         }
 
         /* Table Styles */
@@ -1567,22 +1680,16 @@
             .report-table td {
                 padding: 2.836pt;
             }
+            
+            /* نماذج منبثقة للجوال */
+            .modal-content {
+                width: 95%;
+                max-width: 95%;
+                padding: 15px;
+            }
         }
 
         /* أنماط أخرى */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-        }
-
         .modal-content-large {
             background: white;
             border-radius: var(--border-radius);
@@ -1609,6 +1716,13 @@
             gap: 10px;
             justify-content: center;
             margin-top: 20px;
+        }
+        
+        /* تحسين أزرار التقرير */
+        #qualityReportContainer .report-actions {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
         }
     </style>
 </head>
@@ -2767,8 +2881,89 @@
                 }
             }
             
+            // إعداد أزرار التقرير
+            setupReportButtons();
+            
             // عرض سجل النشاطات الأولي
             renderSystemActivityLog();
+        }
+
+        // إعداد أزرار التقرير
+        function setupReportButtons() {
+            // زر تحميل كملف Word
+            document.getElementById('downloadWordReport')?.addEventListener('click', downloadWordReport);
+            
+            // زر طباعة التقرير
+            document.getElementById('printReport')?.addEventListener('click', printReport);
+            
+            // زر العودة للقائمة
+            document.getElementById('backToReportsList')?.addEventListener('click', backToReportsList);
+            
+            // زر حفظ التعديلات
+            document.getElementById('saveEditedReport')?.addEventListener('click', saveEditedReport);
+            
+            // زر إلغاء التعديل
+            document.getElementById('cancelEditReport')?.addEventListener('click', cancelEditReport);
+        }
+
+        // تحميل التقرير كملف Word
+        function downloadWordReport() {
+            alert('سيتم تنزيل التقرير كملف Word. هذه الميزة تتطلب اتصال بالخادم.');
+            logActivity('تحميل تقرير', `قام ${appData.currentUser?.name || 'مستخدم'} بتحميل تقرير كملف Word`);
+        }
+
+        // طباعة التقرير
+        function printReport() {
+            window.print();
+            logActivity('طباعة تقرير', `قام ${appData.currentUser?.name || 'مستخدم'} بطباعة تقرير`);
+        }
+
+        // العودة إلى قائمة التقارير
+        function backToReportsList() {
+            document.querySelector('.quality-report-tab[data-report-section="create-report"]')?.click();
+            logActivity('عرض قائمة', `قام ${appData.currentUser?.name || 'مستخدم'} بالعودة لقائمة التقارير`);
+        }
+
+        // حفظ التقرير بعد التعديل
+        function saveEditedReport() {
+            const reportId = appData.qualityReportData?.id;
+            if (!reportId) {
+                alert('لا يوجد تقرير محدد للحفظ');
+                return;
+            }
+            
+            const schoolName = document.getElementById('editableSchoolName')?.value || '';
+            const reportMonth = document.getElementById('editableReportMonth')?.value || '';
+            const academicYear = document.getElementById('editableAcademicYear')?.value || '';
+            const footerText = document.getElementById('editableFooter')?.value || '';
+            
+            const reportIndex = appData.savedQualityReports.findIndex(r => r.id === reportId);
+            if (reportIndex !== -1) {
+                appData.savedQualityReports[reportIndex].schoolName = schoolName;
+                appData.savedQualityReports[reportIndex].reportMonth = reportMonth;
+                appData.savedQualityReports[reportIndex].academicYear = academicYear;
+                appData.savedQualityReports[reportIndex].lastModified = new Date().toLocaleDateString('ar-SA');
+                
+                // تحديث إعدادات التذييل
+                appData.settings.footer.text = footerText;
+                
+                saveAllData();
+                
+                // تحديث المعاينة
+                updateReportPreview();
+                
+                alert('تم حفظ التعديلات بنجاح');
+                backToReportsList();
+                
+                logActivity('حفظ تعديلات تقرير', `قام ${appData.currentUser?.name || 'مستخدم'} بحفظ تعديلات تقرير شهر ${reportMonth}`);
+            }
+        }
+
+        // إلغاء تعديل التقرير
+        function cancelEditReport() {
+            if (confirm('هل تريد إلغاء التعديلات؟ سيتم فقدان جميع التغييرات غير المحفوظة.')) {
+                backToReportsList();
+            }
         }
 
         // عرض التطبيق
