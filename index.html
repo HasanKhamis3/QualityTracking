@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -1638,22 +1637,20 @@
 
         /* نماذج CSV الاستيراد */
         .csv-import-modal {
-            max-width: 800px;
+            max-width: 600px;
         }
 
         .csv-import-preview {
-            max-height: 400px;
+            max-height: 300px;
             overflow-y: auto;
             margin: 15px 0;
             border: 1px solid #ddd;
             border-radius: var(--border-radius);
-            background: white;
         }
 
         .csv-preview-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 12px;
         }
 
         .csv-preview-table th,
@@ -1661,31 +1658,10 @@
             padding: 8px;
             border: 1px solid #ddd;
             text-align: right;
-            white-space: nowrap;
         }
 
         .csv-preview-table th {
             background-color: #f8f9fa;
-            font-weight: bold;
-            position: sticky;
-            top: 0;
-        }
-
-        .csv-preview-table tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        .csv-preview-table tr:hover {
-            background-color: #f0f0f0;
-        }
-
-        .user-selection-list {
-            max-height: 200px;
-            overflow-y: auto;
-            border: 1px solid #ddd;
-            border-radius: var(--border-radius);
-            margin: 15px 0;
-            padding: 10px;
         }
 
         .user-selection-item {
@@ -1693,7 +1669,6 @@
             align-items: center;
             padding: 8px;
             border-bottom: 1px solid #eee;
-            gap: 10px;
         }
 
         .user-selection-item:last-child {
@@ -1701,12 +1676,7 @@
         }
 
         .user-selection-item input {
-            margin: 0;
-            width: auto;
-        }
-
-        .user-selection-item span {
-            flex: 1;
+            margin-left: 10px;
         }
 
         /* سجل النظام */
@@ -2888,7 +2858,7 @@
                 reportMonthSelect.value = currentMonth;
             }
             
-            // تحديث قائمة الشهور في تقرير الجودة - **إصلاح: جلب قائمة الأشهر بشكل صحيح**
+            // تحديث قائمة الشهور في تقرير الجودة
             const reportMonthSelector = document.getElementById('reportMonthSelector');
             if (reportMonthSelector) {
                 // بدء بإنشاء الخيارات
@@ -3724,7 +3694,7 @@
             });
         }
 
-        // تحميل قائمة المعلمات للزيارات - **إصلاح: جلب المعلمات من قاعدة البيانات**
+        // تحميل قائمة المعلمات للزيارات
         function loadTeachersForVisits() {
             // تحديث قائمة الأقسام في نموذج الزيارة
             const departmentSelect = document.getElementById('visitDepartmentSelect');
@@ -3732,8 +3702,6 @@
             
             // إضافة قسم القيادة العليا والقيادة الوسطى كخيارات
             const visitDepartments = ['القيادة العليا', 'القيادة الوسطى'];
-            
-            // **إصلاح: جلب جميع الأقسام من إدارة أقسام المواد**
             visitDepartments.forEach(dept => {
                 const option = document.createElement('option');
                 option.value = dept;
@@ -3741,21 +3709,11 @@
                 departmentSelect.appendChild(option);
             });
             
-            // **إضافة: جلب أقسام المواد من إدارة المستخدمين**
-            appData.departments.forEach(dept => {
-                if (dept.status === 'active') {
-                    const option = document.createElement('option');
-                    option.value = dept.name;
-                    option.textContent = dept.name;
-                    departmentSelect.appendChild(option);
-                }
-            });
-            
             // تحديث قائمة المعلمات عند تغيير القسم
             updateTeachersListForVisit(departmentSelect.value);
         }
 
-        // تحديث قائمة المعلمات بناءً على القسم المختار - **إصلاح: جلب المعلمات من قسم المعلمات**
+        // تحديث قائمة المعلمات بناءً على القسم المختار
         function updateTeachersListForVisit(department) {
             const teacherSelect = document.getElementById('visitTeacherSelect');
             teacherSelect.innerHTML = '<option value="">اختر اسم المعلم</option>';
@@ -3767,32 +3725,16 @@
                 // الحصول على المعلمات المنتميات للقسم المختار
                 const teachers = appData.users.filter(u => u.role === 'teacher' && u.active);
                 
-                // **إصلاح: تصفية المعلمات حسب القسم المختار**
-                const filteredTeachers = teachers.filter(teacher => {
-                    // إذا كان القسم المختار هو "القيادة العليا" أو "القيادة الوسطى"، نعرض جميع المعلمات
+                teachers.forEach(teacher => {
+                    // في حالة اختيار قسم القيادة العليا أو الوسطى، نعرض جميع المعلمات
                     if (department === 'القيادة العليا' || department === 'القيادة الوسطى') {
-                        return true;
+                        const option = document.createElement('option');
+                        option.value = teacher.id;
+                        option.textContent = teacher.name;
+                        option.setAttribute('data-department', teacher.department || '');
+                        teacherSelect.appendChild(option);
                     }
-                    // إذا كان القسم المختار من أقسام المواد، نعرض فقط المعلمات المنتمين لذلك القسم
-                    return teacher.department === department;
                 });
-                
-                filteredTeachers.forEach(teacher => {
-                    const option = document.createElement('option');
-                    option.value = teacher.id;
-                    option.textContent = teacher.name;
-                    option.setAttribute('data-department', teacher.department || '');
-                    teacherSelect.appendChild(option);
-                });
-                
-                // إضافة رسالة إذا لم يكن هناك معلمات في القسم
-                if (filteredTeachers.length === 0) {
-                    const option = document.createElement('option');
-                    option.value = '';
-                    option.textContent = 'لا توجد معلمات في هذا القسم';
-                    option.disabled = true;
-                    teacherSelect.appendChild(option);
-                }
             } else {
                 // تعطيل القائمة إذا لم يتم اختيار قسم
                 teacherSelect.disabled = true;
@@ -4207,7 +4149,7 @@
             });
         }
 
-        // عرض قائمة التقارير المحفوظة - **إصلاح: ترتيب التقارير من الأحدث إلى الأقدم**
+        // عرض قائمة التقارير المحفوظة - تم التعديل لترتيبها من الأحدث إلى الأقدم
         function renderSavedReportsList() {
             const savedReportsList = document.getElementById('savedReportsList');
             savedReportsList.innerHTML = '';
@@ -4223,16 +4165,12 @@
                 return;
             }
             
-            // **إصلاح: ترتيب التقارير من الأحدث إلى الأقدم حسب تاريخ الإنشاء**
+            // ترتيب التقارير من الأحدث إلى الأقدم حسب تاريخ الإنشاء
             const sortedReports = [...appData.savedQualityReports].sort((a, b) => {
                 // تحويل التواريخ إلى كائنات Date للمقارنة
-                try {
-                    const dateA = new Date(a.createdDate.split('/').reverse().join('-'));
-                    const dateB = new Date(b.createdDate.split('/').reverse().join('-'));
-                    return dateB - dateA; // ترتيب تنازلي (من الأحدث إلى الأقدم)
-                } catch (error) {
-                    return 0; // في حالة خطأ في التواريخ، لا نقوم بالترتيب
-                }
+                const dateA = new Date(a.createdDate.split('/').reverse().join('-'));
+                const dateB = new Date(b.createdDate.split('/').reverse().join('-'));
+                return dateB - dateA; // ترتيب تنازلي (من الأحدث إلى الأقدم)
             });
             
             sortedReports.forEach(report => {
@@ -4303,7 +4241,7 @@
             });
         }
 
-        // عرض سجل أنشطة النظام مع الفلتر
+        // عرض سجل أنشطة النظام مع الفلتر - تم التعديل
         function renderSystemActivityLog() {
             const logContainer = document.getElementById('systemActivityLog');
             if (!logContainer) return;
