@@ -2798,6 +2798,78 @@
         </div>
     </div>
 
+    <!-- Modal for Adding Distinguished Teacher -->
+    <div id="distinguishedTeacherModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">إضافة معلم متميز</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="distinguishedTeacherForm">
+                <div class="form-group">
+                    <label for="distinguishedDepartment">القسم</label>
+                    <select id="distinguishedDepartment" required>
+                        <option value="">اختر القسم</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="distinguishedTeacherName">اسم المعلم</label>
+                    <select id="distinguishedTeacherName" required disabled>
+                        <option value="">اختر اسم المعلم</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="distinguishedRating">التقدير</label>
+                    <input type="text" id="distinguishedRating" required>
+                </div>
+                <div class="form-group">
+                    <label for="distinguishedReasons">المبررات</label>
+                    <textarea id="distinguishedReasons" rows="3" required></textarea>
+                </div>
+                <div class="btn-group">
+                    <button type="submit" class="btn">حفظ</button>
+                    <button type="button" class="btn btn-secondary" id="cancelDistinguishedTeacher">إلغاء</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for Adding Teacher Needs Care -->
+    <div id="teacherNeedsCareModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">إضافة معلم يحتاج رعاية</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="teacherNeedsCareForm">
+                <div class="form-group">
+                    <label for="needsCareDepartment">القسم</label>
+                    <select id="needsCareDepartment" required>
+                        <option value="">اختر القسم</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="needsCareTeacherName">اسم المعلم</label>
+                    <select id="needsCareTeacherName" required disabled>
+                        <option value="">اختر اسم المعلم</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="needsCareRating">التقدير</label>
+                    <input type="text" id="needsCareRating" required>
+                </div>
+                <div class="form-group">
+                    <label for="needsCareReasons">المبررات</label>
+                    <textarea id="needsCareReasons" rows="3" required></textarea>
+                </div>
+                <div class="btn-group">
+                    <button type="submit" class="btn">حفظ</button>
+                    <button type="button" class="btn btn-secondary" id="cancelTeacherNeedsCare">إلغاء</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         // بيانات التطبيق
         const appData = {
@@ -3072,6 +3144,9 @@
             
             // فلتر لوحة التحكم
             setupDashboardFilter();
+            
+            // الأزرار الجديدة للمعلمين المتميزين والأولى بالرعاية
+            setupTeachersButtons();
         }
 
         // إعداد فلتر لوحة التحكم
@@ -3082,6 +3157,27 @@
                     renderDashboard();
                 });
             }
+        }
+
+        // إعداد أزرار المعلمين المتميزين والأولى بالرعاية
+        function setupTeachersButtons() {
+            document.getElementById('addDistinguishedTeacher').addEventListener('click', showDistinguishedTeacherModal);
+            document.getElementById('addTeacherNeedCare').addEventListener('click', showTeacherNeedsCareModal);
+            
+            document.getElementById('cancelDistinguishedTeacher')?.addEventListener('click', () => closeModal('distinguishedTeacherModal'));
+            document.getElementById('cancelTeacherNeedsCare')?.addEventListener('click', () => closeModal('teacherNeedsCareModal'));
+            
+            document.getElementById('distinguishedTeacherForm')?.addEventListener('submit', saveDistinguishedTeacher);
+            document.getElementById('teacherNeedsCareForm')?.addEventListener('submit', saveTeacherNeedsCare);
+            
+            // إضافة معالجي الأحداث لقوائم الاختيار
+            document.getElementById('distinguishedDepartment')?.addEventListener('change', function() {
+                updateTeacherListForDistinguished(this.value);
+            });
+            
+            document.getElementById('needsCareDepartment')?.addEventListener('change', function() {
+                updateTeacherListForNeedsCare(this.value);
+            });
         }
 
         // تهيئة التطبيق
@@ -3105,6 +3201,9 @@
             
             // عرض سجل النشاطات الأولي
             renderSystemActivityLog();
+            
+            // تحميل قوائم المعلمين عند فتح قسم المعلمين
+            loadTeachersData();
         }
 
         // إعداد أزرار التقرير
@@ -3125,7 +3224,7 @@
             document.getElementById('cancelEditReport')?.addEventListener('click', cancelEditReport);
         }
 
-        // تحميل التقرير كملف Word
+        // تحميل كملف Word
         function downloadWordReport() {
             // إنشاء محتوى HTML للتقرير
             const reportContent = document.getElementById('qualityReportContainer').innerHTML;
@@ -3458,6 +3557,7 @@
                 renderDashboard();
             } else if (sectionId === 'teachers') {
                 renderTeachers();
+                loadTeachersData();
             }
             
             logActivity('تنقل', `انتقل إلى قسم ${getSectionName(sectionId)}`);
@@ -3497,9 +3597,7 @@
             document.getElementById('savePerformance').addEventListener('click', savePerformance);
             document.getElementById('performanceMonth').addEventListener('change', renderPerformanceChart);
             
-            // أزرار المعلمين - **تم إصلاحها**
-            document.getElementById('addDistinguishedTeacher').addEventListener('click', () => showAddDistinguishedTeacherModal());
-            document.getElementById('addTeacherNeedCare').addEventListener('click', () => showAddTeacherNeedCareModal());
+            // أزرار المعلمين
             document.getElementById('saveTeachers').addEventListener('click', saveTeachers);
             
             // أزرار التقارير
@@ -4172,142 +4270,250 @@
             }
         }
 
+        // تحميل بيانات المعلمين للاستخدام في النماذج
+        function loadTeachersData() {
+            // تحميل قائمة الأقسام في النماذج
+            const departments = appData.departments.filter(d => d.status === 'active');
+            
+            // تحديث قوائم الأقسام في النماذج
+            const distinguishedDeptSelect = document.getElementById('distinguishedDepartment');
+            const needsCareDeptSelect = document.getElementById('needsCareDepartment');
+            
+            if (distinguishedDeptSelect) {
+                distinguishedDeptSelect.innerHTML = '<option value="">اختر القسم</option>';
+                departments.forEach(dept => {
+                    const option = document.createElement('option');
+                    option.value = dept.name;
+                    option.textContent = dept.name;
+                    distinguishedDeptSelect.appendChild(option);
+                });
+            }
+            
+            if (needsCareDeptSelect) {
+                needsCareDeptSelect.innerHTML = '<option value="">اختر القسم</option>';
+                departments.forEach(dept => {
+                    const option = document.createElement('option');
+                    option.value = dept.name;
+                    option.textContent = dept.name;
+                    needsCareDeptSelect.appendChild(option);
+                });
+            }
+        }
+
         // عرض نموذج إضافة معلم متميز
-        function showAddDistinguishedTeacherModal() {
-            // إنشاء نموذج مؤقت
-            const modalHTML = `
-                <div class="modal-overlay" id="distinguishedTeacherModal">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h3 class="modal-title">إضافة معلم متميز</h3>
-                            <button class="close-modal" onclick="document.getElementById('distinguishedTeacherModal').style.display='none'">&times;</button>
-                        </div>
-                        <form id="distinguishedTeacherForm">
-                            <div class="form-group">
-                                <label for="teacherName">اسم المعلم</label>
-                                <input type="text" id="teacherName" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="teacherRating">التقدير</label>
-                                <input type="text" id="teacherRating" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="teacherReasons">المبررات</label>
-                                <textarea id="teacherReasons" rows="3" required></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="teacherDepartment">القسم الأكاديمي</label>
-                                <select id="teacherDepartment" required>
-                                    <option value="">اختر القسم</option>
-                                    ${appData.departments.map(dept => `<option value="${dept.name}">${dept.name}</option>`).join('')}
-                                </select>
-                            </div>
-                            <div class="btn-group">
-                                <button type="submit" class="btn">حفظ</button>
-                                <button type="button" class="btn btn-secondary" onclick="document.getElementById('distinguishedTeacherModal').style.display='none'">إلغاء</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            `;
+        function showDistinguishedTeacherModal() {
+            // تحميل البيانات أولاً
+            loadTeachersData();
             
-            // إضافة النموذج للصفحة
-            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            document.getElementById('distinguishedTeacherForm').reset();
+            document.getElementById('distinguishedTeacherName').disabled = true;
+            document.getElementById('distinguishedTeacherName').innerHTML = '<option value="">اختر اسم المعلم</option>';
             
-            // إضافة معالج الحدث
-            document.getElementById('distinguishedTeacherForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const newTeacher = {
-                    id: Date.now(),
-                    name: document.getElementById('teacherName').value,
-                    rating: document.getElementById('teacherRating').value,
-                    reasons: document.getElementById('teacherReasons').value,
-                    department: document.getElementById('teacherDepartment').value
-                };
-                
-                appData.distinguishedTeachers.push(newTeacher);
-                saveAllData();
-                
-                document.getElementById('distinguishedTeacherModal').style.display = 'none';
-                renderTeachers();
-                renderDashboard();
-                
-                alert('تم إضافة المعلم المتميز بنجاح');
-                logActivity('إضافة معلم متميز', `قام ${appData.currentUser.name} بإضافة معلم متميز: ${newTeacher.name}`);
-            });
-            
-            // عرض النموذج
             document.getElementById('distinguishedTeacherModal').style.display = 'flex';
         }
 
+        // تحديث قائمة المعلمين للمعلم المتميز بناءً على القسم المختار
+        function updateTeacherListForDistinguished(department) {
+            const teacherSelect = document.getElementById('distinguishedTeacherName');
+            teacherSelect.innerHTML = '<option value="">اختر اسم المعلم</option>';
+            
+            if (department) {
+                // تفعيل القائمة
+                teacherSelect.disabled = false;
+                
+                // الحصول على المعلمات المنتميات للقسم المختار
+                const teachers = appData.users.filter(u => u.role === 'teacher' && u.active);
+                
+                // تصفية المعلمات حسب القسم المختار
+                const filteredTeachers = teachers.filter(teacher => {
+                    return teacher.department === department;
+                });
+                
+                filteredTeachers.forEach(teacher => {
+                    const option = document.createElement('option');
+                    option.value = teacher.id;
+                    option.textContent = teacher.name;
+                    teacherSelect.appendChild(option);
+                });
+                
+                // إضافة رسالة إذا لم يكن هناك معلمات في القسم
+                if (filteredTeachers.length === 0) {
+                    const option = document.createElement('option');
+                    option.value = '';
+                    option.textContent = 'لا توجد معلمات في هذا القسم';
+                    option.disabled = true;
+                    teacherSelect.appendChild(option);
+                }
+            } else {
+                // تعطيل القائمة إذا لم يتم اختيار قسم
+                teacherSelect.disabled = true;
+            }
+        }
+
+        // حفظ معلم متميز
+        function saveDistinguishedTeacher(e) {
+            e.preventDefault();
+            
+            const department = document.getElementById('distinguishedDepartment').value;
+            const teacherSelect = document.getElementById('distinguishedTeacherName');
+            const teacherId = teacherSelect.value;
+            const teacherName = teacherSelect.options[teacherSelect.selectedIndex]?.textContent || '';
+            const rating = document.getElementById('distinguishedRating').value;
+            const reasons = document.getElementById('distinguishedReasons').value;
+            
+            if (!department) {
+                alert('يرجى اختيار القسم');
+                return;
+            }
+            
+            if (!teacherId || teacherName === 'اختر اسم المعلم') {
+                alert('يرجى اختيار اسم المعلم');
+                return;
+            }
+            
+            if (!rating.trim()) {
+                alert('يرجى إدخال التقدير');
+                return;
+            }
+            
+            // التحقق من عدم تكرار المعلم في القائمة
+            const existingTeacher = appData.distinguishedTeachers.find(t => 
+                t.teacherId === parseInt(teacherId)
+            );
+            
+            if (existingTeacher) {
+                alert('هذا المعلم مضاف بالفعل في قائمة المتميزين');
+                return;
+            }
+            
+            // إضافة المعلم المتميز
+            const newDistinguishedTeacher = {
+                id: Date.now(),
+                teacherId: parseInt(teacherId),
+                name: teacherName,
+                rating: rating,
+                reasons: reasons,
+                department: department
+            };
+            
+            appData.distinguishedTeachers.push(newDistinguishedTeacher);
+            saveAllData();
+            
+            closeModal('distinguishedTeacherModal');
+            renderTeachers();
+            renderDashboard();
+            
+            logActivity('إضافة معلم متميز', `قام ${appData.currentUser.name} بإضافة المعلم المتميز ${teacherName}`);
+            
+            alert('تم إضافة المعلم المتميز بنجاح');
+        }
+
         // عرض نموذج إضافة معلم يحتاج رعاية
-        function showAddTeacherNeedCareModal() {
-            // إنشاء نموذج مؤقت
-            const modalHTML = `
-                <div class="modal-overlay" id="teacherNeedCareModal">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h3 class="modal-title">إضافة معلم يحتاج رعاية</h3>
-                            <button class="close-modal" onclick="document.getElementById('teacherNeedCareModal').style.display='none'">&times;</button>
-                        </div>
-                        <form id="teacherNeedCareForm">
-                            <div class="form-group">
-                                <label for="needCareName">اسم المعلم</label>
-                                <input type="text" id="needCareName" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="needCareRating">التقدير</label>
-                                <input type="text" id="needCareRating" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="needCareReasons">المبررات</label>
-                                <textarea id="needCareReasons" rows="3" required></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="needCareDepartment">القسم الأكاديمي</label>
-                                <select id="needCareDepartment" required>
-                                    <option value="">اختر القسم</option>
-                                    ${appData.departments.map(dept => `<option value="${dept.name}">${dept.name}</option>`).join('')}
-                                </select>
-                            </div>
-                            <div class="btn-group">
-                                <button type="submit" class="btn">حفظ</button>
-                                <button type="button" class="btn btn-secondary" onclick="document.getElementById('teacherNeedCareModal').style.display='none'">إلغاء</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            `;
+        function showTeacherNeedsCareModal() {
+            // تحميل البيانات أولاً
+            loadTeachersData();
             
-            // إضافة النموذج للصفحة
-            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            document.getElementById('teacherNeedsCareForm').reset();
+            document.getElementById('needsCareTeacherName').disabled = true;
+            document.getElementById('needsCareTeacherName').innerHTML = '<option value="">اختر اسم المعلم</option>';
             
-            // إضافة معالج الحدث
-            document.getElementById('teacherNeedCareForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const newTeacher = {
-                    id: Date.now(),
-                    name: document.getElementById('needCareName').value,
-                    rating: document.getElementById('needCareRating').value,
-                    reasons: document.getElementById('needCareReasons').value,
-                    department: document.getElementById('needCareDepartment').value
-                };
-                
-                appData.teachersNeedCare.push(newTeacher);
-                saveAllData();
-                
-                document.getElementById('teacherNeedCareModal').style.display = 'none';
-                renderTeachers();
-                renderDashboard();
-                
-                alert('تم إضافة المعلم الذي يحتاج رعاية بنجاح');
-                logActivity('إضافة معلم يحتاج رعاية', `قام ${appData.currentUser.name} بإضافة معلم يحتاج رعاية: ${newTeacher.name}`);
-            });
+            document.getElementById('teacherNeedsCareModal').style.display = 'flex';
+        }
+
+        // تحديث قائمة المعلمين للمعلم الذي يحتاج رعاية بناءً على القسم المختار
+        function updateTeacherListForNeedsCare(department) {
+            const teacherSelect = document.getElementById('needsCareTeacherName');
+            teacherSelect.innerHTML = '<option value="">اختر اسم المعلم</option>';
             
-            // عرض النموذج
-            document.getElementById('teacherNeedCareModal').style.display = 'flex';
+            if (department) {
+                // تفعيل القائمة
+                teacherSelect.disabled = false;
+                
+                // الحصول على المعلمات المنتميات للقسم المختار
+                const teachers = appData.users.filter(u => u.role === 'teacher' && u.active);
+                
+                // تصفية المعلمات حسب القسم المختار
+                const filteredTeachers = teachers.filter(teacher => {
+                    return teacher.department === department;
+                });
+                
+                filteredTeachers.forEach(teacher => {
+                    const option = document.createElement('option');
+                    option.value = teacher.id;
+                    option.textContent = teacher.name;
+                    teacherSelect.appendChild(option);
+                });
+                
+                // إضافة رسالة إذا لم يكن هناك معلمات في القسم
+                if (filteredTeachers.length === 0) {
+                    const option = document.createElement('option');
+                    option.value = '';
+                    option.textContent = 'لا توجد معلمات في هذا القسم';
+                    option.disabled = true;
+                    teacherSelect.appendChild(option);
+                }
+            } else {
+                // تعطيل القائمة إذا لم يتم اختيار قسم
+                teacherSelect.disabled = true;
+            }
+        }
+
+        // حفظ معلم يحتاج رعاية
+        function saveTeacherNeedsCare(e) {
+            e.preventDefault();
+            
+            const department = document.getElementById('needsCareDepartment').value;
+            const teacherSelect = document.getElementById('needsCareTeacherName');
+            const teacherId = teacherSelect.value;
+            const teacherName = teacherSelect.options[teacherSelect.selectedIndex]?.textContent || '';
+            const rating = document.getElementById('needsCareRating').value;
+            const reasons = document.getElementById('needsCareReasons').value;
+            
+            if (!department) {
+                alert('يرجى اختيار القسم');
+                return;
+            }
+            
+            if (!teacherId || teacherName === 'اختر اسم المعلم') {
+                alert('يرجى اختيار اسم المعلم');
+                return;
+            }
+            
+            if (!rating.trim()) {
+                alert('يرجى إدخال التقدير');
+                return;
+            }
+            
+            // التحقق من عدم تكرار المعلم في القائمة
+            const existingTeacher = appData.teachersNeedCare.find(t => 
+                t.teacherId === parseInt(teacherId)
+            );
+            
+            if (existingTeacher) {
+                alert('هذا المعلم مضاف بالفعل في قائمة المعلمين الذين يحتاجون رعاية');
+                return;
+            }
+            
+            // إضافة المعلم الذي يحتاج رعاية
+            const newTeacherNeedsCare = {
+                id: Date.now(),
+                teacherId: parseInt(teacherId),
+                name: teacherName,
+                rating: rating,
+                reasons: reasons,
+                department: department
+            };
+            
+            appData.teachersNeedCare.push(newTeacherNeedsCare);
+            saveAllData();
+            
+            closeModal('teacherNeedsCareModal');
+            renderTeachers();
+            renderDashboard();
+            
+            logActivity('إضافة معلم يحتاج رعاية', `قام ${appData.currentUser.name} بإضافة المعلم الذي يحتاج رعاية ${teacherName}`);
+            
+            alert('تم إضافة المعلم الذي يحتاج رعاية بنجاح');
         }
 
         // حفظ بيانات المعلمين
