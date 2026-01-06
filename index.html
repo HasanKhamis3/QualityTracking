@@ -1886,6 +1886,36 @@
             justify-content: center;
             margin-top: 20px;
         }
+
+        /* فلتر لوحة التحكم الجديد */
+        .dashboard-filter {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+        }
+
+        .dashboard-filter label {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .dashboard-filter select {
+            width: auto;
+            min-width: 150px;
+        }
+
+        /* تعديل موقع أزرار المعلمين */
+        .teachers-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light);
+        }
     </style>
 </head>
 <body>
@@ -1946,6 +1976,26 @@
                 <section id="dashboard" class="section active">
                     <div class="section-header">
                         <h2 class="section-title">لوحة التحكم</h2>
+                    </div>
+                    
+                    <!-- فلتر الفترة -->
+                    <div class="dashboard-filter">
+                        <label for="dashboardMonthFilter">فلترة حسب الشهر:</label>
+                        <select id="dashboardMonthFilter">
+                            <option value="all">الكل</option>
+                            <option value="يناير">يناير</option>
+                            <option value="فبراير">فبراير</option>
+                            <option value="مارس">مارس</option>
+                            <option value="أبريل">أبريل</option>
+                            <option value="مايو">مايو</option>
+                            <option value="يونيو">يونيو</option>
+                            <option value="يوليو">يوليو</option>
+                            <option value="أغسطس">أغسطس</option>
+                            <option value="سبتمبر">سبتمبر</option>
+                            <option value="أكتوبر">أكتوبر</option>
+                            <option value="نوفمبر">نوفمبر</option>
+                            <option value="ديسمبر">ديسمبر</option>
+                        </select>
                     </div>
                     
                     <div class="stats-cards">
@@ -2064,6 +2114,13 @@
                         <h2 class="section-title">المعلمين المتميزين والأولى بالرعاية</h2>
                     </div>
                     
+                    <!-- الأزرار في الأعلى كما في الصورة -->
+                    <div class="teachers-buttons">
+                        <button class="btn" id="addDistinguishedTeacher">إضافة معلم متميز</button>
+                        <button class="btn" id="addTeacherNeedCare">إضافة معلم يحتاج رعاية</button>
+                        <button class="btn btn-secondary" id="saveTeachers">حفظ البيانات</button>
+                    </div>
+                    
                     <h3>المعلمين المتميزين</h3>
                     <table>
                         <thead>
@@ -2095,12 +2152,6 @@
                             <!-- سيتم ملؤها بالبيانات -->
                         </tbody>
                     </table>
-                    
-                    <div class="btn-group">
-                        <button class="btn" id="addDistinguishedTeacher">إضافة معلم متميز</button>
-                        <button class="btn" id="addTeacherNeedCare">إضافة معلم يحتاج رعاية</button>
-                        <button class="btn btn-secondary" id="saveTeachers">حفظ البيانات</button>
-                    </div>
                 </section>
 
                 <!-- Reports Section -->
@@ -2884,36 +2935,52 @@
             // تحديث قائمة الشهور في الإعدادات
             const reportMonthSelect = document.getElementById('reportMonth');
             if (reportMonthSelect) {
-                reportMonthSelect.innerHTML = `<option value="${currentMonth}">${currentMonth} (الحالي)</option>` + 
-                    months.map(month => `<option value="${month}">${month}</option>`).join('');
+                reportMonthSelect.innerHTML = '';
+                months.forEach(month => {
+                    const option = document.createElement('option');
+                    option.value = month;
+                    option.textContent = month + (month === currentMonth ? ' (الحالي)' : '');
+                    reportMonthSelect.appendChild(option);
+                });
                 reportMonthSelect.value = currentMonth;
             }
             
-            // تحديث قائمة الشهور في تقرير الجودة - **إصلاح: جلب قائمة الأشهر بشكل صحيح**
+            // تحديث قائمة الشهور في تقرير الجودة
             const reportMonthSelector = document.getElementById('reportMonthSelector');
             if (reportMonthSelector) {
-                // بدء بإنشاء الخيارات
-                let options = `<option value="${currentMonth}">${currentMonth} (الحالي)</option>`;
-                
-                // إضافة بقية الشهور
+                reportMonthSelector.innerHTML = '';
                 months.forEach(month => {
-                    if (month !== currentMonth) {
-                        options += `<option value="${month}">${month}</option>`;
-                    }
+                    const option = document.createElement('option');
+                    option.value = month;
+                    option.textContent = month + (month === currentMonth ? ' (الحالي)' : '');
+                    reportMonthSelector.appendChild(option);
                 });
-                
-                reportMonthSelector.innerHTML = options;
                 reportMonthSelector.value = currentMonth;
             }
             
             // تحديث فلتر الأشهر في التقارير المحفوظة
             const savedReportsMonthFilter = document.getElementById('savedReportsMonthFilter');
             if (savedReportsMonthFilter) {
-                let filterOptions = `<option value="all">جميع الأشهر</option>`;
+                savedReportsMonthFilter.innerHTML = '<option value="all">جميع الأشهر</option>';
                 months.forEach(month => {
-                    filterOptions += `<option value="${month}">${month}</option>`;
+                    const option = document.createElement('option');
+                    option.value = month;
+                    option.textContent = month;
+                    savedReportsMonthFilter.appendChild(option);
                 });
-                savedReportsMonthFilter.innerHTML = filterOptions;
+            }
+            
+            // تحديث فلتر لوحة التحكم
+            const dashboardFilter = document.getElementById('dashboardMonthFilter');
+            if (dashboardFilter) {
+                dashboardFilter.innerHTML = '<option value="all">الكل</option>';
+                months.forEach(month => {
+                    const option = document.createElement('option');
+                    option.value = month;
+                    option.textContent = month;
+                    dashboardFilter.appendChild(option);
+                });
+                dashboardFilter.value = 'all';
             }
             
             // تحديث الإعدادات
@@ -3002,6 +3069,19 @@
             
             // النماذج المنبثقة
             setupModals();
+            
+            // فلتر لوحة التحكم
+            setupDashboardFilter();
+        }
+
+        // إعداد فلتر لوحة التحكم
+        function setupDashboardFilter() {
+            const dashboardFilter = document.getElementById('dashboardMonthFilter');
+            if (dashboardFilter) {
+                dashboardFilter.addEventListener('change', function() {
+                    renderDashboard();
+                });
+            }
         }
 
         // تهيئة التطبيق
@@ -3374,6 +3454,10 @@
                 if (activeDepartment) {
                     renderVisitsByDepartment(activeDepartment.getAttribute('data-department'));
                 }
+            } else if (sectionId === 'dashboard') {
+                renderDashboard();
+            } else if (sectionId === 'teachers') {
+                renderTeachers();
             }
             
             logActivity('تنقل', `انتقل إلى قسم ${getSectionName(sectionId)}`);
@@ -3413,7 +3497,9 @@
             document.getElementById('savePerformance').addEventListener('click', savePerformance);
             document.getElementById('performanceMonth').addEventListener('change', renderPerformanceChart);
             
-            // أزرار المعلمين
+            // أزرار المعلمين - **تم إصلاحها**
+            document.getElementById('addDistinguishedTeacher').addEventListener('click', () => showAddDistinguishedTeacherModal());
+            document.getElementById('addTeacherNeedCare').addEventListener('click', () => showAddTeacherNeedCareModal());
             document.getElementById('saveTeachers').addEventListener('click', saveTeachers);
             
             // أزرار التقارير
@@ -3614,11 +3700,30 @@
             renderSavedReportsList();
         }
 
-        // عرض لوحة التحكم
+        // عرض لوحة التحكم مع الفلتر
         function renderDashboard() {
-            const totalVisits = appData.visits.length;
-            const distinguishedTeachers = appData.distinguishedTeachers.length;
-            const teachersNeedCare = appData.teachersNeedCare.length;
+            const filterMonth = document.getElementById('dashboardMonthFilter').value;
+            
+            // حساب الإحصائيات مع الفلتر
+            let filteredVisits = appData.visits;
+            let filteredDistinguishedTeachers = appData.distinguishedTeachers;
+            let filteredTeachersNeedCare = appData.teachersNeedCare;
+            
+            if (filterMonth !== 'all') {
+                // تصفية حسب الشهر
+                filteredVisits = appData.visits.filter(visit => {
+                    const visitDate = new Date(visit.date);
+                    const visitMonth = visitDate.toLocaleString('ar-SA', { month: 'long' });
+                    return visitMonth === filterMonth;
+                });
+                
+                // للمعلمين المتميزين والأولى بالرعاية، يمكن إضافة فلترة إذا كان هناك تاريخ
+                // افتراضياً، نعرض الكل إذا لم يكن هناك تاريخ محدد
+            }
+            
+            const totalVisits = filteredVisits.length;
+            const distinguishedTeachers = filteredDistinguishedTeachers.length;
+            const teachersNeedCare = filteredTeachersNeedCare.length;
             const performanceRate = Math.round((distinguishedTeachers / (distinguishedTeachers + teachersNeedCare)) * 100) || 0;
             
             document.getElementById('totalVisits').textContent = totalVisits;
@@ -3629,10 +3734,21 @@
             const recentVisitsTable = document.getElementById('recentVisitsTable');
             recentVisitsTable.innerHTML = '';
             
-            // عرض آخر 5 زيارات
-            const recentVisits = [...appData.visits]
+            // عرض آخر 5 زيارات (مع الفلتر إذا كان مطبقاً)
+            const recentVisits = [...filteredVisits]
                 .sort((a, b) => new Date(b.date) - new Date(a.date))
                 .slice(0, 5);
+            
+            if (recentVisits.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td colspan="5" style="text-align: center; padding: 20px;">
+                        ${filterMonth !== 'all' ? `لا توجد زيارات في شهر ${filterMonth}` : 'لا توجد زيارات مسجلة'}
+                    </td>
+                `;
+                recentVisitsTable.appendChild(row);
+                return;
+            }
             
             recentVisits.forEach(visit => {
                 const row = document.createElement('tr');
@@ -3736,14 +3852,13 @@
             });
         }
 
-        // تحميل قائمة المعلمات للزيارات - **التعديل: إزالة "القيادة العليا" و "القيادة الوسطى" من القائمة**
+        // تحميل قائمة المعلمات للزيارات
         function loadTeachersForVisits() {
             // تحديث قائمة الأقسام في نموذج الزيارة
             const departmentSelect = document.getElementById('visitDepartmentSelect');
             departmentSelect.innerHTML = '<option value="">اختر القسم</option>';
             
-            // **التعديل: إزالة قسمي "القيادة العليا" و "القيادة الوسطى"**
-            // **إضافة: جلب أقسام المواد فقط من إدارة المستخدمين**
+            // إضافة أقسام المواد فقط
             appData.departments.forEach(dept => {
                 if (dept.status === 'active') {
                     const option = document.createElement('option');
@@ -3757,7 +3872,7 @@
             updateTeachersListForVisit(departmentSelect.value);
         }
 
-        // تحديث قائمة المعلمات بناءً على القسم المختار - **إصلاح: جلب المعلمات من قسم المعلمات**
+        // تحديث قائمة المعلمات بناءً على القسم المختار
         function updateTeachersListForVisit(department) {
             const teacherSelect = document.getElementById('visitTeacherSelect');
             teacherSelect.innerHTML = '<option value="">اختر اسم المعلم</option>';
@@ -3769,10 +3884,8 @@
                 // الحصول على المعلمات المنتميات للقسم المختار
                 const teachers = appData.users.filter(u => u.role === 'teacher' && u.active);
                 
-                // **إصلاح: تصفية المعلمات حسب القسم المختار**
+                // تصفية المعلمات حسب القسم المختار
                 const filteredTeachers = teachers.filter(teacher => {
-                    // **التعديل: إزالة الشروط الخاصة بـ"القيادة العليا" و "القيادة الوسطى"**
-                    // نعرض فقط المعلمات المنتمين للقسم المختار من أقسام المواد
                     return teacher.department === department;
                 });
                 
@@ -4008,6 +4121,202 @@
             });
         }
 
+        // عرض المعلمين المتميزين والأولى بالرعاية
+        function renderTeachers() {
+            const distinguishedTable = document.getElementById('distinguishedTeachersTable');
+            const needsCareTable = document.getElementById('teachersNeedCareTable');
+            
+            distinguishedTable.innerHTML = '';
+            needsCareTable.innerHTML = '';
+            
+            // عرض المعلمين المتميزين
+            if (appData.distinguishedTeachers.length === 0) {
+                const row = distinguishedTable.insertRow();
+                const cell = row.insertCell();
+                cell.colSpan = 5;
+                cell.textContent = 'لا توجد بيانات';
+                cell.style.textAlign = 'center';
+                cell.style.padding = '20px';
+            } else {
+                appData.distinguishedTeachers.forEach((teacher, index) => {
+                    const row = distinguishedTable.insertRow();
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${teacher.name || ''}</td>
+                        <td>${teacher.rating || ''}</td>
+                        <td>${teacher.reasons || ''}</td>
+                        <td>${teacher.department || ''}</td>
+                    `;
+                });
+            }
+            
+            // عرض المعلمين الأولى بالرعاية
+            if (appData.teachersNeedCare.length === 0) {
+                const row = needsCareTable.insertRow();
+                const cell = row.insertCell();
+                cell.colSpan = 5;
+                cell.textContent = 'لا توجد بيانات';
+                cell.style.textAlign = 'center';
+                cell.style.padding = '20px';
+            } else {
+                appData.teachersNeedCare.forEach((teacher, index) => {
+                    const row = needsCareTable.insertRow();
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${teacher.name || ''}</td>
+                        <td>${teacher.rating || ''}</td>
+                        <td>${teacher.reasons || ''}</td>
+                        <td>${teacher.department || ''}</td>
+                    `;
+                });
+            }
+        }
+
+        // عرض نموذج إضافة معلم متميز
+        function showAddDistinguishedTeacherModal() {
+            // إنشاء نموذج مؤقت
+            const modalHTML = `
+                <div class="modal-overlay" id="distinguishedTeacherModal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title">إضافة معلم متميز</h3>
+                            <button class="close-modal" onclick="document.getElementById('distinguishedTeacherModal').style.display='none'">&times;</button>
+                        </div>
+                        <form id="distinguishedTeacherForm">
+                            <div class="form-group">
+                                <label for="teacherName">اسم المعلم</label>
+                                <input type="text" id="teacherName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="teacherRating">التقدير</label>
+                                <input type="text" id="teacherRating" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="teacherReasons">المبررات</label>
+                                <textarea id="teacherReasons" rows="3" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="teacherDepartment">القسم الأكاديمي</label>
+                                <select id="teacherDepartment" required>
+                                    <option value="">اختر القسم</option>
+                                    ${appData.departments.map(dept => `<option value="${dept.name}">${dept.name}</option>`).join('')}
+                                </select>
+                            </div>
+                            <div class="btn-group">
+                                <button type="submit" class="btn">حفظ</button>
+                                <button type="button" class="btn btn-secondary" onclick="document.getElementById('distinguishedTeacherModal').style.display='none'">إلغاء</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+            
+            // إضافة النموذج للصفحة
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            
+            // إضافة معالج الحدث
+            document.getElementById('distinguishedTeacherForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const newTeacher = {
+                    id: Date.now(),
+                    name: document.getElementById('teacherName').value,
+                    rating: document.getElementById('teacherRating').value,
+                    reasons: document.getElementById('teacherReasons').value,
+                    department: document.getElementById('teacherDepartment').value
+                };
+                
+                appData.distinguishedTeachers.push(newTeacher);
+                saveAllData();
+                
+                document.getElementById('distinguishedTeacherModal').style.display = 'none';
+                renderTeachers();
+                renderDashboard();
+                
+                alert('تم إضافة المعلم المتميز بنجاح');
+                logActivity('إضافة معلم متميز', `قام ${appData.currentUser.name} بإضافة معلم متميز: ${newTeacher.name}`);
+            });
+            
+            // عرض النموذج
+            document.getElementById('distinguishedTeacherModal').style.display = 'flex';
+        }
+
+        // عرض نموذج إضافة معلم يحتاج رعاية
+        function showAddTeacherNeedCareModal() {
+            // إنشاء نموذج مؤقت
+            const modalHTML = `
+                <div class="modal-overlay" id="teacherNeedCareModal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title">إضافة معلم يحتاج رعاية</h3>
+                            <button class="close-modal" onclick="document.getElementById('teacherNeedCareModal').style.display='none'">&times;</button>
+                        </div>
+                        <form id="teacherNeedCareForm">
+                            <div class="form-group">
+                                <label for="needCareName">اسم المعلم</label>
+                                <input type="text" id="needCareName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="needCareRating">التقدير</label>
+                                <input type="text" id="needCareRating" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="needCareReasons">المبررات</label>
+                                <textarea id="needCareReasons" rows="3" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="needCareDepartment">القسم الأكاديمي</label>
+                                <select id="needCareDepartment" required>
+                                    <option value="">اختر القسم</option>
+                                    ${appData.departments.map(dept => `<option value="${dept.name}">${dept.name}</option>`).join('')}
+                                </select>
+                            </div>
+                            <div class="btn-group">
+                                <button type="submit" class="btn">حفظ</button>
+                                <button type="button" class="btn btn-secondary" onclick="document.getElementById('teacherNeedCareModal').style.display='none'">إلغاء</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+            
+            // إضافة النموذج للصفحة
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            
+            // إضافة معالج الحدث
+            document.getElementById('teacherNeedCareForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const newTeacher = {
+                    id: Date.now(),
+                    name: document.getElementById('needCareName').value,
+                    rating: document.getElementById('needCareRating').value,
+                    reasons: document.getElementById('needCareReasons').value,
+                    department: document.getElementById('needCareDepartment').value
+                };
+                
+                appData.teachersNeedCare.push(newTeacher);
+                saveAllData();
+                
+                document.getElementById('teacherNeedCareModal').style.display = 'none';
+                renderTeachers();
+                renderDashboard();
+                
+                alert('تم إضافة المعلم الذي يحتاج رعاية بنجاح');
+                logActivity('إضافة معلم يحتاج رعاية', `قام ${appData.currentUser.name} بإضافة معلم يحتاج رعاية: ${newTeacher.name}`);
+            });
+            
+            // عرض النموذج
+            document.getElementById('teacherNeedCareModal').style.display = 'flex';
+        }
+
+        // حفظ بيانات المعلمين
+        function saveTeachers() {
+            saveAllData();
+            logActivity('حفظ بيانات المعلمين', `قام ${appData.currentUser.name} بحفظ بيانات المعلمين`);
+            alert('تم حفظ بيانات المعلمين بنجاح');
+        }
+
         // عرض إدارة المستخدمين
         function renderUserManagementTable(role) {
             let tableId = '';
@@ -4206,7 +4515,7 @@
             });
         }
 
-        // عرض قائمة التقارير المحفوظة - **التعديل: عرض التقارير المحفوظة فقط**
+        // عرض قائمة التقارير المحفوظة
         function renderSavedReportsList() {
             const savedReportsList = document.getElementById('savedReportsList');
             savedReportsList.innerHTML = '';
@@ -4222,15 +4531,14 @@
                 return;
             }
             
-            // **إصلاح: ترتيب التقارير من الأحدث إلى الأقدم حسب تاريخ الإنشاء**
+            // ترتيب التقارير من الأحدث إلى الأقدم حسب تاريخ الإنشاء
             const sortedReports = [...appData.savedQualityReports].sort((a, b) => {
-                // تحويل التواريخ إلى كائنات Date للمقارنة
                 try {
                     const dateA = new Date(a.createdDate.split('/').reverse().join('-'));
                     const dateB = new Date(b.createdDate.split('/').reverse().join('-'));
-                    return dateB - dateA; // ترتيب تنازلي (من الأحدث إلى الأقدم)
+                    return dateB - dateA;
                 } catch (error) {
-                    return 0; // في حالة خطأ في التواريخ، لا نقوم بالترتيب
+                    return 0;
                 }
             });
             
@@ -5701,15 +6009,6 @@
             alert('تم حفظ بيانات التقييم بنجاح');
         }
 
-        // حفظ المعلمين
-        function saveTeachers() {
-            saveAllData();
-            
-            logActivity('حفظ معلمين', `قام ${appData.currentUser.name} بحفظ بيانات المعلمين`);
-            
-            alert('تم حفظ بيانات المعلمين بنجاح');
-        }
-
         // حفظ التقارير
         function saveReports() {
             saveAllData();
@@ -5984,11 +6283,6 @@
         // حفظ التقارير
         function renderReports() {
             // يمكن إضافة منطق عرض التقارير هنا إذا لزم الأمر
-        }
-
-        // عرض المعلمين
-        function renderTeachers() {
-            // يمكن إضافة منطق عرض المعلمين هنا إذا لزم الأمر
         }
     </script>
 </body>
